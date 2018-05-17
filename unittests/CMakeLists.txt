@@ -29,16 +29,21 @@ add_executable(run_tests
     )
 
 
-set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -g -Wno-weak-vtables -Wno-missing-variable-declarations")
+# Additional compiler flags.
+set_target_properties(run_tests PROPERTIES COMPILE_FLAGS
+    "-D__DEBUG__=1 -g -Wno-weak-vtables -Wno-missing-variable-declarations")
 
 
+# Link against the necessary libraries.
 target_link_libraries(run_tests
     libsnowlake
     ${LIBGTEST_LIBRARY}
-    ${DEPENDENCY_LINK_LIBRARIES}
     )
 
 
 # Run tests.
 add_custom_command(TARGET run_tests POST_BUILD COMMAND
     $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=3)
+
+
+### THE END ###

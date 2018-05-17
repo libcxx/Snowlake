@@ -21,6 +21,7 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 # Set minimum CMake version.
 cmake_minimum_required(VERSION 2.6)
 
@@ -42,9 +43,9 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # General compiler flags.
 if (CMAKE_COMPILER_IS_GNUCXX)
-  set (CMAKE_CXX_FLAGS "-std=c++11 -w")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c99-extensions -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral -Wno-unused-macros -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c99-extensions -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral -Wno-unused-macros")
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
         # Settings for local macOS dev machine.
@@ -64,14 +65,14 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif ()
 
 
-# Find googletest.
+# Find googletest static library.
 find_library(LIBGTEST_LIBRARY NAMES "gtest"
     PATH_SUFFIXES "lib" "lib32" "lib64")
 
 message("gtest library path found: " ${LIBGTEST_LIBRARY})
 
 
-# Find Sneaker.
+# Find googletest headers.
 find_path(LIBGTEST_INCLUDE_DIR NAMES "gtest"
     PATHS
     "/opt/local/include"
@@ -89,6 +90,7 @@ set(TESTS_DIR ${PROJECT_SOURCE_DIR}/unittests)
 
 # Sub-directories.
 ADD_SUBDIRECTORY(${SRC_DIR})
-if (NOT CMAKE_COMPILER_IS_GNUCXX)
-    ADD_SUBDIRECTORY(${TESTS_DIR})
-endif()
+ADD_SUBDIRECTORY(${TESTS_DIR})
+
+
+### THE END ###

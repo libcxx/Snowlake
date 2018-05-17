@@ -22,6 +22,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+# Add the necessary source files.
 set(sources
     SemanticAnalyzer.cpp
     )
@@ -31,7 +32,12 @@ set(sources
 add_library(libsnowlake ${sources})
 
 
+# Additional compiler flags.
 set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
 
 
+# Post-build command.
 add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
+
+
+### THE END ###
