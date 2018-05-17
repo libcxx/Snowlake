@@ -71,10 +71,24 @@ find_library(LIBGTEST_LIBRARY NAMES "gtest"
 message("gtest library path found: " ${LIBGTEST_LIBRARY})
 
 
+# Find Sneaker.
+find_path(LIBGTEST_INCLUDE_DIR NAMES "gtest"
+    PATHS
+    "/opt/local/include"
+    "/usr/local/include"
+    "/usr/include"
+    )
+
+
 # Paths.
+include_directories(SYSTEM ${LIBGTEST_INCLUDE_DIR})
 include_directories("${CMAKE_SOURCE_DIR}/src/")
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
+set(TESTS_DIR ${PROJECT_SOURCE_DIR}/unittests)
 
 
 # Sub-directories.
 ADD_SUBDIRECTORY(${SRC_DIR})
+if (NOT CMAKE_COMPILER_IS_GNUCXX)
+    ADD_SUBDIRECTORY(${TESTS_DIR})
+endif()

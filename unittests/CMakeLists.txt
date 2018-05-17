@@ -22,16 +22,23 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-set(sources
-    SemanticAnalyzer.cpp
+# Build executable `run_tests`.
+add_executable(run_tests
+    SemanticAnalyzerTests.cpp
+    main.cpp
     )
 
 
-# Library `libsnowlake`.
-add_library(libsnowlake ${sources})
+set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -g -Wno-weak-vtables -Wno-missing-variable-declarations")
 
 
-set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
+target_link_libraries(run_tests
+    libsnowlake
+    ${LIBGTEST_LIBRARY}
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
 
 
-add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
+# Run tests.
+add_custom_command(TARGET run_tests POST_BUILD COMMAND
+    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=3)
