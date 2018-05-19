@@ -23,11 +23,14 @@
 
 
 # Lexer
-add_custom_command(OUTPUT lex.yy.cpp
-    COMMAND /usr/local/bin/flex -o lex.yy.cpp --header-file=lex.yy.hh lexer.ll)
+add_custom_command(OUTPUT lex.yy.cc
+    COMMAND /usr/local/bin/flex -o lex.yy.cc --header-file=lex.yy.hh lexer.ll)
+
 
 # Parser
-# TODO
+add_custom_command(OUTPUT parser.tab.cc
+    COMMAND bison --language=c++ --verbose --warnings=error parser.yy)
+
 
 # Composite fake target
-add_custom_target(Parser DEPENDS lex.yy.cpp)
+add_custom_target(Parser DEPENDS lex.yy.cc parser.tab.cc)

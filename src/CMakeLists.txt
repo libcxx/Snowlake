@@ -41,6 +41,10 @@ add_library(libsnowlake ${sources})
 set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
 
 
+# Add dependency on target `Parser`.
+add_dependencies(libsnowlake Parser)
+
+
 # Post-build command.
 add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
 
