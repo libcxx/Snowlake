@@ -58,22 +58,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %token <std::string>      KEYWORD_INFERENCE
 %token <std::string>      KEYWORD_ENVIRONMENT
 %token <std::string>      KEYWORD_ARGUMENTS
+%token <std::string>      KEYWORD_WHILE
 %token <std::string>      KEYWORD_PREMISES
 %token <std::string>      KEYWORD_PROPOSITION
+
+%token <uint64_t>         INTEGER_LITERAL
 
 %token <std::string>      IDENTIFIER
 %token <std::string>      COMMA
 %token <std::string>      DOT
 %token <std::string>      COLON
-%token <std::string>      SEMICOLON
-%token <std::string>      PERCENT
-%token <std::string>      STAR
-%token <std::string>      POND
 %token <std::string>      OPERATOR_EQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
-%token <std::string>      LPAREN
-%token <std::string>      RPAREN
 %token <std::string>      LBRACKET
 %token <std::string>      RBRACKET
 %token <std::string>      LBRACE
@@ -87,7 +84,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %start input;
 
 input
-    :   inference_group_set
+    :
+        inference_group_set
         {
         }
     ;
@@ -103,7 +101,8 @@ inference_group_set
     ;
 
 inference_group
-    :   KEYWORD_INFERENCE LBRACE
+    :
+        KEYWORD_INFERENCE LBRACE
             environment_defn_set
             inference_defn_list
         RBRACE
@@ -115,13 +114,15 @@ environment_defn_set
     :
         {
         }
-    |   environment_defn_set environment_defn
+    |
+        environment_defn_set environment_defn
         {
         }
     ;
 
 environment_defn
-    :   IDENTIFIER COLON IDENTIFIER
+    :
+        IDENTIFIER COLON IDENTIFIER
         {
         }
     ;
@@ -130,13 +131,15 @@ inference_defn_list
     :
         {
         }
-    | inference_defn_list inference_defn
+    |
+        inference_defn_list inference_defn
         {
         }
     ;
 
 inference_defn
-    :   KEYWORD_INFERENCE LBRACE
+    :
+        KEYWORD_INFERENCE LBRACE
             inference_argument_set
             inference_premises_set
             inference_proposition
@@ -146,7 +149,8 @@ inference_defn
     ;
 
 inference_argument_set
-    :   KEYWORD_ARGUMENTS COLON LBRACKET inference_argument_list RBRACKET
+    :
+        KEYWORD_ARGUMENTS COLON LBRACKET inference_argument_list RBRACKET
         {
         }
     ;
@@ -155,70 +159,139 @@ inference_argument_list
     :
         {
         }
-    | inference_argument_list inference_argument
+    |
+        inference_argument_list inference_argument
         {
         }
     ;
 
 inference_argument
-    :   IDENTIFIER
+    :
+        IDENTIFIER
         {
         }
     ;
 
 inference_premises_set
-    : KEYWORD_PREMISES COLON LBRACKET inference_premises_list RBRACKET
+    :
+        KEYWORD_PREMISES COLON LBRACKET inference_premise_defn_list RBRACKET
         {
         }
     ;
 
-inference_premises_list
+inference_premise_defn_list
     :
         {
         }
-    |   inference_premises_list inference_premise_stmt
+    |
+        inference_premise_defn_list inference_premise_defn
         {
         }
     ;
 
-inference_premise_stmt
-    :   inference_premise_type_inference_stmt
+inference_premise_defn
+    :
+        inference_premise_type_inference_defn
         {
         }
-    |   inference_premise_type_equality_stmt
+    |
+        inference_premise_type_equality_defn
         {
         }
     ;
 
-inference_premise_type_inference_stmt
-    :   identifiable COLON identifier
+inference_premise_type_inference_defn
+    :
+        identifiable COLON deduced_type
+        {
+        }
+    |
+        identifiable COLON deduced_type KEYWORD_WHILE LBRACE inference_premise_defn_list RBRACE
+        {
+        }
     ;
 
-inference_premise_type_equality_stmt
-    :   identifiable equality_operator identifiable
+inference_premise_type_equality_defn
+    :
+        identifiable equality_operator identifiable
+        {
+        }
     ;
 
 inference_proposition
-    :   KEYWORD_PROPOSITION COLON identifiable
+    :
+        KEYWORD_PROPOSITION COLON identifiable
+        {
+        }
     ;
 
 identifiable
-    :   identifier
-    |   identifiable_attribute
+    :
+        identifier
+        {
+        }
+    |
+        identifiable_attribute
+        {
+        }
     ;
 
 identifier
-    :   IDENTIFIER
+    :
+        IDENTIFIER
+        {
+        }
     ;
 
 identifiable_attribute
-    :   identifiable DOT identifier
+    :
+        identifiable DOT identifier
+        {
+        }
+    ;
+
+deduced_type
+    :
+        deduced_type_singular
+        {
+        }
+    |
+        deduced_type_group
+        {
+        }
+    ;
+
+deduced_type_singular
+    :
+        IDENTIFIER
+        {
+        }
+    ;
+
+deduced_type_group
+    :
+        IDENTIFIER LBRACKET RBRACKET
+        {
+        }
+    |
+        IDENTIFIER LBRACKET INTEGER_LITERAL RBRACKET
+        {
+        }
     ;
 
 equality_operator
-    :   OPERATOR_EQ
-    |   OPERATOR_LT
-    |   OPERATOR_LTE
+    :
+        OPERATOR_EQ
+        {
+        }
+    |
+        OPERATOR_LT
+        {
+        }
+    |
+        OPERATOR_LTE
+        {
+        }
     ;
 
 %%

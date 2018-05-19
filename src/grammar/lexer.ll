@@ -52,6 +52,7 @@ blank [ \t]
 "inference"
 "environment"
 "arguments"
+"while"
 "premises"
 "proposition"
 
@@ -71,15 +72,6 @@ blank [ \t]
 #colon
 ":"
 
-#semicolon
-";"
-
-#star
-"*"
-
-#pond
-"#"
-
 #equal
 "="
 
@@ -94,10 +86,6 @@ blank [ \t]
 
 #dot
 "."
-
-#brackets
-"("
-")"
 
 #sqaure_brackets
 "["
