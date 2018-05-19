@@ -22,15 +22,28 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Lexer
+## Lexer
+
+set(lexer_source
+    ${SRC_GRAMMAR_DIR}/lexer.ll
+    )
+
 add_custom_command(OUTPUT lex.yy.cc
-    COMMAND /usr/local/bin/flex -o lex.yy.cc --header-file=lex.yy.hh lexer.ll)
+    COMMAND /usr/local/bin/flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
 
 
-# Parser
+## Parser
+
+set(parser_source
+    ${SRC_GRAMMAR_DIR}/parser.yy
+    )
+
 add_custom_command(OUTPUT parser.tab.cc
-    COMMAND bison --language=c++ --verbose --warnings=error parser.yy)
+    COMMAND bison --language=c++ --verbose --warnings=error ${parser_source})
 
 
 # Composite fake target
-add_custom_target(Parser DEPENDS lex.yy.cc parser.tab.cc)
+add_custom_target(Parser DEPENDS
+    lex.yy.cc
+    parser.tab.cc
+    )
