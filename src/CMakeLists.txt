@@ -22,9 +22,15 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Add subdirectories.
+## Add subdirectories.
+
+# Add 'grammar' subdirectory.
 set(SRC_GRAMMAR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/grammar)
+include_directories(${SRC_GRAMMAR_DIR})
 ADD_SUBDIRECTORY(${SRC_GRAMMAR_DIR})
+file(GLOB_RECURSE grammar_sources
+    ${SRC_GRAMMAR_DIR}/lex.yy.cc
+    ${SRC_GRAMMAR_DIR}/parser.tab.cc)
 
 
 # Add the necessary source files.
@@ -34,7 +40,7 @@ set(sources
 
 
 # Library `libsnowlake`.
-add_library(libsnowlake ${sources})
+add_library(libsnowlake ${sources} ${grammar_sources})
 
 
 # Additional compiler flags.
