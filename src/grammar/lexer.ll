@@ -83,7 +83,10 @@ blank [ \t]
 #equal
 "="
 
-#less or equal to
+#less than
+"<"
+
+#no more than
 "<="
 
 #comma

@@ -69,7 +69,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %token <std::string>      PERCENT
 %token <std::string>      STAR
 %token <std::string>      POND
-%token <std::string>      EQUAL
+%token <std::string>      OPERATOR_EQ
+%token <std::string>      OPERATOR_LT
+%token <std::string>      OPERATOR_LTE
 %token <std::string>      LPAREN
 %token <std::string>      RPAREN
 %token <std::string>      LBRACKET
@@ -214,7 +216,9 @@ identifiable_attribute
     ;
 
 equality_operator
-    :   EQUAL
+    :   OPERATOR_EQ
+    |   OPERATOR_LT
+    |   OPERATOR_LTE
     ;
 
 %%
