@@ -22,27 +22,12 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Add subdirectories.
-set(SRC_GRAMMAR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/grammar)
-ADD_SUBDIRECTORY(${SRC_GRAMMAR_DIR})
+# Lexer
+add_custom_command(OUTPUT lex.yy.cpp
+    COMMAND /usr/local/bin/flex -o lex.yy.cpp --header-file=lex.yy.hh lexer.ll)
 
+# Parser
+# TODO
 
-# Add the necessary source files.
-set(sources
-    SemanticAnalyzer.cpp
-    )
-
-
-# Library `libsnowlake`.
-add_library(libsnowlake ${sources})
-
-
-# Additional compiler flags.
-set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
-
-
-# Post-build command.
-add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
-
-
-### THE END ###
+# Composite fake target
+add_custom_target(Parser DEPENDS lex.yy.cpp)
