@@ -22,28 +22,38 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 %skeleton "lalr1.cc" /* -*- C++ -*- */
+
 %require "3.0.4"
+
 %defines
 %define parser_class_name {Parser}
 %define api.token.constructor
 %define api.value.type variant
 %define parse.assert
-%code requires
-{
-# include <cstdint>
-# include <string>
-# include <utility>
-}
+%define parse.error verbose
+
+// Enable location.
+%locations
+
 // The parsing context.
 %param { void* yyscanner }
-%locations
-%define parse.error verbose
+
+// Initial code required.
+%code requires
+{
+}
+
+// Initialization.
 %initial-action
 {
 };
+
+// Post-initialization.
 %code
 {
 }
+
+// Token definition.
 %token <std::string>      KEYWORD_GROUP
 %token <std::string>      KEYWORD_INFERENCE
 %token <std::string>      KEYWORD_ENVIRONMENT
@@ -96,7 +106,6 @@ inference_group
             inference_defn_list
         RBRACE
         {
-
         }
     ;
 
