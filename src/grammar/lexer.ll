@@ -75,7 +75,7 @@ blank [ \t]
 #equal
 "="
 
-#less than
+#less_than
 "<"
 
 #no_more_than
