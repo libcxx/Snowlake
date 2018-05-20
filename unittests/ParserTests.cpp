@@ -29,4 +29,43 @@ class ParserTests : public ::testing::Test {};
 TEST_F(ParserTests, TestDriverInitialization)
 {
   ParserDriver driver;
+
+  // Default value of trace parsing is false.
+  ASSERT_FALSE(driver.trace_parsing());
+}
+
+TEST_F(ParserTests, TestParsingSuccessful)
+{
+  ParserDriver driver;
+
+  const char* VALID_INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext"
+      "EnvironmentName           : context"
+      "TypeClass                 : TypeDefn"
+      "ExprClass                 : AstExpr"
+      "TypeCheckMethod           : TypeCheck"
+      "SubtypeCheckMethod        : isSubType"
+      "AssumptionSetupMethod     : SetupTypeAssumption"
+      "AssumptionTeardownMethod  : TeardownTypeAssumption"
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.caller : CallerType"
+          "StaticMethodCallStmt.arguments : ArgumentsTypes[]"
+          "CallerType <= StaticMethodCallStmt.MethodClassType"
+          "ArgumentTypes <= ParameterTypes"
+        "]"
+        ""
+        "proposition: StaticMethodCallStmt.return_type"
+      "}"
+    "}"
+  "";
+
+  int res = driver.parse_from_string(VALID_INPUT);
+  ASSERT_EQ(0, res);
 }
