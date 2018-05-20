@@ -78,6 +78,7 @@ class ParserDriver;
 
 %token <std::string>      IDENTIFIER
 %token <std::string>      DOT
+%token <std::string>      COMMA
 %token <std::string>      COLON
 %token <std::string>      SEMICOLON
 %token <std::string>      LBRACKET
@@ -162,6 +163,10 @@ inference_defn
 
 inference_argument_set
     :
+        KEYWORD_ARGUMENTS COLON LBRACKET RBRACKET
+        {
+        }
+    |
         KEYWORD_ARGUMENTS COLON LBRACKET inference_argument_list RBRACKET
         {
         }
@@ -169,10 +174,11 @@ inference_argument_set
 
 inference_argument_list
     :
+        inference_argument
         {
         }
     |
-        inference_argument_list inference_argument
+        inference_argument_list COMMA inference_argument
         {
         }
     ;

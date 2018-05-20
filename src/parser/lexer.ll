@@ -89,6 +89,9 @@ blank [ \t]
 #dot
 "."                                       { return yy::Parser::make_DOT(yytext, loc); }
 
+#comma
+","                                       { return yy::Parser::make_COMMA(yytext, loc); }
+
 #sqaure_brackets
 "["                                       { return yy::Parser::make_LBRACKET(yytext, loc); }
 "]"                                       { return yy::Parser::make_RBRACKET(yytext, loc); }
@@ -111,7 +114,7 @@ blank [ \t]
                                           }
 
 <<EOF>>                                   {
-                                             return yy::Parser::make_END(loc);
+                                            return yy::Parser::make_END(loc);
                                           }
 
 %%
