@@ -187,7 +187,7 @@ inference_argument_list
 
 inference_argument
     :
-        IDENTIFIER
+        IDENTIFIER COLON IDENTIFIER
         {
         }
     ;
