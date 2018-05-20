@@ -56,6 +56,13 @@ class ParserDriver;
 %code
 {
 # include "ParserDriver.h"
+
+// Tell Flex the lexer's prototype ...
+#define YY_DECL                                                             \
+  yy::Parser::symbol_type yylex(ParserDriver& driver,                       \
+                                void* yyscanner)
+// ... and declare it for the parser's sake.
+YY_DECL;
 }
 
 // Token definition.
