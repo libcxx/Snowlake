@@ -58,6 +58,7 @@ TEST_F(ParserTests, TestParsingSuccessful)
         ""
         "premises: ["
           "StaticMethodCallStmt.caller : CallerType;"
+          "StaticMethodCallStmt.callee.return_type : ReturnType;"
           "StaticMethodCallStmt.function_arguments : ArgumentsTypes[] while {"
             "StaticMethodCallStmt.callee : CalleeType;"
             "StaticMethodCallStmt.class : ClassType;"
@@ -66,7 +67,7 @@ TEST_F(ParserTests, TestParsingSuccessful)
           "ArgumentTypes <= ParameterTypes;"
         "]"
         ""
-        "proposition: StaticMethodCallStmt.return_type"
+        "proposition: ReturnType;"
       "}"
     "}"
   "";
@@ -92,9 +93,10 @@ TEST_F(ParserTests, TestParsingInvalidInput)
           "StaticMethodCallStmt.function_arguments : ArgumentsTypes[] if {"
             "StaticMethodCallStmt.callee : CalleeType;"
           "};"
+          "StaticMethodCallStmt.callee.return_type : ReturnType;"
         "]"
         ""
-        "proposition: StaticMethodCallStmt.return_type"
+        "proposition: ReturnType;"
       "}"
     "}"
   "";

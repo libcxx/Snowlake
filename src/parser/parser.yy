@@ -154,7 +154,7 @@ inference_defn
     :
         KEYWORD_INFERENCE IDENTIFIER LBRACE
             inference_argument_set
-            inference_premises_set
+            inference_premise_set
             inference_proposition
         RBRACE
         {
@@ -190,7 +190,7 @@ inference_argument
         }
     ;
 
-inference_premises_set
+inference_premise_set
     :
         KEYWORD_PREMISES COLON LBRACKET inference_premise_defn_list RBRACKET
         {
@@ -238,7 +238,7 @@ inference_premise_type_equality_defn
 
 inference_proposition
     :
-        KEYWORD_PROPOSITION COLON identifiable
+        KEYWORD_PROPOSITION COLON deduced_type_singular SEMICOLON
         {
         }
     ;
