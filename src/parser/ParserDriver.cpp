@@ -79,11 +79,11 @@ ParserDriver::parse_from_string(const char* input)
   yy::Parser parser(*this);
   parser.set_debug_level(trace_parsing());
   std::cout << "Before caling parser.parse()..." << std::endl;
-  parser.parse();
+  int res = parser.parse();
   std::cout << "After caling parser.parse()..." << std::endl;
   yy_delete_buffer(buf);
   yylex_destroy();
-  return 0;
+  return res;
 }
 
 // -----------------------------------------------------------------------------
