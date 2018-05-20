@@ -36,11 +36,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %locations
 
 // The parsing context.
-// %param { void* yyscanner }
+%param { ParserDriver& driver }
+%param { void* yyscanner }
 
 // Initial code required.
 %code requires
 {
+class ParserDriver;
+
+
 }
 
 // Initialization.
@@ -48,9 +52,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 {
 };
 
-// Post-initialization.
+// In source file (.cc)
 %code
 {
+# include "ParserDriver.h"
 }
 
 // Token definition.

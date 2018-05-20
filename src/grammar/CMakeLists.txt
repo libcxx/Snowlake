@@ -42,8 +42,15 @@ add_custom_command(OUTPUT parser.tab.cc
     COMMAND bison --language=c++ --verbose --warnings=error ${parser_source})
 
 
-# Composite fake target
-add_custom_target(Parser DEPENDS
+## Composite parser static library.
+set(parser_sources
     lex.yy.cc
     parser.tab.cc
+    ParserDriver.cpp
     )
+
+add_library(Parser ${parser_sources})
+
+# Code generated from Flex and Bison has a lot of warnings.
+# Silence them for now.
+set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-Wno-everything")

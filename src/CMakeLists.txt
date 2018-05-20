@@ -28,9 +28,6 @@
 set(SRC_GRAMMAR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/grammar)
 include_directories(${SRC_GRAMMAR_DIR})
 ADD_SUBDIRECTORY(${SRC_GRAMMAR_DIR})
-file(GLOB_RECURSE grammar_sources
-    ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.cc
-    ${CMAKE_CURRENT_BINARY_DIR}/parser.tab.cc)
 
 
 # Add the necessary source files.
@@ -47,8 +44,9 @@ add_library(libsnowlake ${sources} ${grammar_sources})
 set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
 
 
-# Add dependency on target `Parser`.
+# Link with dependency "Target".
 add_dependencies(libsnowlake Parser)
+target_link_libraries(libsnowlake Parser)
 
 
 # Post-build command.
