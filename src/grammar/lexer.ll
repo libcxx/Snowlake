@@ -78,11 +78,8 @@ blank [ \t]
 #less than
 "<"
 
-#no more than
+#no_more_than
 "<="
-
-#comma
-","
 
 #dot
 "."

@@ -65,17 +65,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %token <uint64_t>         INTEGER_LITERAL
 
 %token <std::string>      IDENTIFIER
-%token <std::string>      COMMA
 %token <std::string>      DOT
 %token <std::string>      COLON
-%token <std::string>      OPERATOR_EQ
-%token <std::string>      OPERATOR_LT
-%token <std::string>      OPERATOR_LTE
 %token <std::string>      LBRACKET
 %token <std::string>      RBRACKET
 %token <std::string>      LBRACE
 %token <std::string>      RBRACE
-%token END                0  "end of file"
+%token <std::string>      OPERATOR_EQ
+%token <std::string>      OPERATOR_LT
+%token <std::string>      OPERATOR_LTE
 
 %debug
 
