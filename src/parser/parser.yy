@@ -64,8 +64,7 @@ class ParserDriver;
 #include "../../../src/parser/ParserDriver.h"
 
 // Tell Flex the lexer's prototype ...
-#define YY_DECL                                                             \
-  yy::Parser::symbol_type yylex(ParserDriver& driver)                       \
+#define YY_DECL yy::Parser::symbol_type yylex(ParserDriver& driver)
 
 // ... and declare it for the parser's sake.
 YY_DECL;
