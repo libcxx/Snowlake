@@ -62,6 +62,7 @@ class ParserDriver;
 // TODO: Currently this is the only hack that I can think of.
 // Will need to devise a cleaner solution eventually.
 #include "../../../src/parser/ParserDriver.h"
+#include "lex.yy.hh"
 
 // Tell Flex the lexer's prototype ...
 #define YY_DECL yy::Parser::symbol_type yylex(ParserDriver& driver)
@@ -315,4 +316,9 @@ void
 yy::Parser::error(const location_type& l, const std::string& m)
 {
     driver.error(l, m);
+}
+
+yy::Parser::symbol_type yylex(ParserDriver& driver)
+{
+    yylex();
 }
