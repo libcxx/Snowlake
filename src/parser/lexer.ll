@@ -97,8 +97,14 @@ blank [ \t]
 "{"                                       { return yy::Parser::make_LBRACE(yytext, loc); }
 "}"                                       { return yy::Parser::make_RBRACE(yytext, loc); }
 
-{blank}+                                  { loc.step(); }
-[\n]+                                     { loc.lines(yyleng); loc.step(); }
+{blank}+                                  {
+                                            loc.step();
+                                          }
+
+[\n]+                                     {
+                                            loc.lines(yyleng);
+                                            loc.step();
+                                          }
 
 .                                         {
                                             /* ignore bad characters */
