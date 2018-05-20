@@ -22,10 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 %{ /* -*- C++ -*- */
-# include <cstdio>
-# include <cerrno>
-# include <cstdlib>
-# include "parser.tab.hh"
+#include <cstdio>
+#include <cerrno>
+#include <cstdlib>
+#include "ParserDriver.h"
+#include "parser.tab.hh"
 
 
 // The location of the current token.
@@ -49,16 +50,16 @@ blank [ \t]
 %}
 
 #keywords
-"group"
-"inference"
-"environment"
-"arguments"
-"while"
-"premises"
-"proposition"
+"group"                                   { return yy::Parser::make_KEYWORD_GROUP(yytext, loc);        }
+"inference"                               { return yy::Parser::make_KEYWORD_INFERENCE(yytext, loc);    }
+"environment"                             { return yy::Parser::make_KEYWORD_ENVIRONMENT(yytext, loc);  }
+"arguments"                               { return yy::Parser::make_KEYWORD_ARGUMENTS(yytext, loc);    }
+"while"                                   { return yy::Parser::make_KEYWORD_WHILE(yytext, loc);        }
+"premises"                                { return yy::Parser::make_KEYWORD_PREMISES(yytext, loc);     }
+"proposition"                             { return yy::Parser::make_KEYWORD_PROPOSITION(yytext, loc);  }
 
 #identifiers
-[_a-zA-Z][_a-zA-Z0-9]*
+[_a-zA-Z][_a-zA-Z0-9]*                    { return yy::Parser::make_IDENTIFIER(yytext, loc); }
 
 #integer
 {integer} {
@@ -67,39 +68,44 @@ blank [ \t]
   {
     n = 0;
   }
-  return n;
+  return yy::Parser::make_INTEGER_LITERAL(n, loc);
 }
 
 #colon
-":"
+":"                                       { return yy::Parser::make_COLON(yytext, loc); }
+
+#semicolon
+";"                                       { return yy::Parser::make_SEMICOLON(yytext, loc); }
 
 #equal
-"="
+"="                                       { return yy::Parser::make_OPERATOR_EQ(yytext, loc); }
 
 #less_than
-"<"
+"<"                                       { return yy::Parser::make_OPERATOR_LT(yytext, loc); }
 
 #no_more_than
-"<="
+"<="                                      { return yy::Parser::make_OPERATOR_LTE(yytext, loc); }
 
 #dot
-"."
+"."                                       { return yy::Parser::make_DOT(yytext, loc); }
 
 #sqaure_brackets
-"["
-"]"
+"["                                       { return yy::Parser::make_LBRACKET(yytext, loc); }
+"]"                                       { return yy::Parser::make_RBRACKET(yytext, loc); }
 
 #curly_braces
-"{"
-"}"
+"{"                                       { return yy::Parser::make_LBRACE(yytext, loc); }
+"}"                                       { return yy::Parser::make_RBRACE(yytext, loc); }
 
-{blank}+                                  loc.step();
-[\n]+                                     loc.lines(yyleng); loc.step();
+{blank}+                                  { loc.step(); }
+[\n]+                                     { loc.lines(yyleng); loc.step(); }
 
 .                                         {
                                             /* ignore bad characters */
                                           }
 
-<<EOF>>
+<<EOF>>                                   {
+                                             return yy::Parser::make_END(loc);
+                                          }
 
 %%

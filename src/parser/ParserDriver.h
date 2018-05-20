@@ -24,7 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "location.hh"
+#include "parser.tab.hh"
 #include <string>
+
+// Tell Flex the lexer's prototype ...
+#define YY_DECL yy::Parser::symbol_type yylex(ParserDriver& driver)
+
+// ... and declare it for the parser's sake.
+YY_DECL;
 
 class ParserDriver
 {

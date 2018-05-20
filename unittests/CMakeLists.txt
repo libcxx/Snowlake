@@ -31,8 +31,7 @@ add_executable(run_tests
 
 
 # Additional compiler flags.
-set_target_properties(run_tests PROPERTIES COMPILE_FLAGS
-    "-D__DEBUG__=1 -g -Wno-weak-vtables -Wno-missing-variable-declarations")
+set_target_properties(run_tests PROPERTIES COMPILE_FLAG "-g")
 
 
 # Link against the necessary libraries.
@@ -45,7 +44,7 @@ target_link_libraries(run_tests
 
 # Run tests.
 add_custom_command(TARGET run_tests POST_BUILD COMMAND
-    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=3)
+    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=1)
 
 
 ### THE END ###

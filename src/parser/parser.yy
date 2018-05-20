@@ -63,12 +63,6 @@ class ParserDriver;
 // Will need to devise a cleaner solution eventually.
 #include "../../../src/parser/ParserDriver.h"
 #include "lex.yy.hh"
-
-// Tell Flex the lexer's prototype ...
-#define YY_DECL yy::Parser::symbol_type yylex(ParserDriver& driver)
-
-// ... and declare it for the parser's sake.
-YY_DECL;
 }
 
 // Token definition.
@@ -85,6 +79,7 @@ YY_DECL;
 %token <std::string>      IDENTIFIER
 %token <std::string>      DOT
 %token <std::string>      COLON
+%token <std::string>      SEMICOLON
 %token <std::string>      LBRACKET
 %token <std::string>      RBRACKET
 %token <std::string>      LBRACE
@@ -92,6 +87,7 @@ YY_DECL;
 %token <std::string>      OPERATOR_EQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
+%token END                0  "end of file"
 
 %debug
 
@@ -118,7 +114,7 @@ inference_group_set
 
 inference_group
     :
-        KEYWORD_INFERENCE LBRACE
+        KEYWORD_GROUP IDENTIFIER LBRACE
             environment_defn_set
             inference_defn_list
         RBRACE
@@ -138,7 +134,7 @@ environment_defn_set
 
 environment_defn
     :
-        IDENTIFIER COLON IDENTIFIER
+        IDENTIFIER COLON IDENTIFIER SEMICOLON
         {
         }
     ;
@@ -155,7 +151,7 @@ inference_defn_list
 
 inference_defn
     :
-        KEYWORD_INFERENCE LBRACE
+        KEYWORD_INFERENCE IDENTIFIER LBRACE
             inference_argument_set
             inference_premises_set
             inference_proposition
@@ -218,18 +214,18 @@ inference_premise_defn
 
 inference_premise_type_inference_defn
     :
-        identifiable COLON deduced_type
+        identifiable COLON deduced_type SEMICOLON
         {
         }
     |
-        identifiable COLON deduced_type KEYWORD_WHILE LBRACE inference_premise_defn_list RBRACE
+        identifiable COLON deduced_type KEYWORD_WHILE LBRACE inference_premise_defn_list RBRACE SEMICOLON
         {
         }
     ;
 
 inference_premise_type_equality_defn
     :
-        identifiable equality_operator identifiable
+        identifiable equality_operator identifiable SEMICOLON
         {
         }
     ;
@@ -316,9 +312,4 @@ void
 yy::Parser::error(const location_type& l, const std::string& m)
 {
     driver.error(l, m);
-}
-
-yy::Parser::symbol_type yylex(ParserDriver& driver)
-{
-    yylex();
 }
