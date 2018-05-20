@@ -48,6 +48,7 @@ TEST_F(ParserTests, TestParsingSuccessful)
       "SubtypeCheckMethod        : isSubType;"
       "AssumptionSetupMethod     : SetupTypeAssumption;"
       "AssumptionTeardownMethod  : TeardownTypeAssumption;"
+      ""
       "inference MethodStaticDispatch {"
         ""
         "arguments: ["
@@ -56,7 +57,10 @@ TEST_F(ParserTests, TestParsingSuccessful)
         ""
         "premises: ["
           "StaticMethodCallStmt.caller : CallerType;"
-          "StaticMethodCallStmt.function_arguments : ArgumentsTypes[];"
+          "StaticMethodCallStmt.function_arguments : ArgumentsTypes[] while {"
+            "StaticMethodCallStmt.callee : CalleeType;"
+            "StaticMethodCallStmt.class : ClassType;"
+          "};"
           "CallerType <= StaticMethodCallStmt.MethodClassType;"
           "ArgumentTypes <= ParameterTypes;"
         "]"
@@ -68,4 +72,32 @@ TEST_F(ParserTests, TestParsingSuccessful)
 
   int res = driver.parse_from_string(VALID_INPUT);
   ASSERT_EQ(0, res);
+}
+
+TEST_F(ParserTests, TestParsingInvalidInput)
+{
+  ParserDriver driver;
+
+  const char* INVALID_INPUT =
+    "group MyGroup {"
+      "EnvironmentClass : ASTContext;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.function_arguments : ArgumentsTypes[] if {"
+            "StaticMethodCallStmt.callee : CalleeType;"
+          "};"
+        "]"
+        ""
+        "proposition: StaticMethodCallStmt.return_type"
+      "}"
+    "}"
+  "";
+
+  int res = driver.parse_from_string(INVALID_INPUT);
+  ASSERT_EQ(1, res);
 }
