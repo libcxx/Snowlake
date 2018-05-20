@@ -37,7 +37,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // The parsing context.
 %param { ParserDriver& driver }
-%param { void* yyscanner }
 
 // Initial code required.
 %code requires
@@ -58,12 +57,16 @@ class ParserDriver;
 // In source file (.cc)
 %code
 {
-# include "ParserDriver.h"
+// HACK: We need to refer to the header under the source directory
+// from the build directory.
+// TODO: Currently this is the only hack that I can think of.
+// Will need to devise a cleaner solution eventually.
+#include "../../../src/parser/ParserDriver.h"
 
 // Tell Flex the lexer's prototype ...
 #define YY_DECL                                                             \
-  yy::Parser::symbol_type yylex(ParserDriver& driver,                       \
-                                void* yyscanner)
+  yy::Parser::symbol_type yylex(ParserDriver& driver)                       \
+
 // ... and declare it for the parser's sake.
 YY_DECL;
 }

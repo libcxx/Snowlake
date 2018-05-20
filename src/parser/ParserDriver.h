@@ -62,4 +62,10 @@ public:
    */
   void error(const yy::location& l, const std::string& m);
   void error(const std::string& m);
+
+private:
+  // Whether parser traces should be generated.
+  bool m_trace_parsing;
+
+  std::string m_input_file;
 };

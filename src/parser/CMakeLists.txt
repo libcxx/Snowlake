@@ -28,7 +28,7 @@ set(lexer_source
     ${PARSER_SRC_DIR}/lexer.ll
     )
 
-add_custom_command(OUTPUT lex.yy.cc
+add_custom_command(OUTPUT lex.yy.hh lex.yy.cc
     COMMAND flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
 
 
@@ -38,15 +38,32 @@ set(parser_source
     ${PARSER_SRC_DIR}/parser.yy
     )
 
-add_custom_command(OUTPUT parser.tab.cc
-    COMMAND bison --language=c++ --verbose --warnings=error ${parser_source})
+add_custom_command(
+    OUTPUT
+        parser.tab.hh
+        parser.tab.cc
+        location.hh
+        position.hh
+        stack.hh
+    COMMAND
+        bison --language=c++ --verbose --warnings=error ${parser_source})
+
+
+add_custom_command(
+    OUTPUT
+        fake_output DEPENDS lex.yy.hh parser.tab.hh
+    COMMAND
+        echo "Copying generated .hh files ..." &&
+        cp ${CMAKE_CURRENT_BINARY_DIR}/*.hh ${PARSER_SRC_DIR}/)
 
 
 ## Composite parser static library.
+
 set(parser_sources
     lex.yy.cc
     parser.tab.cc
     ParserDriver.cpp
+    fake_output
     )
 
 add_library(Parser ${parser_sources})

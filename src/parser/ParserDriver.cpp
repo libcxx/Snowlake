@@ -74,15 +74,13 @@ ParserDriver::parse_from_file(const std::string& filepath)
 int
 ParserDriver::parse_from_string(const char* input)
 {
-  yyscan_t scanner;
   YY_BUFFER_STATE buf;
-  yylex_init(&scanner);
-  buf = yy_scan_string(input, scanner);
-  yy::ir_parser parser(*this, scanner);
+  buf = yy_scan_string(input);
+  yy::Parser parser(*this);
   parser.set_debug_level(trace_parsing());
   parser.parse();
-  yy_delete_buffer(buf, scanner);
-  yylex_destroy(scanner);
+  yy_delete_buffer(buf);
+  yylex_destroy();
   return 0;
 }
 
