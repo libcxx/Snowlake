@@ -43,13 +43,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %code requires
 {
 class ParserDriver;
-
-
 }
 
 // Initialization.
 %initial-action
 {
+  // Initialize the initial location.
+  if (!driver.input_file().empty())
+  {
+    @$.begin.filename = @$.end.filename = &driver.input_file();
+  }
 };
 
 // In source file (.cc)
@@ -309,4 +312,5 @@ equality_operator
 void
 yy::Parser::error(const location_type& l, const std::string& m)
 {
+    driver.error(l, m);
 }

@@ -21,6 +21,45 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
+#pragma once
+
+#include "location.hh"
+#include <string>
+
 class ParserDriver
 {
+public:
+  ParserDriver();
+  ~ParserDriver();
+
+  /**
+   * Getter and setter to enable trace parsing.
+   */
+  bool trace_parsing() const;
+  void set_trace_parsing(bool);
+
+  /**
+   * Run the parser on input file.
+   * Return 0 on success.
+   */
+  int parse_from_file(const std::string& filepath);
+
+  /**
+   * Run the parser on input string.
+   * Return 0 on success.
+   */
+  int parse_from_string(const char*);
+
+  /**
+   * The name of the file being parsed.
+   * Used later to pass the file name to the location tracker.
+   */
+  const std::string& input_file() const;
+  std::string& input_file();
+
+  /**
+   * Error handlings.
+   */
+  void error(const yy::location& l, const std::string& m);
+  void error(const std::string& m);
 };
