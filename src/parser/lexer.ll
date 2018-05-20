@@ -100,6 +100,10 @@ blank [ \t]
 "{"                                       { return yy::Parser::make_LBRACE(yytext, loc); }
 "}"                                       { return yy::Parser::make_RBRACE(yytext, loc); }
 
+#parentheses
+"("                                       { return yy::Parser::make_LPAREN(yytext, loc); }
+")"                                       { return yy::Parser::make_RPAREN(yytext, loc); }
+
 {blank}+                                  {
                                             loc.step();
                                           }

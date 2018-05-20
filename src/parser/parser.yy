@@ -85,6 +85,8 @@ class ParserDriver;
 %token <std::string>      RBRACKET
 %token <std::string>      LBRACE
 %token <std::string>      RBRACE
+%token <std::string>      LPAREN
+%token <std::string>      RPAREN
 %token <std::string>      OPERATOR_EQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
@@ -238,7 +240,7 @@ inference_premise_type_equality_defn
 
 inference_proposition
     :
-        KEYWORD_PROPOSITION COLON deduced_type_singular SEMICOLON
+        KEYWORD_PROPOSITION COLON deduced_type SEMICOLON
         {
         }
     ;
@@ -268,6 +270,17 @@ identifiable_attribute
         }
     ;
 
+deduced_type_list
+    :
+        deduced_type
+        {
+        }
+    |
+        deduced_type_list COMMA deduced_type
+        {
+        }
+    ;
+
 deduced_type
     :
         deduced_type_singular
@@ -275,6 +288,10 @@ deduced_type
         }
     |
         deduced_type_group
+        {
+        }
+    |
+        deduced_type_computed
         {
         }
     ;
@@ -293,6 +310,17 @@ deduced_type_group
         }
     |
         IDENTIFIER LBRACKET INTEGER_LITERAL RBRACKET
+        {
+        }
+    ;
+
+deduced_type_computed
+    :
+        IDENTIFIER LPAREN RPAREN
+        {
+        }
+    |
+        IDENTIFIER LPAREN deduced_type_list RPAREN
         {
         }
     ;

@@ -105,3 +105,33 @@ TEST_F(ParserTests, TestParsingInvalidInput)
   int res = driver.parse_from_string(INVALID_INPUT);
   ASSERT_EQ(1, res);
 }
+
+TEST_F(ParserTests, TestParsingVariousDeducedTypes)
+{
+  ParserDriver driver;
+
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "IfThenElseExpr"
+        "]"
+        ""
+        "premises: ["
+          "IfThenElseExpr.predicate   : Bool;"
+          "IfThenElseExpr.expr1       : T1;"
+          "IfThenElseExpr.expr2       : T2;"
+        "]"
+        ""
+        "proposition: lub(T1, T2);"
+      "}"
+    "}"
+  "";
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+}
