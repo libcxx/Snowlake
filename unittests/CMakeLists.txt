@@ -36,7 +36,7 @@ set_target_properties(run_tests PROPERTIES COMPILE_FLAG "-g")
 
 # Link against the necessary libraries.
 target_link_libraries(run_tests
-    libsnowlake
+    snowlake
     Parser
     ${LIBGTEST_LIBRARY}
     )

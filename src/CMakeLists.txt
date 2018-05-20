@@ -36,21 +36,21 @@ set(sources
     )
 
 
-# Library `libsnowlake`.
-add_library(libsnowlake ${sources})
+# Library `snowlake`.
+add_library(snowlake ${sources})
 
 
 # Additional compiler flags.
-set_target_properties(libsnowlake PROPERTIES OUTPUT_NAME "snowlake")
+set_target_properties(snowlake PROPERTIES OUTPUT_NAME "snowlake")
 
 
 # Link with dependency "Parser".
-add_dependencies(libsnowlake Parser)
-target_link_libraries(libsnowlake Parser)
+add_dependencies(snowlake Parser)
+target_link_libraries(snowlake Parser)
 
 
 # Post-build command.
-add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
+add_custom_command(TARGET snowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>)
 
 
 ### THE END ###
