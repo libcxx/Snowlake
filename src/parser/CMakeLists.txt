@@ -25,17 +25,17 @@
 ## Lexer
 
 set(lexer_source
-    ${SRC_GRAMMAR_DIR}/lexer.ll
+    ${PARSER_SRC_DIR}/lexer.ll
     )
 
 add_custom_command(OUTPUT lex.yy.cc
-    COMMAND /usr/local/bin/flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
+    COMMAND flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
 
 
 ## Parser
 
 set(parser_source
-    ${SRC_GRAMMAR_DIR}/parser.yy
+    ${PARSER_SRC_DIR}/parser.yy
     )
 
 add_custom_command(OUTPUT parser.tab.cc

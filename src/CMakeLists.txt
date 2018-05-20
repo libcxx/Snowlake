@@ -24,10 +24,10 @@
 
 ## Add subdirectories.
 
-# Add 'grammar' subdirectory.
-set(SRC_GRAMMAR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/grammar)
-include_directories(${SRC_GRAMMAR_DIR})
-ADD_SUBDIRECTORY(${SRC_GRAMMAR_DIR})
+# Add 'parser' subdirectory.
+set(PARSER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/parser)
+include_directories(${PARSER_SRC_DIR})
+ADD_SUBDIRECTORY(${PARSER_SRC_DIR})
 
 
 # Add the necessary source files.
@@ -37,7 +37,7 @@ set(sources
 
 
 # Library `libsnowlake`.
-add_library(libsnowlake ${sources} ${grammar_sources})
+add_library(libsnowlake ${sources})
 
 
 # Additional compiler flags.
