@@ -44,7 +44,7 @@ add_library(libsnowlake ${sources})
 set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
 
 
-# Link with dependency "Target".
+# Link with dependency "Parser".
 add_dependencies(libsnowlake Parser)
 target_link_libraries(libsnowlake Parser)
 
