@@ -29,8 +29,8 @@ set(SRC_GRAMMAR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/grammar)
 include_directories(${SRC_GRAMMAR_DIR})
 ADD_SUBDIRECTORY(${SRC_GRAMMAR_DIR})
 file(GLOB_RECURSE grammar_sources
-    ${SRC_GRAMMAR_DIR}/lex.yy.cc
-    ${SRC_GRAMMAR_DIR}/parser.tab.cc)
+    ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.cc
+    ${CMAKE_CURRENT_BINARY_DIR}/parser.tab.cc)
 
 
 # Add the necessary source files.

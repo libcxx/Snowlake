@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <cstdio>
 # include <cerrno>
 # include <cstdlib>
+# include "parser.tab.hh"
 
 
 // The location of the current token.
