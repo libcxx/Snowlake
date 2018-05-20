@@ -295,6 +295,6 @@ equality_operator
 %%
 
 void
-yy::ir_parser::error(const location_type& l, const std::string& m)
+yy::parser::error(const location_type& l, const std::string& m)
 {
 }
