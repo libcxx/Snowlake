@@ -36,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %locations
 
 // The parsing context.
-%param { void* yyscanner }
+// %param { void* yyscanner }
 
 // Initial code required.
 %code requires
@@ -295,6 +295,6 @@ equality_operator
 %%
 
 void
-yy::parser::error(const location_type& l, const std::string& m)
+yy::Parser::error(const location_type& l, const std::string& m)
 {
 }
