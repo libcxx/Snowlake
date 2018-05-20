@@ -231,7 +231,7 @@ inference_premise_type_inference_defn
 
 inference_premise_type_equality_defn
     :
-        identifiable equality_operator identifiable SEMICOLON
+        deduced_type equality_operator deduced_type SEMICOLON
         {
         }
     ;
