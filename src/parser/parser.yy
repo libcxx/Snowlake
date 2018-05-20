@@ -311,5 +311,5 @@ equality_operator
 void
 yy::Parser::error(const location_type& l, const std::string& m)
 {
-    driver.error(l, m);
+  driver.error(l, m);
 }
