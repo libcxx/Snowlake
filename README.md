@@ -1,3 +1,5 @@
+![Snowlake Logo](/resources/SnowlakeIcon@256.png)
+
 # Snowlake
 
 ## Overview
