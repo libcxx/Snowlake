@@ -1,4 +1,4 @@
-![Snowlake Logo](/resources/SnowlakeIcon@128.png)
+![Snowlake Logo](/resources/SnowlakeIcon_128.png)
 
 # Snowlake
 
