@@ -22,22 +22,35 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+## Add subdirectories.
+
+# Add 'parser' subdirectory.
+set(PARSER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/parser)
+include_directories(${PARSER_SRC_DIR})
+ADD_SUBDIRECTORY(${PARSER_SRC_DIR})
+
+
 # Add the necessary source files.
 set(sources
     SemanticAnalyzer.cpp
     )
 
 
-# Library `libsnowlake`.
-add_library(libsnowlake ${sources})
+# Library `snowlake`.
+add_library(snowlake ${sources})
 
 
 # Additional compiler flags.
-set_target_properties(libsnowlake PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "snowlake")
+set_target_properties(snowlake PROPERTIES OUTPUT_NAME "snowlake")
+
+
+# Link with dependency "Parser".
+add_dependencies(snowlake Parser)
+target_link_libraries(snowlake Parser)
 
 
 # Post-build command.
-add_custom_command(TARGET libsnowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:libsnowlake>)
+add_custom_command(TARGET snowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>)
 
 
 ### THE END ###

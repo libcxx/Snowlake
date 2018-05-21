@@ -22,29 +22,55 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Build executable `run_tests`.
-add_executable(run_tests
-    SemanticAnalyzerTests.cpp
-    ParserTests.cpp
-    main.cpp
+## Lexer
+
+set(lexer_source
+    ${PARSER_SRC_DIR}/lexer.ll
     )
 
+add_custom_command(OUTPUT lex.yy.hh lex.yy.cc
+    COMMAND flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
 
-# Additional compiler flags.
-set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
+## Parser
 
-# Link against the necessary libraries.
-target_link_libraries(run_tests
-    snowlake
-    Parser
-    ${LIBGTEST_LIBRARY}
+set(parser_source
+    ${PARSER_SRC_DIR}/parser.yy
     )
 
+add_custom_command(
+    OUTPUT
+        parser.tab.hh
+        parser.tab.cc
+        location.hh
+        position.hh
+        stack.hh
+    COMMAND
+        bison --language=c++ --verbose --warnings=error ${parser_source})
 
-# Run tests.
-add_custom_command(TARGET run_tests POST_BUILD COMMAND
-    $<TARGET_FILE:run_tests> --gtest_color=yes --gtest_shuffle --gtest_repeat=1)
+
+add_custom_command(
+    OUTPUT
+        fake_output DEPENDS lex.yy.hh parser.tab.hh
+    COMMAND
+        echo "Copying generated .hh files ..." &&
+        cp ${CMAKE_CURRENT_BINARY_DIR}/*.hh ${PARSER_SRC_DIR}/)
+
+
+## Composite parser static library.
+
+set(parser_sources
+    lex.yy.cc
+    parser.tab.cc
+    ParserDriver.cpp
+    fake_output
+    )
+
+add_library(Parser ${parser_sources})
+
+# Auto-generated code from Flex and Bison have a lot of warnings.
+# Silence them for now.
+set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
 
 ### THE END ###
