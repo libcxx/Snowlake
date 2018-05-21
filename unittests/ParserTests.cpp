@@ -23,8 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "parser/ParserDriver.h"
 #include <gtest/gtest.h>
 
-
-class ParserTests : public ::testing::Test {};
+class ParserTests : public ::testing::Test
+{
+};
 
 TEST_F(ParserTests, TestDriverInitialization)
 {
@@ -38,6 +39,7 @@ TEST_F(ParserTests, TestParsingSuccessful)
 {
   ParserDriver driver;
 
+  // clang-format off
   const char* VALID_INPUT =
     "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
@@ -72,6 +74,7 @@ TEST_F(ParserTests, TestParsingSuccessful)
       "}"
     "}"
   "";
+  // clang-format on
 
   int res = driver.parse_from_string(VALID_INPUT);
   ASSERT_EQ(0, res);
@@ -81,6 +84,7 @@ TEST_F(ParserTests, TestParsingInvalidInput)
 {
   ParserDriver driver;
 
+  // clang-format off
   const char* INVALID_INPUT =
     "group MyGroup {"
       "EnvironmentClass : ASTContext;"
@@ -101,6 +105,7 @@ TEST_F(ParserTests, TestParsingInvalidInput)
       "}"
     "}"
   "";
+  // clang-format on
 
   int res = driver.parse_from_string(INVALID_INPUT);
   ASSERT_EQ(1, res);
@@ -110,6 +115,7 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
 {
   ParserDriver driver;
 
+  // clang-format off
   const char* INPUT =
     "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
@@ -131,6 +137,7 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
       "}"
     "}"
   "";
+  // clang-format on
 
   int res = driver.parse_from_string(INPUT);
   ASSERT_EQ(0, res);
