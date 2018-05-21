@@ -155,32 +155,32 @@ inference_defn_list
 inference_defn
     :
         KEYWORD_INFERENCE IDENTIFIER LBRACE
-            inference_argument_set
-            inference_premise_set
-            inference_proposition
+            argument_set
+            premise_set
+            proposition_defn
         RBRACE
         {
         }
     ;
 
-inference_argument_set
+argument_set
     :
         KEYWORD_ARGUMENTS COLON LBRACKET RBRACKET
         {
         }
     |
-        KEYWORD_ARGUMENTS COLON LBRACKET inference_argument_list RBRACKET
+        KEYWORD_ARGUMENTS COLON LBRACKET argument_list RBRACKET
         {
         }
     ;
 
-inference_argument_list
+argument_list
     :
         inference_argument
         {
         }
     |
-        inference_argument_list COMMA inference_argument
+        argument_list COMMA inference_argument
         {
         }
     ;
@@ -192,53 +192,53 @@ inference_argument
         }
     ;
 
-inference_premise_set
+premise_set
     :
-        KEYWORD_PREMISES COLON LBRACKET inference_premise_defn_list RBRACKET
+        KEYWORD_PREMISES COLON LBRACKET premise_defn_list RBRACKET
         {
         }
     ;
 
-inference_premise_defn_list
+premise_defn_list
     :
         {
         }
     |
-        inference_premise_defn_list inference_premise_defn
+        premise_defn_list premise_defn
         {
         }
     ;
 
-inference_premise_defn
+premise_defn
     :
-        inference_premise_type_inference_defn
+        premise_type_inference_defn
         {
         }
     |
-        inference_premise_type_equality_defn
+        premise_type_equality_defn
         {
         }
     ;
 
-inference_premise_type_inference_defn
+premise_type_inference_defn
     :
         identifiable COLON deduced_type SEMICOLON
         {
         }
     |
-        identifiable COLON deduced_type KEYWORD_WHILE LBRACE inference_premise_defn_list RBRACE SEMICOLON
+        identifiable COLON deduced_type KEYWORD_WHILE LBRACE premise_defn_list RBRACE SEMICOLON
         {
         }
     ;
 
-inference_premise_type_equality_defn
+premise_type_equality_defn
     :
         deduced_type equality_operator deduced_type SEMICOLON
         {
         }
     ;
 
-inference_proposition
+proposition_defn
     :
         KEYWORD_PROPOSITION COLON deduced_type SEMICOLON
         {
