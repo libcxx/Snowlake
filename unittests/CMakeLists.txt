@@ -31,7 +31,7 @@ add_executable(run_tests
 
 
 # Additional compiler flags.
-set_target_properties(run_tests PROPERTIES COMPILE_FLAG "-g")
+set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
 
 # Link against the necessary libraries.

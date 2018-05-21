@@ -62,7 +62,7 @@ ParserDriver::set_trace_parsing(bool val)
 int
 ParserDriver::parse_from_file(const std::string& filepath)
 {
-  m_input_file = filepath;
+  m_input_file.assign(filepath);
   std::ifstream infile(filepath.c_str());
   std::string file_contents((std::istreambuf_iterator<char>(infile)),
                             std::istreambuf_iterator<char>());
@@ -77,10 +77,21 @@ ParserDriver::parse_from_string(const char* input)
   YY_BUFFER_STATE buf;
   buf = yy_scan_string(input);
   yy::Parser parser(*this);
-  parser.set_debug_level(trace_parsing());
-  int res = parser.parse();
-  yy_delete_buffer(buf);
-  yylex_destroy();
+
+  // Set debug flags.
+  {
+    yyset_debug(trace_parsing());
+    parser.set_debug_level(trace_parsing());
+  }
+
+  const int res = parser.parse();
+
+  // Teardown.
+  {
+    yy_delete_buffer(buf);
+    yylex_destroy();
+  }
+
   return res;
 }
 

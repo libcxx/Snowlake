@@ -71,3 +71,6 @@ add_library(Parser ${parser_sources})
 # Auto-generated code from Flex and Bison have a lot of warnings.
 # Silence them for now.
 set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-Wno-everything")
+
+
+### THE END ###
