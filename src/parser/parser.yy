@@ -251,36 +251,36 @@ premise_defn
 
 premise_type_inference_defn
     :
-        identifiable COLON deduced_type SEMICOLON
+        identifiable COLON deduction_target SEMICOLON
         {
         }
     |
-        identifiable COLON deduced_type KEYWORD_WHILE LBRACE premise_defn_list RBRACE SEMICOLON
+        identifiable COLON deduction_target KEYWORD_WHILE LBRACE premise_defn_list RBRACE SEMICOLON
         {
         }
     ;
 
 premise_type_equality_defn
     :
-        deduced_type equality_operator deduced_type SEMICOLON
+        deduction_target equality_operator deduction_target SEMICOLON
         {
         }
     |
-        deduced_type equality_operator deduced_type range_clause SEMICOLON
+        deduction_target equality_operator deduction_target range_clause SEMICOLON
         {
         }
     ;
 
 range_clause
     :
-        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduced_type_array
+        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduction_target_array
         {
         }
     ;
 
 proposition_defn
     :
-        KEYWORD_PROPOSITION COLON deduced_type SEMICOLON
+        KEYWORD_PROPOSITION COLON deduction_target SEMICOLON
         {
         }
     ;
@@ -310,40 +310,40 @@ identifiable_attribute
         }
     ;
 
-deduced_type_list
+deduction_target_list
     :
-        deduced_type
+        deduction_target
         {
         }
     |
-        deduced_type_list COMMA deduced_type
+        deduction_target_list COMMA deduction_target
         {
         }
     ;
 
-deduced_type
+deduction_target
     :
-        deduced_type_singular
+        deduction_target_singular
         {
         }
     |
-        deduced_type_array
+        deduction_target_array
         {
         }
     |
-        deduced_type_computed
+        deduction_target_computed
         {
         }
     ;
 
-deduced_type_singular
+deduction_target_singular
     :
         IDENTIFIER
         {
         }
     ;
 
-deduced_type_array
+deduction_target_array
     :
         IDENTIFIER LBRACKET RBRACKET
         {
@@ -354,13 +354,13 @@ deduced_type_array
         }
     ;
 
-deduced_type_computed
+deduction_target_computed
     :
         IDENTIFIER LPAREN RPAREN
         {
         }
     |
-        IDENTIFIER LPAREN deduced_type_list RPAREN
+        IDENTIFIER LPAREN deduction_target_list RPAREN
         {
         }
     ;
