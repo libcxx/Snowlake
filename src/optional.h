@@ -33,7 +33,7 @@ struct nullopt_t {};
 
 /**
  * Simple implementation of an optional container.
- * Use this until std::optional support lands in Clang.
+ * Use this until `std::optional` support lands in Clang.
  */
 template <class T>
 class optional
