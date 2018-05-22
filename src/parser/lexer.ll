@@ -54,6 +54,7 @@ blank [ \t]
 "inference"                               { return yy::Parser::make_KEYWORD_INFERENCE(yytext, loc);    }
 "environment"                             { return yy::Parser::make_KEYWORD_ENVIRONMENT(yytext, loc);  }
 "arguments"                               { return yy::Parser::make_KEYWORD_ARGUMENTS(yytext, loc);    }
+"globals"                                 { return yy::Parser::make_KEYWORD_GLOBALS(yytext, loc);      }
 "while"                                   { return yy::Parser::make_KEYWORD_WHILE(yytext, loc);        }
 "inrange"                                 { return yy::Parser::make_KEYWORD_INRANGE(yytext, loc);      }
 "premises"                                { return yy::Parser::make_KEYWORD_PREMISES(yytext, loc);     }

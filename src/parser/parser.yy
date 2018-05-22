@@ -70,6 +70,7 @@ class ParserDriver;
 %token <std::string>      KEYWORD_INFERENCE
 %token <std::string>      KEYWORD_ENVIRONMENT
 %token <std::string>      KEYWORD_ARGUMENTS
+%token <std::string>      KEYWORD_GLOBALS
 %token <std::string>      KEYWORD_WHILE
 %token <std::string>      KEYWORD_INRANGE
 %token <std::string>      KEYWORD_PREMISES
@@ -158,12 +159,37 @@ inference_defn_list
 inference_defn
     :
         KEYWORD_INFERENCE IDENTIFIER LBRACE
+            global_decl_set
             argument_set
             premise_set
             proposition_defn
         RBRACE
         {
         }
+    ;
+
+global_decl_set
+    :
+        {
+        }
+    |
+        KEYWORD_GLOBALS COLON LBRACKET global_decl_list RBRACKET
+    ;
+
+global_decl_list
+    :
+        global_decl
+        {
+        }
+    |
+        global_decl_list COMMA global_decl
+        {
+        }
+    ;
+
+global_decl
+    :
+        IDENTIFIER
     ;
 
 argument_set
