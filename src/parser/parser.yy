@@ -89,6 +89,7 @@ class ParserDriver;
 %token <std::string>      LPAREN
 %token <std::string>      RPAREN
 %token <std::string>      OPERATOR_EQ
+%token <std::string>      OPERATOR_NEQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
 %token <std::string>      ELLIPSIS
@@ -341,6 +342,10 @@ deduced_type_computed
 equality_operator
     :
         OPERATOR_EQ
+        {
+        }
+    |
+        OPERATOR_NEQ
         {
         }
     |

@@ -34,7 +34,7 @@ static yy::location loc;
 %}
 %option noyywrap nounput batch debug noinput
 
-integer ([0]|[0-9]*)
+integer ('+'|'-')?([0]|[0-9]*)
 blank [ \t]
 
 %{
@@ -80,6 +80,9 @@ blank [ \t]
 
 #equal
 "="                                       { return yy::Parser::make_OPERATOR_EQ(yytext, loc); }
+
+#not_equal
+"!="                                      { return yy::Parser::make_OPERATOR_NEQ(yytext, loc); }
 
 #less_than
 "<"                                       { return yy::Parser::make_OPERATOR_LT(yytext, loc); }
