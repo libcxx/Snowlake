@@ -32,7 +32,7 @@ TEST_F(ParserTests, TestDriverInitialization)
   ParserDriver driver;
 
   // Default value of trace parsing is false.
-  ASSERT_FALSE(driver.trace_parsing());
+  ASSERT_FALSE(driver.trace_parser());
 }
 
 TEST_F(ParserTests, TestParsingSuccessful)

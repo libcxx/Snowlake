@@ -42,8 +42,8 @@ public:
   /**
    * Getter and setter to enable trace parsing.
    */
-  bool trace_parsing() const;
-  void set_trace_parsing(bool);
+  bool trace_parser() const;
+  void set_trace_parser(bool);
 
   /**
    * Run the parser on input file.
@@ -72,7 +72,7 @@ public:
 
 private:
   // Whether parser traces should be generated.
-  bool m_trace_parsing;
+  bool m_trace_parser;
 
   std::string m_input_file;
 };
