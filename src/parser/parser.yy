@@ -71,6 +71,7 @@ class ParserDriver;
 %token <std::string>      KEYWORD_ENVIRONMENT
 %token <std::string>      KEYWORD_ARGUMENTS
 %token <std::string>      KEYWORD_WHILE
+%token <std::string>      KEYWORD_INRANGE
 %token <std::string>      KEYWORD_PREMISES
 %token <std::string>      KEYWORD_PROPOSITION
 
@@ -90,6 +91,7 @@ class ParserDriver;
 %token <std::string>      OPERATOR_EQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
+%token <std::string>      ELLIPSIS
 %token END                0  "end of file"
 
 %debug
@@ -236,6 +238,17 @@ premise_type_equality_defn
         deduced_type equality_operator deduced_type SEMICOLON
         {
         }
+    |
+        deduced_type equality_operator deduced_type range_clause SEMICOLON
+        {
+        }
+    ;
+
+range_clause
+    :
+        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduced_type_array
+        {
+        }
     ;
 
 proposition_defn
@@ -287,7 +300,7 @@ deduced_type
         {
         }
     |
-        deduced_type_group
+        deduced_type_array
         {
         }
     |
@@ -303,7 +316,7 @@ deduced_type_singular
         }
     ;
 
-deduced_type_group
+deduced_type_array
     :
         IDENTIFIER LBRACKET RBRACKET
         {

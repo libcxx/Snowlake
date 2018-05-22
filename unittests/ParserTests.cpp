@@ -142,3 +142,35 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
   int res = driver.parse_from_string(INPUT);
   ASSERT_EQ(0, res);
 }
+
+TEST_F(ParserTests, TestParsingPremiseDefnWithRangeClause)
+{
+  ParserDriver driver;
+
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types            : ArgumentsTypes[];"
+          "StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];"
+          "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
+        "]"
+        ""
+        "proposition : lub(T1, T2);"
+      "}"
+    "}"
+  "";
+  // clang-format on
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+}

@@ -55,6 +55,7 @@ blank [ \t]
 "environment"                             { return yy::Parser::make_KEYWORD_ENVIRONMENT(yytext, loc);  }
 "arguments"                               { return yy::Parser::make_KEYWORD_ARGUMENTS(yytext, loc);    }
 "while"                                   { return yy::Parser::make_KEYWORD_WHILE(yytext, loc);        }
+"inrange"                                 { return yy::Parser::make_KEYWORD_INRANGE(yytext, loc);      }
 "premises"                                { return yy::Parser::make_KEYWORD_PREMISES(yytext, loc);     }
 "proposition"                             { return yy::Parser::make_KEYWORD_PROPOSITION(yytext, loc);  }
 
@@ -103,6 +104,9 @@ blank [ \t]
 #parentheses
 "("                                       { return yy::Parser::make_LPAREN(yytext, loc); }
 ")"                                       { return yy::Parser::make_RPAREN(yytext, loc); }
+
+#ellipsis
+".."                                      { return yy::Parser::make_ELLIPSIS(yytext, loc); }
 
 {blank}+                                  {
                                             loc.step();
