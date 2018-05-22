@@ -31,7 +31,8 @@ TEST_F(ParserTests, TestDriverInitialization)
 {
   ParserDriver driver;
 
-  // Default value of trace parsing is false.
+  // Default values of trace lexer and parser are false.
+  ASSERT_FALSE(driver.trace_lexer());
   ASSERT_FALSE(driver.trace_parser());
 }
 

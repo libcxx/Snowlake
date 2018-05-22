@@ -31,7 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-    : m_trace_parser(false)
+    : m_trace_lexer(false)
+    , m_trace_parser(false)
     , m_input_file()
 {
 }
@@ -40,6 +41,22 @@ ParserDriver::ParserDriver()
 
 ParserDriver::~ParserDriver()
 {
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+ParserDriver::trace_lexer() const
+{
+  return m_trace_lexer;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ParserDriver::set_trace_lexer(bool val)
+{
+  m_trace_lexer = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -77,13 +94,14 @@ ParserDriver::parse_from_string(const char* input)
 {
   YY_BUFFER_STATE buf;
   buf = yy_scan_string(input);
+
+  // Trace lexer.
+  yyset_debug(trace_lexer());
+
   yy::Parser parser(*this);
 
-  // Set debug flags.
-  {
-    yyset_debug(trace_parser());
-    parser.set_debug_level(trace_parser());
-  }
+  // Trace parser.
+  parser.set_debug_level(trace_parser());
 
   const int res = parser.parse();
 
