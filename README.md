@@ -18,10 +18,15 @@ The goals of *Snowlake* are to:
   3. Alleviate the burden on language developers from implementing type
      checking logic that are usually extremely complex, tedious and error-prone.
 
+
 ## Development Environment and Dependencies
 
 Please refer to the [Development Environment and Dependencies](https://github.com/libcxx/Snowlake/wiki/Development-Environment-and-Dependencies) wiki page for detailed up-to-date
 information.
+
+
+## License
+*Snowlake* is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 ----
 
