@@ -70,7 +70,9 @@ class ParserDriver;
 %token <std::string>      KEYWORD_INFERENCE
 %token <std::string>      KEYWORD_ENVIRONMENT
 %token <std::string>      KEYWORD_ARGUMENTS
+%token <std::string>      KEYWORD_GLOBALS
 %token <std::string>      KEYWORD_WHILE
+%token <std::string>      KEYWORD_INRANGE
 %token <std::string>      KEYWORD_PREMISES
 %token <std::string>      KEYWORD_PROPOSITION
 
@@ -88,8 +90,10 @@ class ParserDriver;
 %token <std::string>      LPAREN
 %token <std::string>      RPAREN
 %token <std::string>      OPERATOR_EQ
+%token <std::string>      OPERATOR_NEQ
 %token <std::string>      OPERATOR_LT
 %token <std::string>      OPERATOR_LTE
+%token <std::string>      ELLIPSIS
 %token END                0  "end of file"
 
 %debug
@@ -155,12 +159,37 @@ inference_defn_list
 inference_defn
     :
         KEYWORD_INFERENCE IDENTIFIER LBRACE
+            global_decl_set
             argument_set
             premise_set
             proposition_defn
         RBRACE
         {
         }
+    ;
+
+global_decl_set
+    :
+        {
+        }
+    |
+        KEYWORD_GLOBALS COLON LBRACKET global_decl_list RBRACKET
+    ;
+
+global_decl_list
+    :
+        global_decl
+        {
+        }
+    |
+        global_decl_list COMMA global_decl
+        {
+        }
+    ;
+
+global_decl
+    :
+        IDENTIFIER
     ;
 
 argument_set
@@ -236,6 +265,17 @@ premise_type_equality_defn
         deduced_type equality_operator deduced_type SEMICOLON
         {
         }
+    |
+        deduced_type equality_operator deduced_type range_clause SEMICOLON
+        {
+        }
+    ;
+
+range_clause
+    :
+        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduced_type_array
+        {
+        }
     ;
 
 proposition_defn
@@ -287,7 +327,7 @@ deduced_type
         {
         }
     |
-        deduced_type_group
+        deduced_type_array
         {
         }
     |
@@ -303,7 +343,7 @@ deduced_type_singular
         }
     ;
 
-deduced_type_group
+deduced_type_array
     :
         IDENTIFIER LBRACKET RBRACKET
         {
@@ -328,6 +368,10 @@ deduced_type_computed
 equality_operator
     :
         OPERATOR_EQ
+        {
+        }
+    |
+        OPERATOR_NEQ
         {
         }
     |

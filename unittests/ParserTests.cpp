@@ -31,8 +31,9 @@ TEST_F(ParserTests, TestDriverInitialization)
 {
   ParserDriver driver;
 
-  // Default value of trace parsing is false.
-  ASSERT_FALSE(driver.trace_parsing());
+  // Default values of trace lexer and parser are false.
+  ASSERT_FALSE(driver.trace_lexer());
+  ASSERT_FALSE(driver.trace_parser());
 }
 
 TEST_F(ParserTests, TestParsingSuccessful)
@@ -131,6 +132,82 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
           "IfThenElseExpr.predicate   : Bool;"
           "IfThenElseExpr.expr1       : T1;"
           "IfThenElseExpr.expr2       : T2;"
+        "]"
+        ""
+        "proposition : lub(T1, T2);"
+      "}"
+    "}"
+  "";
+  // clang-format on
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+}
+
+TEST_F(ParserTests, TestParsingPremiseDefnWithRangeClause)
+{
+  ParserDriver driver;
+
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types            : ArgumentsTypes[];"
+          "StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];"
+          "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
+        "]"
+        ""
+        "proposition : lub(T1, T2);"
+      "}"
+    "}"
+  "";
+  // clang-format on
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+}
+
+TEST_F(ParserTests, TestParsingCoolDispathWithSelfTypeChecking)
+{
+  /**
+   * Example taken from:
+   *
+   * Compilers - by Alex Aiken
+   * 10-05 Self Type Checking
+   * Slidedeck page 4 of 13
+   */
+
+  ParserDriver driver;
+
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+          "ArgumentsTypes[-1] != SELF_TYPE;"
         "]"
         ""
         "proposition : lub(T1, T2);"

@@ -34,7 +34,7 @@ static yy::location loc;
 %}
 %option noyywrap nounput batch debug noinput
 
-integer ([0]|[0-9]*)
+integer ('+'|'-')?([0]|[0-9]*)
 blank [ \t]
 
 %{
@@ -54,7 +54,9 @@ blank [ \t]
 "inference"                               { return yy::Parser::make_KEYWORD_INFERENCE(yytext, loc);    }
 "environment"                             { return yy::Parser::make_KEYWORD_ENVIRONMENT(yytext, loc);  }
 "arguments"                               { return yy::Parser::make_KEYWORD_ARGUMENTS(yytext, loc);    }
+"globals"                                 { return yy::Parser::make_KEYWORD_GLOBALS(yytext, loc);      }
 "while"                                   { return yy::Parser::make_KEYWORD_WHILE(yytext, loc);        }
+"inrange"                                 { return yy::Parser::make_KEYWORD_INRANGE(yytext, loc);      }
 "premises"                                { return yy::Parser::make_KEYWORD_PREMISES(yytext, loc);     }
 "proposition"                             { return yy::Parser::make_KEYWORD_PROPOSITION(yytext, loc);  }
 
@@ -80,6 +82,9 @@ blank [ \t]
 #equal
 "="                                       { return yy::Parser::make_OPERATOR_EQ(yytext, loc); }
 
+#not_equal
+"!="                                      { return yy::Parser::make_OPERATOR_NEQ(yytext, loc); }
+
 #less_than
 "<"                                       { return yy::Parser::make_OPERATOR_LT(yytext, loc); }
 
@@ -103,6 +108,9 @@ blank [ \t]
 #parentheses
 "("                                       { return yy::Parser::make_LPAREN(yytext, loc); }
 ")"                                       { return yy::Parser::make_RPAREN(yytext, loc); }
+
+#ellipsis
+".."                                      { return yy::Parser::make_ELLIPSIS(yytext, loc); }
 
 {blank}+                                  {
                                             loc.step();

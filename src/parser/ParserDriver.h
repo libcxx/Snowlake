@@ -40,10 +40,16 @@ public:
   ~ParserDriver();
 
   /**
-   * Getter and setter to enable trace parsing.
+   * Getter and setter for tracing lexer.
    */
-  bool trace_parsing() const;
-  void set_trace_parsing(bool);
+  bool trace_lexer() const;
+  void set_trace_lexer(bool);
+
+  /**
+   * Getter and setter for tracing parser.
+   */
+  bool trace_parser() const;
+  void set_trace_parser(bool);
 
   /**
    * Run the parser on input file.
@@ -71,8 +77,7 @@ public:
   void error(const std::string& m);
 
 private:
-  // Whether parser traces should be generated.
-  bool m_trace_parsing;
-
+  bool m_trace_lexer;
+  bool m_trace_parser;
   std::string m_input_file;
 };
