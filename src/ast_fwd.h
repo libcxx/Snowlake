@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 class ASTNode;
+class ASTModule;
 class ASTInferenceGroup;
 class ASTEnvironmentDefn;
 class ASTInferenceDefn;
@@ -41,6 +42,7 @@ class ASTPropositionDefn;
 class ASTIdentifiable;
 class ASTIdentifiableAttribute;
 class ASTIdentifier;
-class ASTDeducedTypeSingular;
-class ASTDeducedTypeAray;
-class ASTDeducedTypeComputed;
+class ASTDeductionTarget;
+class ASTDeductionTargetSingular;
+class ASTDeductionTargetArray;
+class ASTDeductionTargetComputed;
