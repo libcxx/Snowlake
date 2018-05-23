@@ -53,7 +53,7 @@ typedef std::vector<ASTInferenceArgument> ASTInferenceArgumentList;
 typedef std::vector<ASTGlobalDecl> ASTGlobalDeclList;
 typedef std::vector<ASTEnvironmentDefn> ASTEnvironmentDefnList;
 typedef std::vector<ASTInferenceDefn> ASTInferenceDefnList;
-
+typedef std::vector<ASTInferenceGroup> ASTInferenceGroupList;
 
 
 class ASTIdentifier : public ASTNode
@@ -75,6 +75,10 @@ public:
 
   ASTIdentifiable(ASTIdentifierList&& identifiers) :
   m_identifiers(identifiers) {}
+
+  void add(const ASTIdentifier& element) {
+    m_identifiers.emplace_back(element);
+  }
 
 private:
   ASTIdentifierList m_identifiers;
@@ -184,23 +188,26 @@ public:
    m_lhs(), m_rhs(), m_range_clause() {}
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs,
-    ASTDeductionTarget&& rhs)
+    ASTDeductionTarget&& rhs,
+    EqualityOperator oprt)
     :
-    m_lhs(lhs), m_rhs(rhs)
+    m_lhs(lhs), m_rhs(rhs), m_oprt(oprt)
     {
     }
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs,
     ASTDeductionTarget&& rhs,
+    EqualityOperator oprt,
     ASTRangeClause&& range_clause)
     :
-    m_lhs(lhs), m_rhs(rhs), m_range_clause(range_clause)
+    m_lhs(lhs), m_rhs(rhs), m_oprt(oprt), m_range_clause(range_clause)
     {
     }
 
 private:
   ASTDeductionTarget m_lhs;
   ASTDeductionTarget m_rhs;
+  EqualityOperator m_oprt;
   sl::optional<ASTRangeClause> m_range_clause;
 };
 
@@ -323,14 +330,17 @@ class ASTInferenceDefn : public ASTNode
 {
 public:
   ASTInferenceDefn() :
+    m_name(),
     m_global_decls(),
     m_arguments(),
     m_premise_defns(),
     m_proposition_defn() {}
 
-  ASTInferenceDefn(ASTGlobalDeclList&& global_decls,
+  ASTInferenceDefn(StringType&& name,
+    ASTGlobalDeclList&& global_decls,
     ASTInferenceArgumentList&& arguments,
     ASTPremiseDefnList&& premise_defns, ASTPropositionDefn&& proposition_defn) :
+    m_name(name),
     m_global_decls(global_decls),
     m_arguments(arguments),
     m_premise_defns(premise_defns),
@@ -355,6 +365,7 @@ public:
   }
 
 private:
+  StringType m_name;
   ASTGlobalDeclList m_global_decls;
   ASTInferenceArgumentList m_arguments;
   ASTPremiseDefnList m_premise_defns;
@@ -366,7 +377,7 @@ class ASTEnvironmentDefn : public ASTNode
 public:
   ASTEnvironmentDefn() : m_field(), m_value() {}
 
-  ASTEnvironmentDefn(StringType&& field, StringType& value) :
+  ASTEnvironmentDefn(StringType&& field, StringType&& value) :
     m_field(field), m_value(value) {}
 
   const StringType& field() const {
@@ -385,11 +396,13 @@ private:
 class ASTInferenceGroup : public ASTNode
 {
 public:
-  ASTInferenceGroup() : m_environment_defns(), m_inference_defns() {}
+  ASTInferenceGroup() : m_name(), m_environment_defns(), m_inference_defns() {}
 
-  ASTInferenceGroup(ASTEnvironmentDefnList&& environment_defns,
+  ASTInferenceGroup(StringType&& name,
+    ASTEnvironmentDefnList&& environment_defns,
     ASTInferenceDefnList&& inference_defns)
     :
+    m_name(name),
     m_environment_defns(environment_defns),
     m_inference_defns(inference_defns)
   {
@@ -404,11 +417,11 @@ public:
   }
 
 private:
+  StringType m_name;
   ASTEnvironmentDefnList m_environment_defns;
   ASTInferenceDefnList m_inference_defns;
 };
 
-typedef std::vector<ASTInferenceGroup> ASTInferenceGroupList;
 
 class ASTModule : public ASTNode
 {
