@@ -23,9 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "ast.h"
 #include "location.hh"
 #include "parser.tab.hh"
-#include "ast.h"
 #include <string>
 
 // Tell Flex the lexer's prototype ...

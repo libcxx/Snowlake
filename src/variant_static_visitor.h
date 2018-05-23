@@ -23,12 +23,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-namespace sl {
-namespace variant {
+namespace sl
+{
+namespace variant
+{
 
 // -----------------------------------------------------------------------------
 
-template <typename R = void> struct static_visitor {
+template <typename R = void> struct static_visitor
+{
   using result_type = R;
 
 protected:

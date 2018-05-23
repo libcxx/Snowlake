@@ -22,14 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <gtest/gtest.h>
 
-#include "variant_static_visitor.h"
 #include "variant.h"
+#include "variant_static_visitor.h"
 
 #include <cstdio>
 #include <sstream>
 #include <string>
 #include <vector>
-
 
 // -----------------------------------------------------------------------------
 
@@ -41,7 +40,7 @@ class VariantTests : public ::testing::Test
 {
 protected:
   using VariantType =
-    typename sl::variant::variant<int, double, std::string, std::vector<int>>;
+      typename sl::variant::variant<int, double, std::string, std::vector<int>>;
 };
 
 // -----------------------------------------------------------------------------
@@ -58,19 +57,9 @@ TEST_F(VariantTests, TestEmptyInitialization)
   ASSERT_EQ(false, v.is<std::string>());
   ASSERT_EQ(false, v.is<std::vector<int>>());
 
-  ASSERT_THROW(
-    {
-      v.get<int>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v.get<int>(); }, std::runtime_error);
 
-  ASSERT_THROW(
-    {
-      v.get<std::vector<int>>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v.get<std::vector<int>>(); }, std::runtime_error);
 }
 
 // -----------------------------------------------------------------------------
@@ -127,12 +116,7 @@ TEST_F(VariantTests, TestSameTypeMoveConstructor)
   ASSERT_EQ(false, v0.valid());
   ASSERT_EQ(false, v0.is<std::string>());
 
-  ASSERT_THROW(
-    {
-      v0.get<std::string>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v0.get<std::string>(); }, std::runtime_error);
 }
 
 // -----------------------------------------------------------------------------
@@ -153,12 +137,7 @@ TEST_F(VariantTests, TestTypeSpecificMoveConstructor)
 
   ASSERT_EQ(s, v.get<std::string>());
 
-  ASSERT_THROW(
-    {
-      v.get<int>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v.get<int>(); }, std::runtime_error);
 
   // Original value should still be valid.
   ASSERT_STREQ(HELLO_WORLD, s.c_str());
@@ -207,12 +186,7 @@ TEST_F(VariantTests, TestAssignmentInitializationWithSpecificTypeByValue)
 
   ASSERT_EQ(1, v.get<int>());
 
-  ASSERT_THROW(
-    {
-      v.get<std::vector<int>>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v.get<std::vector<int>>(); }, std::runtime_error);
 }
 
 // -----------------------------------------------------------------------------
@@ -233,12 +207,7 @@ TEST_F(VariantTests, TestAssignmentInitializationWithSpecificTypeByRvalue)
 
   ASSERT_STREQ(HELLO_WORLD, v.get<std::string>().c_str());
 
-  ASSERT_THROW(
-    {
-      v.get<std::vector<int>>();
-    },
-    std::runtime_error
-  );
+  ASSERT_THROW({ v.get<std::vector<int>>(); }, std::runtime_error);
 
   ASSERT_STREQ(HELLO_WORLD, s.c_str());
 }
@@ -333,15 +302,15 @@ protected:
 
       ss << '[';
       for (auto itr = val.cbegin(); itr != val.cend(); ++itr)
-      {
-        ss << *itr;
-
-        auto itr_ = itr;
-        if (++itr_ != val.cend())
         {
-          ss << ", ";
+          ss << *itr;
+
+          auto itr_ = itr;
+          if (++itr_ != val.cend())
+            {
+              ss << ", ";
+            }
         }
-      }
       ss << ']';
 
       return ss.str();
@@ -356,7 +325,7 @@ TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
   VariantType v1 = (int)1;
   VariantType v2 = (double)3.14;
   VariantType v3 = std::string(HELLO_WORLD);
-  VariantType v4 = std::vector<int> { 1, 2, 3 };
+  VariantType v4 = std::vector<int>{1, 2, 3};
 
   const std::string val1 = sl::variant::apply_visitor(tostring_visitor(), v1);
   ASSERT_STREQ("1", val1.c_str());
@@ -378,14 +347,13 @@ class VariantBinaryVisitationUnitTest : public VariantTests
 protected:
   struct equality_visitor : public sl::variant::static_visitor<bool>
   {
-    template <typename T>
-    bool operator() (const T& lhs, const T& rhs) const
+    template <typename T> bool operator()(const T& lhs, const T& rhs) const
     {
       return lhs == rhs;
     }
 
     template <typename T, typename T2>
-    bool operator() (const T& /* lhs */, const T2& /* rhs */) const
+    bool operator()(const T& /* lhs */, const T2& /* rhs */) const
     {
       return false;
     }
@@ -405,13 +373,14 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
   VariantType v1_str = "Hello";
   VariantType v2_str = "Hi";
 
-  VariantType v1_vec = std::vector<int> {1, 2, 3};
-  VariantType v2_vec = std::vector<int> {1, 2, 3};
+  VariantType v1_vec = std::vector<int>{1, 2, 3};
+  VariantType v2_vec = std::vector<int>{1, 2, 3};
 
   bool res1 = sl::variant::apply_visitor(equality_visitor(), v1_int, v2_int);
   ASSERT_EQ(false, res1);
 
-  bool res2 = sl::variant::apply_visitor(equality_visitor(), v1_double, v2_double);
+  bool res2 =
+      sl::variant::apply_visitor(equality_visitor(), v1_double, v2_double);
   ASSERT_EQ(true, res2);
 
   bool res3 = sl::variant::apply_visitor(equality_visitor(), v1_str, v2_str);

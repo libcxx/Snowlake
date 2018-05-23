@@ -25,65 +25,81 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "variant.h"
 
-namespace sl {
+namespace sl
+{
 
-namespace {
-struct nullopt_t {};
+namespace
+{
+struct nullopt_t
+{
+};
 }
 
 /**
  * Simple implementation of an optional container.
  * Use this until `std::optional` support lands in Clang.
  */
-template <class T>
-class optional
+template <class T> class optional
 {
 private:
   typedef sl::variant::variant<nullopt_t, T> ValueType;
 
 public:
-  optional() : m_value(nullopt_t{}) {
+  optional()
+      : m_value(nullopt_t{})
+  {
   }
 
-  optional(const T& val) : m_value(val) {
+  optional(const T& val)
+      : m_value(val)
+  {
   }
 
-  optional& operator=(T&& value) {
+  optional& operator=(T&& value)
+  {
     m_value = value;
     return *this;
   }
 
-  const T* operator->() const {
+  const T* operator->() const
+  {
     return &value();
   }
 
-  T* operator->() {
+  T* operator->()
+  {
     return &value();
   }
 
-  const T& operator*() const {
+  const T& operator*() const
+  {
     return value();
   }
 
-  T& operator*() {
+  T& operator*()
+  {
     return value();
   }
 
-  bool has_value() const {
+  bool has_value() const
+  {
     return m_value.template is<T>();
   }
 
-  T& value() {
+  T& value()
+  {
     ASSERT(has_value());
     return m_value.template get<T>();
   }
 
-  const T& value() const {
+  const T& value() const
+  {
     ASSERT(has_value());
     return m_value.template get<T>();
   }
 
-  void reset() {
+  void reset()
+  {
     ValueType value;
     m_value = value; // Do a swap internally.
   }
