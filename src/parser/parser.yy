@@ -104,17 +104,17 @@ class ParserDriver;
 
 input
     :
-        inference_group_set
+        inference_group_list
         {
         }
     ;
 
-inference_group_set
+inference_group_list
     :
         {
         }
     |
-        inference_group_set inference_group
+        inference_group_list inference_group
         {
         }
     ;
@@ -122,19 +122,19 @@ inference_group_set
 inference_group
     :
         KEYWORD_GROUP IDENTIFIER LBRACE
-            environment_defn_set
+            environment_defn_list
             inference_defn_list
         RBRACE
         {
         }
     ;
 
-environment_defn_set
+environment_defn_list
     :
         {
         }
     |
-        environment_defn_set environment_defn
+        environment_defn_list environment_defn
         {
         }
     ;
@@ -255,7 +255,14 @@ premise_type_inference_defn
         {
         }
     |
-        identifiable COLON deduction_target KEYWORD_WHILE LBRACE premise_defn_list RBRACE SEMICOLON
+        identifiable COLON deduction_target while_clause SEMICOLON
+        {
+        }
+    ;
+
+while_clause
+    :
+        KEYWORD_WHILE LBRACE premise_defn_list RBRACE
         {
         }
     ;
@@ -273,7 +280,7 @@ premise_type_equality_defn
 
 range_clause
     :
-        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduction_target_array
+        KEYWORD_INRANGE INTEGER_LITERAL ELLIPSIS INTEGER_LITERAL ELLIPSIS deduction_target
         {
         }
     ;
@@ -291,7 +298,7 @@ identifiable
         {
         }
     |
-        identifiable_attribute
+        identifiable DOT identifier
         {
         }
     ;
@@ -299,13 +306,6 @@ identifiable
 identifier
     :
         IDENTIFIER
-        {
-        }
-    ;
-
-identifiable_attribute
-    :
-        identifiable DOT identifier
         {
         }
     ;
