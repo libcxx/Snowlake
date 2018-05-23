@@ -56,9 +56,11 @@ typedef std::vector<ASTInferenceDefn> ASTInferenceDefnList;
 
 
 
-class ASTIdentifier 
+class ASTIdentifier : public ASTNode
 {
 public:
+  ASTIdentifier() : m_value() {}
+
   ASTIdentifier(StringType&& value) :
     m_value(value) {}
 
@@ -66,9 +68,11 @@ private:
   StringType m_value;
 };
 
-class ASTIdentifiable
+class ASTIdentifiable : public ASTNode
 {
 public:
+  ASTIdentifiable() : m_identifiers() {}
+
   ASTIdentifiable(ASTIdentifierList&& identifiers) :
   m_identifiers(identifiers) {}
 
@@ -79,6 +83,8 @@ private:
 class ASTDeductionTargetSingular
 {
 public:
+  ASTDeductionTargetSingular() : m_name() {}
+
   explicit ASTDeductionTargetSingular(StringType&& name) :
     m_name(name) {}
 
@@ -89,11 +95,15 @@ private:
 class ASTDeductionTargetArray
 {
 public:
+  ASTDeductionTargetArray()
+    :
+    m_name(), m_array_size() {}
+
   explicit ASTDeductionTargetArray(StringType&& name)
     :
     m_name(name), m_array_size() {}
 
-  explicit ASTDeductionTargetArray(StringType&& name, IntegerType array_size)
+  ASTDeductionTargetArray(StringType&& name, IntegerType array_size)
     :
     m_name(name), m_array_size(array_size) {}
 
@@ -105,6 +115,8 @@ private:
 class ASTDeductionTargetComputed
 {
 public:
+  ASTDeductionTargetComputed() : m_name(), m_arguments() {}
+
   ASTDeductionTargetComputed(StringType&& name, ASTDeductionTargetList&& arguments)
   :
   m_name(name), m_arguments(arguments) {}
@@ -117,6 +129,8 @@ private:
 class ASTDeductionTarget : public ASTNode
 {
 public:
+  ASTDeductionTarget() : m_value() {}
+
   ASTDeductionTarget(ASTDeductionTargetSingular&& value):
     m_value(value) {}
 
@@ -134,6 +148,8 @@ private:
 class ASTPropositionDefn
 {
 public:
+  ASTPropositionDefn() : m_target() {}
+
   ASTPropositionDefn(ASTDeductionTarget&& target) :
     m_target(target) {}
 
@@ -144,6 +160,8 @@ private:
 class ASTRangeClause : public ASTNode
 {
 public:
+  ASTRangeClause() : m_lhs_idx(0), m_rhs_idx(0), m_deduction_target() {}
+
   ASTRangeClause(IntegerType lhs_idx,
     IntegerType rhs_idx,
     ASTDeductionTarget&& deduction_target)
@@ -161,6 +179,10 @@ private:
 class ASTInferenceEqualityDefn
 {
 public:
+  ASTInferenceEqualityDefn()
+  :
+   m_lhs(), m_rhs(), m_range_clause() {}
+
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs,
     ASTDeductionTarget&& rhs)
     :
@@ -185,6 +207,8 @@ private:
 class ASTWhileClause : public ASTNode
 {
 public:
+  ASTWhileClause() : m_premise_defns() {}
+
   explicit ASTWhileClause(ASTPremiseDefnList&& premise_defns) :
     m_premise_defns(premise_defns) {}
 
@@ -199,6 +223,9 @@ private:
 class ASTInferencePremiseDefn
 {
 public:
+  ASTInferencePremiseDefn() : m_source(), m_deduction_target(), m_while_clause()
+  {}
+
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
     ASTDeductionTarget&& deduction_target):
     m_source(source), m_deduction_target(deduction_target), m_while_clause()
@@ -237,6 +264,8 @@ private:
 class ASTPremiseDefn : public ASTNode
 {
 public:
+  ASTPremiseDefn() : m_value() {}
+
   ASTPremiseDefn(ASTInferencePremiseDefn&& defn) :
     m_value(defn) {}
 
@@ -255,6 +284,8 @@ private:
 class ASTInferenceArgument : public ASTNode
 {
 public:
+  ASTInferenceArgument() : m_name(), m_type_name() {}
+
   ASTInferenceArgument(StringType&& name, StringType&& type_name) :
     m_name(name), m_type_name(type_name) {}
 
@@ -274,6 +305,9 @@ private:
 class ASTGlobalDecl : public ASTNode
 {
 public:
+  ASTGlobalDecl() :
+    m_name() {}
+
   ASTGlobalDecl(StringType&& name) :
     m_name(name) {}
 
@@ -288,6 +322,12 @@ private:
 class ASTInferenceDefn : public ASTNode
 {
 public:
+  ASTInferenceDefn() :
+    m_global_decls(),
+    m_arguments(),
+    m_premise_defns(),
+    m_proposition_defn() {}
+
   ASTInferenceDefn(ASTGlobalDeclList&& global_decls,
     ASTInferenceArgumentList&& arguments,
     ASTPremiseDefnList&& premise_defns, ASTPropositionDefn&& proposition_defn) :
@@ -324,6 +364,8 @@ private:
 class ASTEnvironmentDefn : public ASTNode
 {
 public:
+  ASTEnvironmentDefn() : m_field(), m_value() {}
+
   ASTEnvironmentDefn(StringType&& field, StringType& value) :
     m_field(field), m_value(value) {}
 
@@ -343,6 +385,8 @@ private:
 class ASTInferenceGroup : public ASTNode
 {
 public:
+  ASTInferenceGroup() : m_environment_defns(), m_inference_defns() {}
+
   ASTInferenceGroup(ASTEnvironmentDefnList&& environment_defns,
     ASTInferenceDefnList&& inference_defns)
     :
