@@ -274,7 +274,7 @@ private:
 class ASTGlobalDecl : public ASTNode
 {
 public:
-  explicit ASTGlobalDecl(StringType&& name) :
+  ASTGlobalDecl(StringType&& name) :
     m_name(name) {}
 
   const StringType& name() const {

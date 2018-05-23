@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %code requires
 {
 class ParserDriver;
+#include "ast.h"
 }
 
 // Initialization.
@@ -95,6 +96,26 @@ class ParserDriver;
 %token <std::string>      OPERATOR_LTE
 %token <std::string>      ELLIPSIS
 %token END                0  "end of file"
+
+%type <EqualityOperator> equality_operator;
+%type <ASTDeductionTarget> deduction_target;
+%type <ASTDeductionTargetSingular> deduction_target_singular;
+%type <ASTDeductionTargetArray> deduction_target_array;
+%type <ASTDeductionTargetComputed> deduction_target_computed;
+%type <ASTIdentifier> identifier;
+%type <ASTIdentifiable> identifiable;
+%type <ASTPropositionDefn> proposition_defn;
+%type <ASTRangeClause> range_clause;
+%type <ASTWhileClause> while_clause;
+%type <ASTInferencePremiseDefn> premise_type_inference_defn;
+%type <ASTInferenceEqualityDefn> premise_type_equality_defn;
+%type <ASTPremiseDefn> premise_defn;
+%type <ASTInferenceArgument> inference_argument;
+%type <ASTGlobalDecl> global_decl;
+%type <ASTEnvironmentDefn> environment_defn;
+%type <ASTInferenceDefn> inference_defn; 
+%type <ASTInferenceGroup> inference_group;
+%type <ASTModule> input;
 
 %debug
 
@@ -190,6 +211,8 @@ global_decl_list
 global_decl
     :
         IDENTIFIER
+        {
+        }
     ;
 
 argument_set
