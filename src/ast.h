@@ -369,6 +369,8 @@ typedef std::vector<ASTInferenceGroup> ASTInferenceGroupList;
 class ASTModule : public ASTNode
 {
 public:
+  ASTModule() : m_inference_groups() {}
+
   explicit ASTModule(ASTInferenceGroupList&& inference_groups)
     : m_inference_groups(inference_groups) {}
 

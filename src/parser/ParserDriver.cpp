@@ -34,6 +34,7 @@ ParserDriver::ParserDriver()
     : m_trace_lexer(false)
     , m_trace_parser(false)
     , m_input_file()
+    , m_module()
 {
 }
 
@@ -128,6 +129,22 @@ std::string&
 ParserDriver::input_file()
 {
   return m_input_file;
+}
+
+// -----------------------------------------------------------------------------
+
+const ASTModule&
+ParserDriver::module() const
+{
+  return m_module;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ParserDriver::set_module(ASTModule&& module)
+{
+  m_module = module;
 }
 
 // -----------------------------------------------------------------------------
