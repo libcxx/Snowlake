@@ -220,3 +220,49 @@ TEST_F(ParserTests, TestParsingCoolDispathWithSelfTypeChecking)
   int res = driver.parse_from_string(INPUT);
   ASSERT_EQ(0, res);
 }
+
+TEST_F(ParserTests, TestParsingAndASTConstruction)
+{
+  ParserDriver driver;
+
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      "TypeClass                 : TypeDefn;"
+      "ExprClass                 : AstExpr;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt   : ASTExpr,"
+          "context                : ASTContext"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.caller              : CallerType;"
+          "StaticMethodCallStmt.callee.return_type  : ReturnType;"
+          "StaticMethodCallStmt.class_type          : MethodClassType;"
+          "StaticMethodCallStmt.function_arguments  : ArgumentsTypes[] while {"
+            "StaticMethodCallStmt.callee            : CalleeType;"
+            "StaticMethodCallStmt.class             : ClassType;"
+          "};"
+          "CallerType <= MethodClassType;"
+          "ArgumentTypes <= ParameterTypes;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+  "";
+  // clang-format on
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+
+  // Validate the AST.
+  {
+    // TODO: to be implemented...
+  }
+}
