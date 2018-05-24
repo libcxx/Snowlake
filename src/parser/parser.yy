@@ -137,7 +137,8 @@ input
     :
         inference_group_list
         {
-            $$ = ASTModule(std::move($1));
+            ASTModule module(std::move($1));
+            driver.set_module(std::move(module));
         }
     ;
 
