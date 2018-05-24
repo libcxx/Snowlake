@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "ast.h"
 #include "parser/ParserDriver.h"
 #include <gtest/gtest.h>
 
@@ -218,4 +219,75 @@ TEST_F(ParserTests, TestParsingCoolDispathWithSelfTypeChecking)
 
   int res = driver.parse_from_string(INPUT);
   ASSERT_EQ(0, res);
+}
+
+TEST_F(ParserTests, TestParsingAndASTConstruction)
+{
+  ParserDriver driver;
+
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      "TypeClass                 : TypeDefn;"
+      "ExprClass                 : AstExpr;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt   : ASTExpr,"
+          "context                : ASTContext"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.caller              : CallerType;"
+          "StaticMethodCallStmt.callee.return_type  : ReturnType;"
+          "StaticMethodCallStmt.class_type          : MethodClassType;"
+          "StaticMethodCallStmt.function_arguments  : ArgumentsTypes[] while {"
+            "StaticMethodCallStmt.callee            : CalleeType;"
+            "StaticMethodCallStmt.class             : ClassType;"
+          "};"
+          "CallerType <= MethodClassType;"
+          "ArgumentTypes <= ParameterTypes;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+  "";
+  // clang-format on
+
+  int res = driver.parse_from_string(INPUT);
+  ASSERT_EQ(0, res);
+
+  // Validate the AST.
+  {
+    // Check module has one inference group.
+    const ASTModule& module = driver.module();
+    const ASTInferenceGroupList& inference_groups = module.inference_groups();
+    ASSERT_EQ(1, inference_groups.size());
+
+    const ASTInferenceGroup& inference_group = inference_groups[0];
+
+    // Check inference group has four environment definition statements.
+    const ASTEnvironmentDefnList& environment_defns =
+        inference_group.environment_defns();
+    ASSERT_EQ(4, environment_defns.size());
+
+    // Check inference group has one inference definition.
+    const ASTInferenceDefnList& inference_defns =
+        inference_group.inference_defns();
+    ASSERT_EQ(1, inference_defns.size());
+
+    const ASTInferenceDefn& inference_defn = inference_defns[0];
+
+    // Check inference definition has two arguments.
+    const ASTInferenceArgumentList& arguments = inference_defn.arguments();
+    ASSERT_EQ(2, arguments.size());
+
+    // Check inference definition has six premise definitions.
+    const ASTPremiseDefnList& premise_defns = inference_defn.premise_defns();
+    ASSERT_EQ(6, premise_defns.size());
+  }
 }

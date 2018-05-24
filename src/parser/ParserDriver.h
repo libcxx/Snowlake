@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "ast.h"
 #include "location.hh"
 #include "parser.tab.hh"
 #include <string>
@@ -71,6 +72,12 @@ public:
   std::string& input_file();
 
   /**
+   * Getter and setter for module.
+   */
+  const ASTModule& module() const;
+  void set_module(ASTModule&&);
+
+  /**
    * Error handlings.
    */
   void error(const yy::location& l, const std::string& m);
@@ -80,4 +87,5 @@ private:
   bool m_trace_lexer;
   bool m_trace_parser;
   std::string m_input_file;
+  ASTModule m_module;
 };

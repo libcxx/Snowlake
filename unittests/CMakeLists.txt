@@ -26,6 +26,8 @@
 add_executable(run_tests
     SemanticAnalyzerTests.cpp
     ParserTests.cpp
+    VariantTests.cpp
+    OptionalTests.cpp
     main.cpp
     )
 
