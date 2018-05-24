@@ -68,6 +68,10 @@ public:
   {
   }
 
+  const StringType& value() const {
+    return m_value;
+  }
+
 private:
   StringType m_value;
 };
@@ -90,6 +94,10 @@ public:
     m_identifiers.emplace_back(element);
   }
 
+  const ASTIdentifierList& identifiers() const {
+    return m_identifiers;
+  }
+
 private:
   ASTIdentifierList m_identifiers;
 };
@@ -105,6 +113,10 @@ public:
   explicit ASTDeductionTargetSingular(StringType&& name)
       : m_name(name)
   {
+  }
+
+  const StringType& name() const {
+    return m_name;
   }
 
 private:
@@ -132,6 +144,18 @@ public:
   {
   }
 
+  const StringType& name() const {
+    return m_name;
+  }
+
+  bool has_size_literal() const {
+    return m_array_size.has_value();
+  }
+
+  IntegerType size_literal() const {
+    return m_array_size.value();
+  }
+
 private:
   StringType m_name;
   sl::optional<IntegerType> m_array_size;
@@ -151,6 +175,14 @@ public:
       : m_name(name)
       , m_arguments(arguments)
   {
+  }
+
+  const StringType& name() const {
+    return m_name;
+  }
+
+  const ASTDeductionTargetList& arguments() const {
+    return m_arguments;
   }
 
 private:
@@ -181,6 +213,16 @@ public:
   {
   }
 
+  template <typename U>
+  bool is() const {
+    return m_value.template is<U>();
+  }
+
+  template <typename U>
+  const U& value() const {
+    return m_value.template get<U>();
+  }
+
 private:
   sl::variant::variant<ASTDeductionTargetSingular, ASTDeductionTargetArray,
                        ASTDeductionTargetComputed>
@@ -198,6 +240,10 @@ public:
   ASTPropositionDefn(ASTDeductionTarget&& target)
       : m_target(target)
   {
+  }
+
+  const ASTDeductionTarget& target() const {
+    return m_target;
   }
 
 private:
@@ -220,6 +266,18 @@ public:
       , m_rhs_idx(rhs_idx)
       , m_deduction_target(deduction_target)
   {
+  }
+
+  IntegerType lhs_idx() const {
+    return m_lhs_idx;
+  }
+
+  IntegerType rhs_idx() const {
+    return m_rhs_idx;
+  }
+
+  const ASTDeductionTarget& deduction_target() const {
+    return m_deduction_target;
   }
 
 private:
@@ -253,6 +311,26 @@ public:
       , m_oprt(oprt)
       , m_range_clause(range_clause)
   {
+  }
+
+  const ASTDeductionTarget& lhs() const {
+    return m_lhs;
+  }
+
+  const ASTDeductionTarget& rhs() const {
+    return m_rhs;
+  }
+
+  EqualityOperator oprt() const {
+    return m_oprt;
+  }
+
+  bool has_range_clause() const {
+    return m_range_clause.has_value();
+  }
+
+  const ASTRangeClause& range_clause() const {
+    return m_range_clause.value();
   }
 
 private:
@@ -360,6 +438,11 @@ public:
     return m_value.template is<U>();
   }
 
+  template <class U>
+  const U& value() const {
+    return m_value.template get<U>();
+  }
+
 private:
   sl::variant::variant<ASTInferencePremiseDefn, ASTInferenceEqualityDefn>
       m_value;
@@ -441,6 +524,10 @@ public:
   {
   }
 
+  const StringType& name() const {
+    return m_name;
+  }
+
   const ASTGlobalDeclList& global_decls() const
   {
     return m_global_decls;
@@ -516,6 +603,10 @@ public:
       , m_environment_defns(environment_defns)
       , m_inference_defns(inference_defns)
   {
+  }
+
+  const StringType& name() const {
+    return m_name;
   }
 
   const ASTEnvironmentDefnList& environment_defns() const
