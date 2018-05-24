@@ -30,7 +30,8 @@ namespace variant
 
 // -----------------------------------------------------------------------------
 
-template <typename R = void> struct static_visitor
+template <typename R = void>
+struct static_visitor
 {
   using result_type = R;
 

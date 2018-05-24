@@ -347,7 +347,8 @@ class VariantBinaryVisitationUnitTest : public VariantTests
 protected:
   struct equality_visitor : public sl::variant::static_visitor<bool>
   {
-    template <typename T> bool operator()(const T& lhs, const T& rhs) const
+    template <typename T>
+    bool operator()(const T& lhs, const T& rhs) const
     {
       return lhs == rhs;
     }

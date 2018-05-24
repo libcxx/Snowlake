@@ -39,7 +39,8 @@ struct nullopt_t
  * Simple implementation of an optional container.
  * Use this until `std::optional` support lands in Clang.
  */
-template <class T> class optional
+template <class T>
+class optional
 {
 private:
   typedef sl::variant::variant<nullopt_t, T> ValueType;

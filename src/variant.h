@@ -39,7 +39,8 @@ namespace variant
 
 // -----------------------------------------------------------------------------
 
-template <typename... Types> class variant
+template <typename... Types>
+class variant
 {
 private:
   static const std::size_t data_size =
@@ -107,14 +108,16 @@ public:
     return *this;
   }
 
-  template <typename T> variant<Types...>& operator=(T const& other)
+  template <typename T>
+  variant<Types...>& operator=(T const& other)
   {
     variant<Types...> temp(other);
     swap(*this, temp);
     return *this;
   }
 
-  template <typename T> variant<Types...>& operator=(T&& rhs) noexcept
+  template <typename T>
+  variant<Types...>& operator=(T&& rhs) noexcept
   {
     variant<Types...> temp(std::forward<T>(rhs));
     swap(*this, temp);
@@ -160,7 +163,8 @@ public:
     return visit(rhs, visitor);
   }
 
-  template <typename T> bool is() const
+  template <typename T>
+  bool is() const
   {
     return (m_type_index == impl::direct_type<T, Types...>::index);
   }

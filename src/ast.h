@@ -221,12 +221,14 @@ public:
   {
   }
 
-  template <typename U> bool is() const
+  template <typename U>
+  bool is() const
   {
     return m_value.template is<U>();
   }
 
-  template <typename U> const U& value() const
+  template <typename U>
+  const U& value() const
   {
     return m_value.template get<U>();
   }
@@ -450,12 +452,14 @@ public:
   {
   }
 
-  template <class U> bool is_type() const
+  template <class U>
+  bool is_type() const
   {
     return m_value.template is<U>();
   }
 
-  template <class U> const U& value() const
+  template <class U>
+  const U& value() const
   {
     return m_value.template get<U>();
   }
