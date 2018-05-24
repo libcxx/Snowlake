@@ -271,11 +271,13 @@ TEST_F(ParserTests, TestParsingAndASTConstruction)
     const ASTInferenceGroup& inference_group = inference_groups[0];
 
     // Check inference group has four environment definition statements.
-    const ASTEnvironmentDefnList& environment_defns = inference_group.environment_defns();
+    const ASTEnvironmentDefnList& environment_defns =
+        inference_group.environment_defns();
     ASSERT_EQ(4, environment_defns.size());
 
     // Check inference group has one inference definition.
-    const ASTInferenceDefnList& inference_defns = inference_group.inference_defns();
+    const ASTInferenceDefnList& inference_defns =
+        inference_group.inference_defns();
     ASSERT_EQ(1, inference_defns.size());
 
     const ASTInferenceDefn& inference_defn = inference_defns[0];

@@ -68,7 +68,8 @@ public:
   {
   }
 
-  const StringType& value() const {
+  const StringType& value() const
+  {
     return m_value;
   }
 
@@ -94,7 +95,8 @@ public:
     m_identifiers.emplace_back(element);
   }
 
-  const ASTIdentifierList& identifiers() const {
+  const ASTIdentifierList& identifiers() const
+  {
     return m_identifiers;
   }
 
@@ -115,7 +117,8 @@ public:
   {
   }
 
-  const StringType& name() const {
+  const StringType& name() const
+  {
     return m_name;
   }
 
@@ -144,15 +147,18 @@ public:
   {
   }
 
-  const StringType& name() const {
+  const StringType& name() const
+  {
     return m_name;
   }
 
-  bool has_size_literal() const {
+  bool has_size_literal() const
+  {
     return m_array_size.has_value();
   }
 
-  IntegerType size_literal() const {
+  IntegerType size_literal() const
+  {
     return m_array_size.value();
   }
 
@@ -177,11 +183,13 @@ public:
   {
   }
 
-  const StringType& name() const {
+  const StringType& name() const
+  {
     return m_name;
   }
 
-  const ASTDeductionTargetList& arguments() const {
+  const ASTDeductionTargetList& arguments() const
+  {
     return m_arguments;
   }
 
@@ -213,13 +221,13 @@ public:
   {
   }
 
-  template <typename U>
-  bool is() const {
+  template <typename U> bool is() const
+  {
     return m_value.template is<U>();
   }
 
-  template <typename U>
-  const U& value() const {
+  template <typename U> const U& value() const
+  {
     return m_value.template get<U>();
   }
 
@@ -242,7 +250,8 @@ public:
   {
   }
 
-  const ASTDeductionTarget& target() const {
+  const ASTDeductionTarget& target() const
+  {
     return m_target;
   }
 
@@ -268,15 +277,18 @@ public:
   {
   }
 
-  IntegerType lhs_idx() const {
+  IntegerType lhs_idx() const
+  {
     return m_lhs_idx;
   }
 
-  IntegerType rhs_idx() const {
+  IntegerType rhs_idx() const
+  {
     return m_rhs_idx;
   }
 
-  const ASTDeductionTarget& deduction_target() const {
+  const ASTDeductionTarget& deduction_target() const
+  {
     return m_deduction_target;
   }
 
@@ -313,23 +325,28 @@ public:
   {
   }
 
-  const ASTDeductionTarget& lhs() const {
+  const ASTDeductionTarget& lhs() const
+  {
     return m_lhs;
   }
 
-  const ASTDeductionTarget& rhs() const {
+  const ASTDeductionTarget& rhs() const
+  {
     return m_rhs;
   }
 
-  EqualityOperator oprt() const {
+  EqualityOperator oprt() const
+  {
     return m_oprt;
   }
 
-  bool has_range_clause() const {
+  bool has_range_clause() const
+  {
     return m_range_clause.has_value();
   }
 
-  const ASTRangeClause& range_clause() const {
+  const ASTRangeClause& range_clause() const
+  {
     return m_range_clause.value();
   }
 
@@ -438,8 +455,8 @@ public:
     return m_value.template is<U>();
   }
 
-  template <class U>
-  const U& value() const {
+  template <class U> const U& value() const
+  {
     return m_value.template get<U>();
   }
 
@@ -524,7 +541,8 @@ public:
   {
   }
 
-  const StringType& name() const {
+  const StringType& name() const
+  {
     return m_name;
   }
 
@@ -605,7 +623,8 @@ public:
   {
   }
 
-  const StringType& name() const {
+  const StringType& name() const
+  {
     return m_name;
   }
 
