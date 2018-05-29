@@ -208,6 +208,26 @@ void
 ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
 {
   previsit(deduction_target);
+
+  if (deduction_target.is_type<ASTDeductionTargetSingular>())
+  {
+    const ASTDeductionTargetSingular& target =
+      deduction_target.value<ASTDeductionTargetSingular>();
+    visit(target);
+  }
+  else if (deduction_target.is_type<ASTDeductionTargetArray>())
+  {
+    const ASTDeductionTargetArray& target =
+      deduction_target.value<ASTDeductionTargetArray>();
+    visit(target);
+  }
+  else if (deduction_target.is_type<ASTDeductionTargetComputed>())
+  {
+    const ASTDeductionTargetComputed& target =
+      deduction_target.value<ASTDeductionTargetComputed>();
+    visit(target);
+  }
+
   postvisit(deduction_target);
 }
 

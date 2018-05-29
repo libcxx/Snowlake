@@ -222,7 +222,7 @@ public:
   }
 
   template <typename U>
-  bool is() const
+  bool is_type() const
   {
     return m_value.template is<U>();
   }
