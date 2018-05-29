@@ -46,7 +46,7 @@ ASTVisitor::visit(const ASTModule& module)
 
   for (const auto& inference_group : module.inference_groups())
   {
-    visit(inference_group, module);
+    visit(inference_group);
   }
 
   postvisit(module);
@@ -55,117 +55,187 @@ ASTVisitor::visit(const ASTModule& module)
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTInferenceGroup& inference_group,
-                  const ASTModule& parent)
+ASTVisitor::visit(const ASTInferenceGroup& inference_group)
 {
-  previsit(inference_group, parent);
+  previsit(inference_group);
 
   for (const auto& environment_defn : inference_group.environment_defns())
   {
-    visit(environment_defn, inference_group);
+    visit(environment_defn);
   }
 
   for (const auto& inference_defn : inference_group.inference_defns())
   {
-    visit(inference_defn, inference_group);
+    visit(inference_defn);
   }
 
-  postvisit(inference_group, parent);
+  postvisit(inference_group);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTEnvironmentDefn& environment_defn,
-                  const ASTInferenceGroup& parent)
+ASTVisitor::visit(const ASTEnvironmentDefn& environment_defn)
 {
-  previsit(environment_defn, parent);
-  postvisit(environment_defn, parent);
+  previsit(environment_defn);
+  postvisit(environment_defn);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTInferenceDefn& inference_defn,
-                  const ASTInferenceGroup& parent)
+ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
 {
-  previsit(inference_defn, parent);
+  previsit(inference_defn);
 
   // Global decls.
   for (const auto& decl : inference_defn.global_decls())
   {
-    visit(decl, inference_defn);
+    visit(decl);
   }
 
   // Arguments.
   for (const auto& argument : inference_defn.arguments())
   {
-    visit(argument, inference_defn);
+    visit(argument);
   }
 
   // Premise defns.
   for (const auto& premise_defn : inference_defn.premise_defns())
   {
-    visit(premise_defn, inference_defn);
+    visit(premise_defn);
   }
 
   // Proposition defn.
-  visit(inference_defn.proposition_defn(), inference_defn);
+  visit(inference_defn.proposition_defn());
 
-  postvisit(inference_defn, parent);
+  postvisit(inference_defn);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTPremiseDefn& premise_defn,
-                  const ASTInferenceDefn& parent)
+ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
 {
-  previsit(premise_defn, parent);
-  postvisit(premise_defn, parent);
+  if (premise_defn.is_type<ASTInferencePremiseDefn>())
+  {
+    const ASTInferencePremiseDefn& defn =
+      premise_defn.value<ASTInferencePremiseDefn>();
+    visit(defn);
+  }
+  else if (premise_defn.is_type<ASTInferenceEqualityDefn>())
+  {
+    const ASTInferenceEqualityDefn& defn =
+      premise_defn.value<ASTInferenceEqualityDefn>();
+    visit(defn);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTGlobalDecl& global_decl,
-                  const ASTInferenceDefn& parent)
+ASTVisitor::visit(const ASTInferencePremiseDefn& defn)
 {
-  previsit(global_decl, parent);
-  postvisit(global_decl, parent);
+  previsit(defn);
+
+  visit(defn.deduction_target());
+
+  if (defn.has_while_clause())
+  {
+    visit(defn.while_clause());
+  }
+
+  postvisit(defn);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTInferenceArgument& argument,
-                  const ASTInferenceDefn& parent)
+ASTVisitor::visit(const ASTInferenceEqualityDefn& defn)
 {
-  previsit(argument, parent);
-  postvisit(argument, parent);
+  previsit(defn);
+
+  visit(defn.lhs());
+  visit(defn.rhs());
+
+  postvisit(defn);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTPropositionDefn& proposition_defn,
-                  const ASTInferenceDefn& parent)
+ASTVisitor::visit(const ASTWhileClause& while_clause)
 {
-  previsit(proposition_defn, parent);
-
-  visit(proposition_defn.target(), proposition_defn);
-
-  postvisit(proposition_defn, parent);
+  for (const auto& premise_defn : while_clause.premise_defns())
+  {
+    visit(premise_defn);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ASTVisitor::visit(const ASTDeductionTarget& deduction_target,
-                  const ASTPropositionDefn& parent)
+ASTVisitor::visit(const ASTGlobalDecl& global_decl)
 {
-  previsit(deduction_target, parent);
-  postvisit(deduction_target, parent);
+  previsit(global_decl);
+  postvisit(global_decl);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTInferenceArgument& argument)
+{
+  previsit(argument);
+  postvisit(argument);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTPropositionDefn& proposition_defn)
+{
+  previsit(proposition_defn);
+
+  visit(proposition_defn.target());
+
+  postvisit(proposition_defn);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
+{
+  previsit(deduction_target);
+  postvisit(deduction_target);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTDeductionTargetSingular& deduction_target)
+{
+  previsit(deduction_target);
+  postvisit(deduction_target);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTDeductionTargetArray& deduction_target)
+{
+  previsit(deduction_target);
+  postvisit(deduction_target);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ASTVisitor::visit(const ASTDeductionTargetComputed& deduction_target)
+{
+  previsit(deduction_target);
+  postvisit(deduction_target);
 }
 
 // -----------------------------------------------------------------------------
@@ -190,7 +260,7 @@ ASTVisitor::postvisit(const ASTModule&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTInferenceGroup&, const ASTModule&)
+ASTVisitor::previsit(const ASTInferenceGroup&)
 {
   // Do nothing here.
 }
@@ -199,7 +269,7 @@ ASTVisitor::previsit(const ASTInferenceGroup&, const ASTModule&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTInferenceGroup&, const ASTModule&)
+ASTVisitor::postvisit(const ASTInferenceGroup&)
 {
   // Do nothing here.
 }
@@ -208,7 +278,7 @@ ASTVisitor::postvisit(const ASTInferenceGroup&, const ASTModule&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTEnvironmentDefn&, const ASTInferenceGroup&)
+ASTVisitor::previsit(const ASTEnvironmentDefn&)
 {
   // Do nothing here.
 }
@@ -217,7 +287,7 @@ ASTVisitor::previsit(const ASTEnvironmentDefn&, const ASTInferenceGroup&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTEnvironmentDefn&, const ASTInferenceGroup&)
+ASTVisitor::postvisit(const ASTEnvironmentDefn&)
 {
   // Do nothing here.
 }
@@ -226,7 +296,7 @@ ASTVisitor::postvisit(const ASTEnvironmentDefn&, const ASTInferenceGroup&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTInferenceDefn&, const ASTInferenceGroup&)
+ASTVisitor::previsit(const ASTInferenceDefn&)
 {
   // Do nothing here.
 }
@@ -235,7 +305,7 @@ ASTVisitor::previsit(const ASTInferenceDefn&, const ASTInferenceGroup&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTInferenceDefn&, const ASTInferenceGroup&)
+ASTVisitor::postvisit(const ASTInferenceDefn&)
 {
   // Do nothing here.
 }
@@ -244,7 +314,7 @@ ASTVisitor::postvisit(const ASTInferenceDefn&, const ASTInferenceGroup&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTGlobalDecl&, const ASTInferenceDefn&)
+ASTVisitor::previsit(const ASTGlobalDecl&)
 {
   // Do nothing here.
 }
@@ -253,7 +323,7 @@ ASTVisitor::previsit(const ASTGlobalDecl&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTGlobalDecl&, const ASTInferenceDefn&)
+ASTVisitor::postvisit(const ASTGlobalDecl&)
 {
   // Do nothing here.
 }
@@ -262,7 +332,7 @@ ASTVisitor::postvisit(const ASTGlobalDecl&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTInferenceArgument&, const ASTInferenceDefn&)
+ASTVisitor::previsit(const ASTInferenceArgument&)
 {
   // Do nothing here.
 }
@@ -271,7 +341,7 @@ ASTVisitor::previsit(const ASTInferenceArgument&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTInferenceArgument&, const ASTInferenceDefn&)
+ASTVisitor::postvisit(const ASTInferenceArgument&)
 {
   // Do nothing here.
 }
@@ -280,7 +350,7 @@ ASTVisitor::postvisit(const ASTInferenceArgument&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTPremiseDefn&, const ASTInferenceDefn&)
+ASTVisitor::previsit(const ASTInferencePremiseDefn&)
 {
   // Do nothing here.
 }
@@ -289,7 +359,7 @@ ASTVisitor::previsit(const ASTPremiseDefn&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTPremiseDefn&, const ASTInferenceDefn&)
+ASTVisitor::postvisit(const ASTInferencePremiseDefn&)
 {
   // Do nothing here.
 }
@@ -298,7 +368,7 @@ ASTVisitor::postvisit(const ASTPremiseDefn&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTPropositionDefn&, const ASTInferenceDefn&)
+ASTVisitor::previsit(const ASTInferenceEqualityDefn&)
 {
   // Do nothing here.
 }
@@ -307,7 +377,7 @@ ASTVisitor::previsit(const ASTPropositionDefn&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTPropositionDefn&, const ASTInferenceDefn&)
+ASTVisitor::postvisit(const ASTInferenceEqualityDefn&)
 {
   // Do nothing here.
 }
@@ -316,7 +386,7 @@ ASTVisitor::postvisit(const ASTPropositionDefn&, const ASTInferenceDefn&)
 
 /* virtual */
 void
-ASTVisitor::previsit(const ASTDeductionTarget&, const ASTPropositionDefn&)
+ASTVisitor::previsit(const ASTPropositionDefn&)
 {
   // Do nothing here.
 }
@@ -325,7 +395,79 @@ ASTVisitor::previsit(const ASTDeductionTarget&, const ASTPropositionDefn&)
 
 /* virtual */
 void
-ASTVisitor::postvisit(const ASTDeductionTarget&, const ASTPropositionDefn&)
+ASTVisitor::postvisit(const ASTPropositionDefn&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::previsit(const ASTDeductionTarget&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::postvisit(const ASTDeductionTarget&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::previsit(const ASTDeductionTargetSingular&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::postvisit(const ASTDeductionTargetSingular&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::previsit(const ASTDeductionTargetArray&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::postvisit(const ASTDeductionTargetArray&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::previsit(const ASTDeductionTargetComputed&)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ASTVisitor::postvisit(const ASTDeductionTargetComputed&)
 {
   // Do nothing here.
 }
