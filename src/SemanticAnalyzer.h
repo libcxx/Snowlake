@@ -23,7 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-class SemanticAnalyzer
+#include "ASTVisitor.h"
+
+class SemanticAnalyzer : public ASTVisitor
 {
 public:
   SemanticAnalyzer();

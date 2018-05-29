@@ -32,6 +32,7 @@ ADD_SUBDIRECTORY(${PARSER_SRC_DIR})
 
 # Add the necessary source files.
 set(sources
+    ASTVisitor.cpp
     SemanticAnalyzer.cpp
     )
 
