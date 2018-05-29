@@ -37,37 +37,37 @@ protected:
   virtual void previsit(const ASTModule&);
   virtual void postvisit(const ASTModule&);
 
-  virtual void previsit(const ASTInferenceGroup&);
-  virtual void postvisit(const ASTInferenceGroup&);
+  virtual void previsit(const ASTInferenceGroup&, const ASTModule&);
+  virtual void postvisit(const ASTInferenceGroup&, const ASTModule&);
 
-  virtual void previsit(const ASTEnvironmentDefn&);
-  virtual void postvisit(const ASTEnvironmentDefn&);
+  virtual void previsit(const ASTEnvironmentDefn&, const ASTInferenceGroup&);
+  virtual void postvisit(const ASTEnvironmentDefn&, const ASTInferenceGroup&);
 
-  virtual void previsit(const ASTInferenceDefn&);
-  virtual void postvisit(const ASTInferenceDefn&);
+  virtual void previsit(const ASTInferenceDefn&, const ASTInferenceGroup&);
+  virtual void postvisit(const ASTInferenceDefn&, const ASTInferenceGroup&);
 
-  virtual void previsit(const ASTGlobalDecl&);
-  virtual void postvisit(const ASTGlobalDecl&);
+  virtual void previsit(const ASTGlobalDecl&, const ASTInferenceDefn&);
+  virtual void postvisit(const ASTGlobalDecl&, const ASTInferenceDefn&);
 
-  virtual void previsit(const ASTInferenceArgument&);
-  virtual void postvisit(const ASTInferenceArgument&);
+  virtual void previsit(const ASTInferenceArgument&, const ASTInferenceDefn&);
+  virtual void postvisit(const ASTInferenceArgument&, const ASTInferenceDefn&);
 
-  virtual void previsit(const ASTPremiseDefn&);
-  virtual void postvisit(const ASTPremiseDefn&);
+  virtual void previsit(const ASTPremiseDefn&, const ASTInferenceDefn&);
+  virtual void postvisit(const ASTPremiseDefn&, const ASTInferenceDefn&);
 
-  virtual void previsit(const ASTPropositionDefn&);
-  virtual void postvisit(const ASTPropositionDefn&);
+  virtual void previsit(const ASTPropositionDefn&, const ASTInferenceDefn&);
+  virtual void postvisit(const ASTPropositionDefn&, const ASTInferenceDefn&);
 
-  virtual void previsit(const ASTDeductionTarget&);
-  virtual void postvisit(const ASTDeductionTarget&);
+  virtual void previsit(const ASTDeductionTarget&, const ASTPropositionDefn&);
+  virtual void postvisit(const ASTDeductionTarget&, const ASTPropositionDefn&);
 
 private:
-  void visit(const ASTInferenceGroup&);
-  void visit(const ASTEnvironmentDefn&);
-  void visit(const ASTInferenceDefn&);
-  void visit(const ASTGlobalDecl&);
-  void visit(const ASTInferenceArgument&);
-  void visit(const ASTPremiseDefn&);
-  void visit(const ASTPropositionDefn&);
-  void visit(const ASTDeductionTarget&);
+  void visit(const ASTInferenceGroup&, const ASTModule&);
+  void visit(const ASTEnvironmentDefn&, const ASTInferenceGroup&);
+  void visit(const ASTInferenceDefn&, const ASTInferenceGroup&);
+  void visit(const ASTGlobalDecl&, const ASTInferenceDefn&);
+  void visit(const ASTInferenceArgument&, const ASTInferenceDefn&);
+  void visit(const ASTPremiseDefn&, const ASTInferenceDefn&);
+  void visit(const ASTPropositionDefn&, const ASTInferenceDefn&);
+  void visit(const ASTDeductionTarget&, const ASTPropositionDefn&);
 };
