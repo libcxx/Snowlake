@@ -34,9 +34,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define VISIT_AND_VERIFY(x) VERIFY(visit( (x) ))
 
+#define ERROR_OUT(msg) { set_msg( (msg) ); return false; }
+
 // -----------------------------------------------------------------------------
 
 ASTVisitor::ASTVisitor()
+  : m_msg()
 {
 }
 
@@ -145,6 +148,10 @@ ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
     const ASTInferenceEqualityDefn& defn =
       premise_defn.value<ASTInferenceEqualityDefn>();
     VISIT_AND_VERIFY(defn);
+  }
+  else
+  {
+    ERROR_OUT("Unknown type of premise definition.");
   }
 
   DEFAULT_RETURN();
@@ -255,6 +262,10 @@ ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
     const ASTDeductionTargetComputed& target =
       deduction_target.value<ASTDeductionTargetComputed>();
     VISIT_AND_VERIFY(target);
+  }
+  else
+  {
+    ERROR_OUT("Unknown type of deduction target.");
   }
 
   POSTVISIT_AND_VERIFY(deduction_target);
@@ -524,6 +535,14 @@ bool
 ASTVisitor::postvisit(const ASTDeductionTargetComputed&)
 {
   DEFAULT_RETURN();
+}
+
+// -----------------------------------------------------------------------------
+
+const std::string&
+ASTVisitor::msg()
+{
+  return m_msg;
 }
 
 // -----------------------------------------------------------------------------

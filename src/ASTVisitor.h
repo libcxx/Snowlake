@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "ast_fwd.h"
+#include <string>
 
 class ASTVisitor
 {
@@ -88,4 +89,15 @@ private:
   bool visit(const ASTDeductionTargetSingular&);
   bool visit(const ASTDeductionTargetArray&);
   bool visit(const ASTDeductionTargetComputed&);
+
+protected:
+  const std::string& msg();
+
+  template <typename U>
+  void set_msg(const U msg) {
+    m_msg.assign(msg);
+  }
+
+private:
+  std::string m_msg;
 };
