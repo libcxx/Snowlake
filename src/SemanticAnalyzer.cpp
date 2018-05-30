@@ -52,7 +52,7 @@ SemanticAnalyzer::set_status(StatusCode status)
 SemanticAnalyzer::StatusCode
 SemanticAnalyzer::visit(const ASTModule&)
 {
-  // TODO: to be implemented.
+  // TODO [SNOWLAKE-11]: to be implemented.
   return status();
 }
 
@@ -62,6 +62,7 @@ SemanticAnalyzer::visit(const ASTModule&)
 bool
 SemanticAnalyzer::previsit(const ASTModule&) /* override */
 {
+  // TODO [SNOWLAKE-11]: to be implemented.
   return true;
 }
 
@@ -71,6 +72,7 @@ SemanticAnalyzer::previsit(const ASTModule&) /* override */
 bool
 SemanticAnalyzer::postvisit(const ASTModule&) /* override */
 {
+  // TODO [SNOWLAKE-11]: to be implemented.
   return true;
 }
 
