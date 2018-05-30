@@ -20,27 +20,63 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <gtest/gtest.h>
 
-#include "SemanticAnalyzer.h"
+#pragma once
 
-class SemanticAnalyzerTests : public ::testing::Test
+#include "ASTVisitor.h"
+#include <vector>
+
+class SemanticAnalyzer : public ASTVisitor
 {
+private:
+  enum class ErrorCode
+  {
+    NoError = 0x00,
+    Warning = 0x01,
+    Error   = 0x10
+  };
+
+  struct Error
+  {
+    ErrorCode code;
+    std::string msg;
+  };
+
+public:
+  typedef std::vector<Error> ErrorList;
+
+  struct Options
+  {
+    bool bailOnFirstError;
+    bool warningsAsErrors;
+    bool verbose;
+  };
+
+  SemanticAnalyzer();
+
+  explicit SemanticAnalyzer(const Options&);
+
+  bool visit(const ASTModule&);
+
+  const ErrorList& errors() const;
+
+  const Options& options() const;
+
+private:
+  virtual bool previsit(const ASTModule&) override;
+  virtual bool postvisit(const ASTModule&) override;
+
+private:
+  template <typename U>
+  void add_warning(const U& msg) {
+    m_errors.emplace_back(Error{ErrorCode::Warning, msg});
+  }
+
+  template <typename U>
+  void add_error(const U& msg) {
+    m_errors.emplace_back(Error{ErrorCode::Error, msg});
+  }
+
+  std::vector<Error> m_errors;
+  Options m_opts;
 };
-
-// -----------------------------------------------------------------------------
-
-TEST_F(SemanticAnalyzerTests, TestDefaultInitialization)
-{
-  SemanticAnalyzer analyzer;
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(SemanticAnalyzerTests, TestInitializationWithOptions)
-{
-  SemanticAnalyzer::Options opts;
-  SemanticAnalyzer analyzer(opts);
-}
-
-// -----------------------------------------------------------------------------

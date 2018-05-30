@@ -45,7 +45,7 @@ set(CMAKE_MACOSX_RPATH 1)
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "-std=c++11 -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c++98-compat -Wno-padded")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 
