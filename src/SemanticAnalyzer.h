@@ -44,6 +44,18 @@ private:
   StatusCode status() const;
   void set_status(StatusCode);
 
+  template <typename U>
+  void set_warning_msg(const U msg) {
+    set_msg(msg);
+    set_status(StatusCode::Warning);
+  }
+
+  template <typename U>
+  void set_error_msg(const U msg) {
+    set_msg(msg);
+    set_status(StatusCode::Error);
+  }
+
   virtual bool previsit(const ASTModule&) override;
   virtual bool postvisit(const ASTModule&) override;
 
