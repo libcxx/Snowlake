@@ -30,8 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Debug mode is off by default.
 // Use compiler option to turn on debug mode.
-#ifndef __DEBUG__
-#define __DEBUG__ 0
+#ifndef DEBUG
+#define DEBUG 0
 #endif
 
 // -----------------------------------------------------------------------------
@@ -47,15 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-// Special exception throw mode. Off by default.
-// To be turned on by compiler option when needed.
-#ifndef __THROW__
-#define __THROW__ 0
-#endif
-
-// -----------------------------------------------------------------------------
-
-#if __DEBUG__ && __THROW__
+#if DEBUG
 #define THROW(expr)                                                            \
   std::cerr << #expr << " (" << __FILE__ << ")"                                \
             << "[" << __FUNCTION__ << "() line " << __LINE__ << "]"            \
