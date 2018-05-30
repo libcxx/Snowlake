@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ASTVisitor.h"
 #include "ast.h"
 #include "macros.h"
-#include <sstream>
 
 
 // -----------------------------------------------------------------------------
@@ -35,20 +34,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define POSTVISIT_AND_VERIFY(x) VERIFY(postvisit( (x) ))
 #define VISIT_AND_VERIFY(x) VERIFY(visit( (x) ))
 
-#if DEBUG
-  #define ERROR_OUT(msg) { set_msg( (msg) ); return false; }
-#else
-  #define ERROR_OUT(msg) do {                                       \
-    std::stringstream stream;                                       \
-    stream << (msg) << " [" << __FUNCTION__ << ']' << __LINE__;     \
-    set_msg(stream.str());                                          \
-  } while (0)
-#endif
-
 // -----------------------------------------------------------------------------
 
 ASTVisitor::ASTVisitor()
-  : m_msg()
 {
 }
 
@@ -160,7 +148,7 @@ ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
   }
   else
   {
-    ERROR_OUT("Unknown type of premise definition.");
+    ASSERT(0);
   }
 
   DEFAULT_RETURN();
@@ -274,7 +262,7 @@ ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
   }
   else
   {
-    ERROR_OUT("Unknown type of deduction target.");
+    ASSERT(0);
   }
 
   POSTVISIT_AND_VERIFY(deduction_target);
@@ -544,14 +532,6 @@ bool
 ASTVisitor::postvisit(const ASTDeductionTargetComputed&)
 {
   DEFAULT_RETURN();
-}
-
-// -----------------------------------------------------------------------------
-
-const std::string&
-ASTVisitor::msg()
-{
-  return m_msg;
 }
 
 // -----------------------------------------------------------------------------

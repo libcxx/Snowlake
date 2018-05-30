@@ -24,40 +24,47 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "ASTVisitor.h"
+#include <vector>
 
 class SemanticAnalyzer : public ASTVisitor
 {
-public:
-  enum class StatusCode
+private:
+  enum class ErrorCode
   {
     NoError = 0x00,
     Warning = 0x01,
     Error   = 0x10
   };
 
+  struct Error
+  {
+    ErrorCode code;
+    std::string msg;
+  };
+
 public:
+  typedef std::vector<Error> ErrorList;
+
   SemanticAnalyzer();
 
-  StatusCode visit(const ASTModule&);
+  bool visit(const ASTModule&);
+
+  const ErrorList& errors() const;
 
 private:
-  StatusCode status() const;
-  void set_status(StatusCode);
-
-  template <typename U>
-  void set_warning_msg(const U msg) {
-    set_msg(msg);
-    set_status(StatusCode::Warning);
-  }
-
-  template <typename U>
-  void set_error_msg(const U msg) {
-    set_msg(msg);
-    set_status(StatusCode::Error);
-  }
-
   virtual bool previsit(const ASTModule&) override;
   virtual bool postvisit(const ASTModule&) override;
 
-  StatusCode m_status;
+private:
+  template <typename U>
+  void add_warning(const U& msg) {
+    m_errors.emplace_back(Error{ErrorCode::Warning, msg});
+  }
+
+  template <typename U>
+  void add_error(const U& msg) {
+    m_errors.emplace_back(Error{ErrorCode::Error, msg});
+  }
+
+  std::vector<Error> m_errors;
 };

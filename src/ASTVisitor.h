@@ -33,8 +33,6 @@ protected:
 
   virtual ~ASTVisitor();
 
-  const std::string& msg();
-
   bool visit(const ASTModule&);
 
   virtual bool previsit(const ASTModule&);
@@ -91,13 +89,4 @@ private:
   bool visit(const ASTDeductionTargetSingular&);
   bool visit(const ASTDeductionTargetArray&);
   bool visit(const ASTDeductionTargetComputed&);
-
-protected:
-  template <typename U>
-  void set_msg(const U msg) {
-    m_msg.assign(msg);
-  }
-
-private:
-  std::string m_msg;
 };

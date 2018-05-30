@@ -27,33 +27,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 SemanticAnalyzer::SemanticAnalyzer()
   : ASTVisitor(),
-    m_status(StatusCode::NoError)
+    m_errors()
 {
 }
 
 // -----------------------------------------------------------------------------
 
-SemanticAnalyzer::StatusCode
-SemanticAnalyzer::status() const
+const SemanticAnalyzer::ErrorList&
+SemanticAnalyzer::errors() const
 {
-  return m_status;
+  return m_errors;
 }
 
 // -----------------------------------------------------------------------------
 
-void
-SemanticAnalyzer::set_status(StatusCode status)
-{
-  m_status = status;
-}
-
-// -----------------------------------------------------------------------------
-
-SemanticAnalyzer::StatusCode
+bool
 SemanticAnalyzer::visit(const ASTModule&)
 {
   // TODO [SNOWLAKE-11]: to be implemented.
-  return status();
+  return true;
 }
 
 // -----------------------------------------------------------------------------
