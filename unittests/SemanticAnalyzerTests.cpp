@@ -36,3 +36,11 @@ TEST_F(SemanticAnalyzerTests, TestDefaultInitialization)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestInitializationWithOptions)
+{
+  SemanticAnalyzer::Options opts;
+  SemanticAnalyzer analyzer(opts);
+}
+
+// -----------------------------------------------------------------------------

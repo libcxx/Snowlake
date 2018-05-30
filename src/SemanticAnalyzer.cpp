@@ -27,7 +27,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 SemanticAnalyzer::SemanticAnalyzer()
   : ASTVisitor(),
-    m_errors()
+    m_errors(),
+    m_opts()
+{
+}
+
+// -----------------------------------------------------------------------------
+
+SemanticAnalyzer::SemanticAnalyzer(const Options& opts)
+  : ASTVisitor(),
+    m_errors(),
+    m_opts(opts)
 {
 }
 
@@ -37,6 +47,14 @@ const SemanticAnalyzer::ErrorList&
 SemanticAnalyzer::errors() const
 {
   return m_errors;
+}
+
+// -----------------------------------------------------------------------------
+
+const SemanticAnalyzer::Options&
+SemanticAnalyzer::options() const
+{
+  return m_opts;
 }
 
 // -----------------------------------------------------------------------------

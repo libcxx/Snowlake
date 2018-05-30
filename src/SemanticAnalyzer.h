@@ -45,11 +45,22 @@ private:
 public:
   typedef std::vector<Error> ErrorList;
 
+  struct Options
+  {
+    bool bailOnFirstError;
+    bool warningsAsErrors;
+    bool verbose;
+  };
+
   SemanticAnalyzer();
+
+  explicit SemanticAnalyzer(const Options&);
 
   bool visit(const ASTModule&);
 
   const ErrorList& errors() const;
+
+  const Options& options() const;
 
 private:
   virtual bool previsit(const ASTModule&) override;
@@ -67,4 +78,5 @@ private:
   }
 
   std::vector<Error> m_errors;
+  Options m_opts;
 };
