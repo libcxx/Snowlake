@@ -26,8 +26,52 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 SemanticAnalyzer::SemanticAnalyzer()
-  : ASTVisitor()
+  : ASTVisitor(),
+    m_status(StatusCode::NoError)
 {
+}
+
+// -----------------------------------------------------------------------------
+
+SemanticAnalyzer::StatusCode
+SemanticAnalyzer::status() const
+{
+  return m_status;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SemanticAnalyzer::set_status(StatusCode status)
+{
+  m_status = status;
+}
+
+// -----------------------------------------------------------------------------
+
+SemanticAnalyzer::StatusCode
+SemanticAnalyzer::visit(const ASTModule&)
+{
+  // TODO: to be implemented.
+  return status();
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SemanticAnalyzer::previsit(const ASTModule&) /* override */
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SemanticAnalyzer::postvisit(const ASTModule&) /* override */
+{
+  return true;
 }
 
 // -----------------------------------------------------------------------------

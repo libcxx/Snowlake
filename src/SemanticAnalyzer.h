@@ -28,5 +28,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class SemanticAnalyzer : public ASTVisitor
 {
 public:
+  enum class StatusCode
+  {
+    NoError = 0x00,
+    Warning = 0x01,
+    Error   = 0x10
+  };
+
+public:
   SemanticAnalyzer();
+
+  StatusCode visit(const ASTModule&);
+
+private:
+  StatusCode status() const;
+  void set_status(StatusCode);
+
+  virtual bool previsit(const ASTModule&) override;
+  virtual bool postvisit(const ASTModule&) override;
+
+  StatusCode m_status;
 };
