@@ -24,16 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ASTVisitor.h"
 #include "ast.h"
 
+
+// -----------------------------------------------------------------------------
+
 #define DEFAULT_RETURN() return true
-
 #define VERIFY(x) if (!(x)) return false
-
 #define PREVISIT_AND_VERIFY(x) VERIFY(previsit( (x) ))
-
 #define POSTVISIT_AND_VERIFY(x) VERIFY(postvisit( (x) ))
-
 #define VISIT_AND_VERIFY(x) VERIFY(visit( (x) ))
-
 #define ERROR_OUT(msg) { set_msg( (msg) ); return false; }
 
 // -----------------------------------------------------------------------------
