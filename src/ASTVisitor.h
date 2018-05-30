@@ -32,60 +32,60 @@ protected:
 
   virtual ~ASTVisitor();
 
-  void visit(const ASTModule&);
+  bool visit(const ASTModule&);
 
-  virtual void previsit(const ASTModule&);
-  virtual void postvisit(const ASTModule&);
+  virtual bool previsit(const ASTModule&);
+  virtual bool postvisit(const ASTModule&);
 
-  virtual void previsit(const ASTInferenceGroup&);
-  virtual void postvisit(const ASTInferenceGroup&);
+  virtual bool previsit(const ASTInferenceGroup&);
+  virtual bool postvisit(const ASTInferenceGroup&);
 
-  virtual void previsit(const ASTEnvironmentDefn&);
-  virtual void postvisit(const ASTEnvironmentDefn&);
+  virtual bool previsit(const ASTEnvironmentDefn&);
+  virtual bool postvisit(const ASTEnvironmentDefn&);
 
-  virtual void previsit(const ASTInferenceDefn&);
-  virtual void postvisit(const ASTInferenceDefn&);
+  virtual bool previsit(const ASTInferenceDefn&);
+  virtual bool postvisit(const ASTInferenceDefn&);
 
-  virtual void previsit(const ASTGlobalDecl&);
-  virtual void postvisit(const ASTGlobalDecl&);
+  virtual bool previsit(const ASTGlobalDecl&);
+  virtual bool postvisit(const ASTGlobalDecl&);
 
-  virtual void previsit(const ASTInferenceArgument&);
-  virtual void postvisit(const ASTInferenceArgument&);
+  virtual bool previsit(const ASTInferenceArgument&);
+  virtual bool postvisit(const ASTInferenceArgument&);
 
-  virtual void previsit(const ASTInferencePremiseDefn&);
-  virtual void postvisit(const ASTInferencePremiseDefn&);
+  virtual bool previsit(const ASTInferencePremiseDefn&);
+  virtual bool postvisit(const ASTInferencePremiseDefn&);
 
-  virtual void previsit(const ASTInferenceEqualityDefn&);
-  virtual void postvisit(const ASTInferenceEqualityDefn&);
+  virtual bool previsit(const ASTInferenceEqualityDefn&);
+  virtual bool postvisit(const ASTInferenceEqualityDefn&);
 
-  virtual void previsit(const ASTPropositionDefn&);
-  virtual void postvisit(const ASTPropositionDefn&);
+  virtual bool previsit(const ASTPropositionDefn&);
+  virtual bool postvisit(const ASTPropositionDefn&);
 
-  virtual void previsit(const ASTDeductionTarget&);
-  virtual void postvisit(const ASTDeductionTarget&);
+  virtual bool previsit(const ASTDeductionTarget&);
+  virtual bool postvisit(const ASTDeductionTarget&);
 
-  virtual void previsit(const ASTDeductionTargetSingular&);
-  virtual void postvisit(const ASTDeductionTargetSingular&);
+  virtual bool previsit(const ASTDeductionTargetSingular&);
+  virtual bool postvisit(const ASTDeductionTargetSingular&);
 
-  virtual void previsit(const ASTDeductionTargetArray&);
-  virtual void postvisit(const ASTDeductionTargetArray&);
+  virtual bool previsit(const ASTDeductionTargetArray&);
+  virtual bool postvisit(const ASTDeductionTargetArray&);
 
-  virtual void previsit(const ASTDeductionTargetComputed&);
-  virtual void postvisit(const ASTDeductionTargetComputed&);
+  virtual bool previsit(const ASTDeductionTargetComputed&);
+  virtual bool postvisit(const ASTDeductionTargetComputed&);
 
 private:
-  void visit(const ASTInferenceGroup&);
-  void visit(const ASTEnvironmentDefn&);
-  void visit(const ASTInferenceDefn&);
-  void visit(const ASTGlobalDecl&);
-  void visit(const ASTInferenceArgument&);
-  void visit(const ASTPremiseDefn&);
-  void visit(const ASTInferencePremiseDefn&);
-  void visit(const ASTInferenceEqualityDefn&);
-  void visit(const ASTWhileClause&);
-  void visit(const ASTPropositionDefn&);
-  void visit(const ASTDeductionTarget&);
-  void visit(const ASTDeductionTargetSingular&);
-  void visit(const ASTDeductionTargetArray&);
-  void visit(const ASTDeductionTargetComputed&);
+  bool visit(const ASTInferenceGroup&);
+  bool visit(const ASTEnvironmentDefn&);
+  bool visit(const ASTInferenceDefn&);
+  bool visit(const ASTGlobalDecl&);
+  bool visit(const ASTInferenceArgument&);
+  bool visit(const ASTPremiseDefn&);
+  bool visit(const ASTInferencePremiseDefn&);
+  bool visit(const ASTInferenceEqualityDefn&);
+  bool visit(const ASTWhileClause&);
+  bool visit(const ASTPropositionDefn&);
+  bool visit(const ASTDeductionTarget&);
+  bool visit(const ASTDeductionTargetSingular&);
+  bool visit(const ASTDeductionTargetArray&);
+  bool visit(const ASTDeductionTargetComputed&);
 };
