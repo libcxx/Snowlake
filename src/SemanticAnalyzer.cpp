@@ -31,13 +31,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define DEFAULT_RETURN  return res
 
-#define ON_ERROR(msg, ...)            \
-  do {                                \
-    res = false;                      \
-    add_error( (msg), __VA_ARGS__ );  \
-    if (m_opts.bailOnFirstError) {    \
-      return res;                     \
-    }                                 \
+#define ON_WARNING(msg, ...)              \
+  do {                                    \
+    add_warning( (msg), __VA_ARGS__ );    \
+    if (m_opts.warningsAsErrors) {        \
+      res = false;                        \
+      if (m_opts.bailOnFirstError) {      \
+        return res;                       \
+      }                                   \
+    }                                     \
+  } while (0)
+
+#define ON_ERROR(msg, ...)                \
+  do {                                    \
+    res = false;                          \
+    add_error( (msg), __VA_ARGS__ );      \
+    if (m_opts.bailOnFirstError) {        \
+      return res;                         \
+    }                                     \
   } while (0)
 
 // -----------------------------------------------------------------------------
@@ -84,9 +95,9 @@ SemanticAnalyzer::run(const ASTModule& module)
 
 // -----------------------------------------------------------------------------
 
-/* virtual */
+/* override */
 bool
-SemanticAnalyzer::previsit(const ASTModule& module) /* override */
+SemanticAnalyzer::previsit(const ASTModule& module)
 {
   INIT_RES;
 
@@ -98,6 +109,45 @@ SemanticAnalyzer::previsit(const ASTModule& module) /* override */
       ON_ERROR("Found multiple inference group with name \"%s\".", name.c_str());
     } else {
       name_set.insert(name);
+    }
+  }
+
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------
+
+/* override */
+bool
+SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
+{
+  INIT_RES;
+
+  // Environment definitions.
+  {
+    std::unordered_set<std::string> name_set;
+    for (const auto& environment_defn : inference_group.environment_defns())
+    {
+      const auto& field = environment_defn.field();
+      if (name_set.count(field)) {
+        ON_WARNING("Found repeated environment field \"%s\".", field.c_str());
+      } else {
+        name_set.insert(field);
+      }
+    }
+  }
+
+  // Inference definitions.
+  {
+    std::unordered_set<std::string> name_set;
+    for (const auto& inference_defn : inference_group.inference_defns())
+    {
+      const auto& name = inference_defn.name();
+      if (name_set.count(name)) {
+        ON_ERROR("Found multiple inference definition with name \"%s\".", name.c_str());
+      } else {
+        name_set.insert(name);
+      }
     }
   }
 

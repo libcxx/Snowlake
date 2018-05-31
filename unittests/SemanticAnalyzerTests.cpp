@@ -82,3 +82,28 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingGroup)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithRepeatingInferenceDefinition)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "inference MyInference {"
+        "arguments: []"
+        "premises: []"
+        "proposition: HelloWorld;"
+      "}"
+      ""
+      "inference MyInference {"
+        "arguments: []"
+        "premises: []"
+        "proposition: HelloWorld;"
+      "}"
+    "}"
+  "";
+
+  const char* msg = "Found multiple inference definition with name \"MyInference\".";
+
+  assert_first_error(INPUT, msg);
+}
+
+// -----------------------------------------------------------------------------
