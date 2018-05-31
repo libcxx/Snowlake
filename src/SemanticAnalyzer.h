@@ -56,7 +56,7 @@ public:
 
   explicit SemanticAnalyzer(const Options&);
 
-  bool visit(const ASTModule&);
+  bool run(const ASTModule&);
 
   const ErrorList& errors() const;
 
@@ -64,17 +64,28 @@ public:
 
 private:
   virtual bool previsit(const ASTModule&) override;
-  virtual bool postvisit(const ASTModule&) override;
 
 private:
-  template <typename U>
-  void add_warning(const U& msg) {
-    m_errors.emplace_back(Error{ErrorCode::Warning, msg});
+  enum {
+    MAX_MSG_LEN=1024
+  };
+
+  template <typename U, typename... Args>
+  void add_warning(const U& msg, Args... args) {
+    if (m_opts.warningsAsErrors) {
+      add_error(msg, args...);
+    } else {
+      char buffer[MAX_MSG_LEN];
+      snprintf(buffer, sizeof(buffer), msg, args...);
+      m_errors.emplace_back(Error{ErrorCode::Warning, buffer});
+    }
   }
 
-  template <typename U>
-  void add_error(const U& msg) {
-    m_errors.emplace_back(Error{ErrorCode::Error, msg});
+  template <typename U, typename... Args>
+  void add_error(const U& msg, Args... args) {
+    char buffer[MAX_MSG_LEN];
+    snprintf(buffer, sizeof(buffer), msg, args...);
+    m_errors.emplace_back(Error{ErrorCode::Error, buffer});
   }
 
   std::vector<Error> m_errors;

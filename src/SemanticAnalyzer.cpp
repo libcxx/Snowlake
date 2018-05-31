@@ -22,6 +22,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "SemanticAnalyzer.h"
+#include "ast.h"
+#include <unordered_set>
+
+// -----------------------------------------------------------------------------
+
+#define INIT_RES        bool res = true
+
+#define DEFAULT_RETURN  return res
+
+#define ON_ERROR(msg, ...)            \
+  do {                                \
+    res = false;                      \
+    add_error( (msg), __VA_ARGS__ );  \
+    if (m_opts.bailOnFirstError) {    \
+      return res;                     \
+    }                                 \
+  } while (0)
 
 // -----------------------------------------------------------------------------
 
@@ -60,30 +77,31 @@ SemanticAnalyzer::options() const
 // -----------------------------------------------------------------------------
 
 bool
-SemanticAnalyzer::visit(const ASTModule&)
+SemanticAnalyzer::run(const ASTModule& module)
 {
-  // TODO [SNOWLAKE-11]: to be implemented.
-  return true;
+  return visit(module);
 }
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
 bool
-SemanticAnalyzer::previsit(const ASTModule&) /* override */
+SemanticAnalyzer::previsit(const ASTModule& module) /* override */
 {
-  // TODO [SNOWLAKE-11]: to be implemented.
-  return true;
-}
+  INIT_RES;
 
-// -----------------------------------------------------------------------------
+  std::unordered_set<std::string> name_set;
+  for (const auto& inference_group : module.inference_groups())
+  {
+    const auto& name = inference_group.name();
+    if (name_set.count(name)) {
+      ON_ERROR("Found multiple inference group with name \"%s\".", name.c_str());
+    } else {
+      name_set.insert(name);
+    }
+  }
 
-/* virtual */
-bool
-SemanticAnalyzer::postvisit(const ASTModule&) /* override */
-{
-  // TODO [SNOWLAKE-11]: to be implemented.
-  return true;
+  DEFAULT_RETURN;
 }
 
 // -----------------------------------------------------------------------------
