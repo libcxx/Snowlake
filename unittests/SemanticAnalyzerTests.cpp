@@ -25,8 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "SemanticAnalyzer.h"
 #include "parser/ParserDriver.h"
 
-#include <iostream>
 
+// -----------------------------------------------------------------------------
 
 class SemanticAnalyzerTests : public ::testing::Test
 {
