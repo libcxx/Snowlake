@@ -155,3 +155,42 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
 }
 
 // -----------------------------------------------------------------------------
+
+/* override */
+bool
+SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
+{
+  INIT_RES;
+
+  // Global declarations.
+  {
+    std::unordered_set<std::string> name_set;
+    for (const auto& decl: inference_defn.global_decls())
+    {
+      const auto& name = decl.name();
+      if (name_set.count(name)) {
+        ON_WARNING("Found multiple global declaration with name \"%s\".", name.c_str());
+      } else {
+        name_set.insert(name);
+      }
+    }
+  }
+
+  // Arguments.
+  {
+    std::unordered_set<std::string> name_set;
+    for (const auto& argument: inference_defn.arguments())
+    {
+      const auto& name = argument.name();
+      if (name_set.count(name)) {
+        ON_ERROR("Found multiple argument with name \"%s\".", name.c_str());
+      } else {
+        name_set.insert(name);
+      }
+    }
+  }
+
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------
