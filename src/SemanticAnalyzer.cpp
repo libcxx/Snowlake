@@ -282,7 +282,11 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn& d
     {
       const auto& range_clause = defn.range_clause();
       const auto& target = range_clause.deduction_target();
-      return is_target_in_table(target, context->target_tbl);
+      if (!is_target_in_table(target, context->target_tbl))
+      {
+        ON_ERROR("Invalid target in range clause in inference \"%s\".",
+          context->name.c_str()); 
+      }
     }
   }
 
@@ -302,6 +306,7 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTPremiseDefn& premise_def
   if (premise_defn.is_type<ASTInferencePremiseDefn>())
   {
     const auto& defn_value = premise_defn.value<ASTInferencePremiseDefn>();
+    recursive_premise_defn_check(defn_value, context);
   }
   else if (premise_defn.is_type<ASTInferenceEqualityDefn>())
   {
