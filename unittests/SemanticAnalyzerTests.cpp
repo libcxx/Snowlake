@@ -259,3 +259,41 @@ TEST_F(SemanticAnalyzerTests, TestWithIncompatibleTargetsInRangeClause)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ParameterTypes;"
+          "StaticMethodCallStmt.return_type: ReturnType while {"
+            "ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
+          "};"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+  "";
+
+  const char* msg = "Incompatible targets in expression in inference \"MethodStaticDispatch\".";
+
+  assert_first_error(INPUT, msg);
+}
+
+// -----------------------------------------------------------------------------
