@@ -376,3 +376,37 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatedIncompatibleArrayTargetInPremiseDe
 }
 
 // ---------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestValidInputWithAllComputedTargetTypes)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : getArgumentsTypes();"
+          "StaticMethodCallStmt.parameter_types : getParametersTypes();"
+          "StaticMethodCallStmt.return_type: getReturnType();"
+        "]"
+        ""
+        "proposition : getReturnType();"
+      "}"
+    "}"
+  "";
+
+  assert_no_error(INPUT);
+}
+
+// --------------------------------------------------------------------------
