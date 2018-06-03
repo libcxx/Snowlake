@@ -183,7 +183,30 @@ has_compatible_target_in_table(const ASTDeductionTarget& target,
     if (tbl.count(value.name()) > 0)
     {
       const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return existing_value->is_type<ASTDeductionTargetArray>();
+      if (existing_value->is_type<ASTDeductionTargetArray>())
+      {
+        const auto& existing_target = existing_value->value<ASTDeductionTargetArray>();
+        if (value.has_size_literal() && !existing_target.has_size_literal())
+        {
+          return false;
+        }
+        else if (!value.has_size_literal() && existing_target.has_size_literal())
+        {
+          return false;
+        }
+        else if (value.has_size_literal() && existing_target.has_size_literal())
+        {
+          return value.size_literal() == existing_target.size_literal();
+        }
+        else  // Neither has size literal.
+        {
+          return true;
+        }
+      }
+      else
+      {
+        return false;
+      }
     }
     else
     {
@@ -223,7 +246,30 @@ has_incompatible_target_in_table(const ASTDeductionTarget& target,
     if (tbl.count(value.name()) > 0)
     {
       const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return !existing_value->is_type<ASTDeductionTargetArray>();
+      if (existing_value->is_type<ASTDeductionTargetArray>())
+      {
+        const auto& existing_target = existing_value->value<ASTDeductionTargetArray>();
+        if (value.has_size_literal() && !existing_target.has_size_literal())
+        {
+          return true;
+        }
+        else if (!value.has_size_literal() && existing_target.has_size_literal())
+        {
+          return true;
+        }
+        else if (value.has_size_literal() && existing_target.has_size_literal())
+        {
+          return value.size_literal() != existing_target.size_literal();
+        }
+        else  // Neither has size literal.
+        {
+          return false;
+        }
+      }
+      else
+      {
+        return true;
+      }
     }
   }
   else if (target.is_type<ASTDeductionTargetComputed>())
