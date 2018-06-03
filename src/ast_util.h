@@ -47,4 +47,7 @@ void
 add_target_to_table(const ASTDeductionTarget&, TargetTable*);
 
 bool
-is_target_in_table(const ASTDeductionTarget&, const TargetTable&);
+has_compatible_target_in_table(const ASTDeductionTarget&, const TargetTable&);
+
+bool
+has_incompatible_target_in_table(const ASTDeductionTarget&, const TargetTable&);

@@ -161,17 +161,34 @@ add_target_to_table(const ASTDeductionTarget& target, TargetTable* tbl)
 // -----------------------------------------------------------------------------
 
 bool
-is_target_in_table(const ASTDeductionTarget& target, const TargetTable& tbl)
+has_compatible_target_in_table(const ASTDeductionTarget& target,
+                               const TargetTable& tbl)
 {
   if (target.is_type<ASTDeductionTargetSingular>())
   {
     const auto& value = target.value<ASTDeductionTargetSingular>();
-    return tbl.count(value.name()) > 0;
+    if (tbl.count(value.name()) > 0)
+    {
+      const ASTDeductionTarget* existing_value = tbl.at(value.name());
+      return existing_value->is_type<ASTDeductionTargetSingular>();
+    }
+    else
+    {
+      return false;
+    }
   }
   else if (target.is_type<ASTDeductionTargetArray>())
   {
     const auto& value = target.value<ASTDeductionTargetArray>();
-    return tbl.count(value.name()) > 0;
+    if (tbl.count(value.name()) > 0)
+    {
+      const ASTDeductionTarget* existing_value = tbl.at(value.name());
+      return existing_value->is_type<ASTDeductionTargetArray>();
+    }
+    else
+    {
+      return false;
+    }
   }
   else if (target.is_type<ASTDeductionTargetComputed>())
   {
@@ -183,6 +200,39 @@ is_target_in_table(const ASTDeductionTarget& target, const TargetTable& tbl)
   {
     ASSERT(0); // Should not be reachable.
   }
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+has_incompatible_target_in_table(const ASTDeductionTarget& target,
+                                 const TargetTable& tbl)
+{
+  if (target.is_type<ASTDeductionTargetSingular>())
+  {
+    const auto& value = target.value<ASTDeductionTargetSingular>();
+    if (tbl.count(value.name()) > 0)
+    {
+      const ASTDeductionTarget* existing_value = tbl.at(value.name());
+      return !existing_value->is_type<ASTDeductionTargetSingular>();
+    }
+  }
+  else if (target.is_type<ASTDeductionTargetArray>())
+  {
+    const auto& value = target.value<ASTDeductionTargetArray>();
+    if (tbl.count(value.name()) > 0)
+    {
+      const ASTDeductionTarget* existing_value = tbl.at(value.name());
+      return !existing_value->is_type<ASTDeductionTargetArray>();
+    }
+  }
+  else if (target.is_type<ASTDeductionTargetComputed>())
+  {
+    // We do not know the type of the target if it's computed.
+    // So have to return false here.
+    return false;
+  }
+  return false;
 }
 
 // -----------------------------------------------------------------------------

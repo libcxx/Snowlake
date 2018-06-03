@@ -208,7 +208,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
   // Proposition.
   {
     const auto& proposition = inference_defn.proposition_defn();
-    if (!is_target_in_table(proposition.target(), context.target_tbl))
+    if (!has_compatible_target_in_table(proposition.target(), context.target_tbl))
     {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
         context.name.c_str());
@@ -240,8 +240,12 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& de
 
   // Handle target.
   {
-    // TODO: Check if incompatble target already exists.
     const auto& target = defn.deduction_target();
+    if (has_incompatible_target_in_table(target, context->target_tbl))
+    {
+      ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
+        context->name.c_str());
+    }
     add_target_to_table(target, &context->target_tbl);
   }
 
@@ -284,12 +288,12 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn& d
     {
       const auto& range_clause = defn.range_clause();
       const auto& target = range_clause.deduction_target();
-      if (!is_target_in_table(target, context->target_tbl))
+      if (target.is_type<ASTDeductionTargetSingular>())
       {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
-          context->name.c_str()); 
+          context->name.c_str());
       }
-      else if (target.is_type<ASTDeductionTargetSingular>())
+      if (!has_compatible_target_in_table(target, context->target_tbl))
       {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
           context->name.c_str());

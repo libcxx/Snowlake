@@ -304,3 +304,39 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithRepeatedIncompatibleTargetInPremiseDefinition)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ArgumentsTypes[];"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+  "";
+
+  const char* msg = "Found duplicate and incompatible target in inference \"MethodStaticDispatch\".";
+
+  assert_first_error(INPUT, msg);
+}
+
+// ----------------------------------------------------------------------------
