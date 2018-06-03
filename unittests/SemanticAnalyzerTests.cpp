@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "parser/ParserDriver.h"
 
 #include <cstdio>
+#include <tuple>
 
 
 // -----------------------------------------------------------------------------
@@ -34,9 +35,12 @@ class SemanticAnalyzerTests : public ::testing::Test
 {
 protected:
   void assert_first_error(const char* input, const char* msg) {
-    ASTModule module = parse_from_string(input);
+    ASTModule module;
+    bool res;
+    std::tie (module, res) = parse_from_string(input);
+    ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
-    bool res = analyzer.run(module);
+    res = analyzer.run(module);
     ASSERT_FALSE(res);
     ASSERT_FALSE(analyzer.errors().empty());
     const auto& error = analyzer.errors()[0];
@@ -44,9 +48,12 @@ protected:
   }
 
   void assert_no_error(const char* input) {
-    ASTModule module = parse_from_string(input);
+    ASTModule module;
+    bool res;
+    std::tie (module, res) = parse_from_string(input);
+    ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
-    const bool res = analyzer.run(module);
+    res = analyzer.run(module);
     if (!analyzer.errors().empty())
     {
       const auto& error = analyzer.errors()[0];
@@ -56,10 +63,10 @@ protected:
   }
 
 private:
-  ASTModule parse_from_string(const char* input) const {
+  std::tuple<ASTModule, bool> parse_from_string(const char* input) const {
     ParserDriver parser;
-    parser.parse_from_string(input);
-    return parser.module();
+    int res = parser.parse_from_string(input);
+    return std::make_tuple(parser.module(), res);
   }
 };
 
