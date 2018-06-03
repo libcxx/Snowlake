@@ -194,3 +194,23 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 }
 
 // -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SemanticAnalyzer::previsit(const ASTInferencePremiseDefn& defn)
+{
+  INIT_RES;
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SemanticAnalyzer::previsit(const ASTInferenceEqualityDefn& defn)
+{
+  INIT_RES;
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------

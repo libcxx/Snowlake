@@ -66,6 +66,8 @@ private:
   virtual bool previsit(const ASTModule&) override;
   virtual bool previsit(const ASTInferenceGroup&) override;
   virtual bool previsit(const ASTInferenceDefn&) override;
+  virtual bool previsit(const ASTInferencePremiseDefn&) override;
+  virtual bool previsit(const ASTInferenceEqualityDefn&) override;
 
 private:
   enum {
