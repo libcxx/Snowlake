@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ASTVisitor.h"
 #include "ast_util.h"
-#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
