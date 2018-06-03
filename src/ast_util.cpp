@@ -80,6 +80,14 @@ operator==(const ASTDeductionTarget& lhs, const ASTDeductionTarget& rhs)
 
 // -----------------------------------------------------------------------------
 
+bool operator!=(const ASTDeductionTarget& lhs,
+                const ASTDeductionTarget& rhs)
+{
+  return !operator==(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------
+
 bool operator==(const ASTDeductionTargetSingular& lhs,
                 const ASTDeductionTargetSingular& rhs)
 {
@@ -133,6 +141,33 @@ add_target_to_table(const ASTDeductionTarget& target, TargetTable* tbl)
   {
     const auto& value = target.value<ASTDeductionTargetArray>();
     tbl->operator[](value.name()) = &target;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+is_target_in_table(const ASTDeductionTarget& target, const TargetTable& tbl)
+{
+  if (target.is_type<ASTDeductionTargetSingular>())
+  {
+    const auto& value = target.value<ASTDeductionTargetSingular>();
+    return tbl.count(value.name()) > 0;
+  }
+  else if (target.is_type<ASTDeductionTargetArray>())
+  {
+    const auto& value = target.value<ASTDeductionTargetArray>();
+    return tbl.count(value.name()) > 0;
+  }
+  else if (target.is_type<ASTDeductionTargetComputed>())
+  {
+    // We do not know the type of the target if it's computed.
+    // So have to return true here.
+    return true;
+  }
+  else
+  {
+    ASSERT(0); // Should not be reachable.
   }
 }
 

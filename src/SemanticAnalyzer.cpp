@@ -203,6 +203,16 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
     }
   }
 
+  // Proposition.
+  {
+    const auto& proposition = inference_defn.proposition_defn();
+    if (!is_target_in_table(proposition.target(), context.target_tbl))
+    {
+      ON_ERROR("Invalid proposition target type in inference \"%s\".",
+        context.name.c_str());
+    }
+  }
+
   DEFAULT_RETURN;
 }
 
@@ -233,6 +243,18 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& de
     add_target_to_table(target, &context->target_tbl);
   }
 
+  // Handle while-clause.
+  {
+    if (defn.has_while_clause())
+    {
+      const auto& while_clause = defn.while_clause();
+      for (const auto& nested_defn : while_clause.premise_defns())
+      {
+        recursive_premise_defn_check(nested_defn, context);
+      }
+    }
+  }
+
   DEFAULT_RETURN;
 }
 
@@ -240,11 +262,30 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& de
 
 template <>
 bool
-SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn&,
-                                               InferenceDefnContext*)
+SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn& defn,
+                                               InferenceDefnContext* context)
 {
   INIT_RES;
-  // TODO: to be implemented...
+
+  const auto& lhs = defn.lhs();
+  const auto& rhs = defn.rhs();
+
+  if (lhs != rhs)
+  {
+    ON_ERROR("Incompatible targets in expression in inference \"%s\".",
+      context->name.c_str());
+  }
+
+  // Handle range-clause.
+  {
+    if (defn.has_range_clause())
+    {
+      const auto& range_clause = defn.range_clause();
+      const auto& target = range_clause.deduction_target();
+      return is_target_in_table(target, context->target_tbl);
+    }
+  }
+
   DEFAULT_RETURN;
 }
 

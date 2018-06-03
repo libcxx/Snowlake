@@ -34,6 +34,8 @@ canonicalize_ASTIdentifiable(const ASTIdentifiable&);
 
 bool operator==(const ASTDeductionTarget&, const ASTDeductionTarget&);
 
+bool operator!=(const ASTDeductionTarget&, const ASTDeductionTarget&);
+
 bool operator==(const ASTDeductionTargetSingular&,
                 const ASTDeductionTargetSingular&);
 
@@ -45,3 +47,6 @@ get_root_of_ASTIdentifiable(const ASTIdentifiable&);
 
 void
 add_target_to_table(const ASTDeductionTarget&, TargetTable*);
+
+bool
+is_target_in_table(const ASTDeductionTarget&, const TargetTable&);
