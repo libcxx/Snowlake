@@ -162,14 +162,17 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 {
   INIT_RES;
 
+  // Used for both global declarations and arguments,
+  // as names across both sets need to be unique.
+  std::unordered_set<std::string> name_set;
+
   // Global declarations.
   {
-    std::unordered_set<std::string> name_set;
     for (const auto& decl: inference_defn.global_decls())
     {
       const auto& name = decl.name();
       if (name_set.count(name)) {
-        ON_WARNING("Found multiple global declaration with name \"%s\".", name.c_str());
+        ON_WARNING("Found duplicate symbol (global declaration) with name \"%s\".", name.c_str());
       } else {
         name_set.insert(name);
       }
@@ -178,12 +181,11 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 
   // Arguments.
   {
-    std::unordered_set<std::string> name_set;
     for (const auto& argument: inference_defn.arguments())
     {
       const auto& name = argument.name();
       if (name_set.count(name)) {
-        ON_ERROR("Found multiple argument with name \"%s\".", name.c_str());
+        ON_ERROR("Found duplicate symbol (argument) with name \"%s\".", name.c_str());
       } else {
         name_set.insert(name);
       }

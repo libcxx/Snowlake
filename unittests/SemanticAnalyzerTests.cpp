@@ -83,25 +83,22 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingGroup)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(SemanticAnalyzerTests, TestWithRepeatingInferenceDefinition)
+TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
 {
   const char* INPUT =
     "group MyGroup {"
       "inference MyInference {"
-        "arguments: []"
-        "premises: []"
-        "proposition: HelloWorld;"
-      "}"
-      ""
-      "inference MyInference {"
-        "arguments: []"
+        "globals: ["
+          "Arg1"
+        "]"
+        "arguments: [Arg1 : ArgType]"
         "premises: []"
         "proposition: HelloWorld;"
       "}"
     "}"
   "";
 
-  const char* msg = "Found multiple inference definition with name \"MyInference\".";
+  const char* msg = "Found duplicate symbol (argument) with name \"Arg1\".";
 
   assert_first_error(INPUT, msg);
 }
