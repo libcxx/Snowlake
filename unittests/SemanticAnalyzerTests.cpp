@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "SemanticAnalyzer.h"
 #include "parser/ParserDriver.h"
 
+#include <cstdio>
+
 
 // -----------------------------------------------------------------------------
 
@@ -39,6 +41,18 @@ protected:
     ASSERT_FALSE(analyzer.errors().empty());
     const auto& error = analyzer.errors()[0];
     ASSERT_STREQ(error.msg.c_str(), msg);
+  }
+
+  void assert_no_error(const char* input) {
+    ASTModule module = parse_from_string(input);
+    SemanticAnalyzer analyzer;
+    const bool res = analyzer.run(module);
+    if (!analyzer.errors().empty())
+    {
+      const auto& error = analyzer.errors()[0];
+      printf("Unexpected Error: %s.\n", error.msg.c_str());
+    }
+    ASSERT_TRUE(res);
   }
 
 private:
@@ -99,6 +113,110 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
   "";
 
   const char* msg = "Found duplicate symbol (argument) with name \"Arg1\".";
+
+  assert_first_error(INPUT, msg);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithValidInput)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+          "ArgumentsTypes[0] != SELF_TYPE;"
+        "]"
+        ""
+        "proposition : lub(T1, T2);"
+      "}"
+    "}"
+  "";
+
+  assert_no_error(INPUT);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithValidPropositionTarget)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+        "]"
+        ""
+        "proposition : SomeType;"
+      "}"
+    "}"
+  "";
+
+  const char* msg = "Invalid proposition target type in inference \"MethodStaticDispatch\".";
+
+  assert_first_error(INPUT, msg);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(SemanticAnalyzerTests, TestWithInvalidRangeClauseTarget)
+{
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ParameterTypes;"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+          "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+  "";
+
+  const char* msg = "Invalid target in range clause in inference \"MethodStaticDispatch\".";
 
   assert_first_error(INPUT, msg);
 }

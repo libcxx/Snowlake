@@ -51,6 +51,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }                                     \
   } while (0)
 
+#define RETURN_ON_FAILURE(expr) if ( !(expr) ) return false
+
 // -----------------------------------------------------------------------------
 
 SemanticAnalyzer::SemanticAnalyzer()
@@ -198,7 +200,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
     {
       if (!recursive_premise_defn_check(premise_defn, &context))
       {
-        return res;
+        return false;
       }
     }
   }
@@ -229,7 +231,7 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& de
   {
     const auto& source = defn.source();
     const auto& source_root = get_root_of_ASTIdentifiable(source);
-    if (context->symbol_set.count(source_root))
+    if (context->symbol_set.count(source_root) == 0)
     {
       ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
         source_root.c_str(), context->name.c_str());
@@ -250,7 +252,7 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& de
       const auto& while_clause = defn.while_clause();
       for (const auto& nested_defn : while_clause.premise_defns())
       {
-        recursive_premise_defn_check(nested_defn, context);
+        RETURN_ON_FAILURE(recursive_premise_defn_check(nested_defn, context));
       }
     }
   }
@@ -270,7 +272,7 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn& d
   const auto& lhs = defn.lhs();
   const auto& rhs = defn.rhs();
 
-  if (lhs != rhs)
+  if (!are_targets_compatible(lhs, rhs))
   {
     ON_ERROR("Incompatible targets in expression in inference \"%s\".",
       context->name.c_str());
@@ -286,6 +288,11 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn& d
       {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
           context->name.c_str()); 
+      }
+      else if (target.is_type<ASTDeductionTargetSingular>())
+      {
+        ON_ERROR("Invalid target in range clause in inference \"%s\".",
+          context->name.c_str());
       }
     }
   }
@@ -306,12 +313,12 @@ SemanticAnalyzer::recursive_premise_defn_check(const ASTPremiseDefn& premise_def
   if (premise_defn.is_type<ASTInferencePremiseDefn>())
   {
     const auto& defn_value = premise_defn.value<ASTInferencePremiseDefn>();
-    recursive_premise_defn_check(defn_value, context);
+    RETURN_ON_FAILURE(recursive_premise_defn_check(defn_value, context));
   }
   else if (premise_defn.is_type<ASTInferenceEqualityDefn>())
   {
     const auto& defn_value = premise_defn.value<ASTInferenceEqualityDefn>();
-    recursive_premise_defn_check(defn_value, context);
+    RETURN_ON_FAILURE(recursive_premise_defn_check(defn_value, context));
   }
   else
   {

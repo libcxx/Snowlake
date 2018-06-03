@@ -51,21 +51,22 @@ canonicalize_ASTIdentifiable(const ASTIdentifiable& identifiable)
 // -----------------------------------------------------------------------------
 
 bool
-operator==(const ASTDeductionTarget& lhs, const ASTDeductionTarget& rhs)
+are_targets_compatible(const ASTDeductionTarget& lhs,
+                       const ASTDeductionTarget& rhs)
 {
   if (lhs.is_type<ASTDeductionTargetSingular>() &&
       rhs.is_type<ASTDeductionTargetSingular>())
   {
     const ASTDeductionTargetSingular& lhs_val = lhs.value<ASTDeductionTargetSingular>();
     const ASTDeductionTargetSingular& rhs_val = rhs.value<ASTDeductionTargetSingular>();
-    return lhs_val == rhs_val;
+    return are_targets_compatible(lhs_val, rhs_val);
   }
   else if (lhs.is_type<ASTDeductionTargetArray>() &&
            rhs.is_type<ASTDeductionTargetArray>())
   {
     const ASTDeductionTargetArray& lhs_val = lhs.value<ASTDeductionTargetArray>();
     const ASTDeductionTargetArray& rhs_val = rhs.value<ASTDeductionTargetArray>();
-    return lhs_val == rhs_val;
+    return are_targets_compatible(lhs_val, rhs_val);
   }
   else if (lhs.is_type<ASTDeductionTargetComputed>() ||
            rhs.is_type<ASTDeductionTargetComputed>())
@@ -74,41 +75,54 @@ operator==(const ASTDeductionTarget& lhs, const ASTDeductionTarget& rhs)
     // then the two are potentially equivalent.
     return true;
   }
+  else
+  {
+    // One of them is a target array, and the other one is a singular.
+    // If the array target has a size literal, meaning that it
+    // references a singular element in it, then they are considered
+    // compatible.
+    if (lhs.is_type<ASTDeductionTargetArray>())
+    {
+      const auto& lhs_val = lhs.value<ASTDeductionTargetArray>();
+      return lhs_val.has_size_literal();
+    }
+    else
+    {
+      ASSERT(rhs.is_type<ASTDeductionTargetArray>());
+      const auto& rhs_val = rhs.value<ASTDeductionTargetArray>();
+      return rhs_val.has_size_literal();
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+are_targets_compatible(const ASTDeductionTargetSingular& /* lhs */,
+                       const ASTDeductionTargetSingular& /* rhs */)
+{
+  // Singular targets should be compatible.
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+are_targets_compatible(const ASTDeductionTargetArray& lhs,
+                       const ASTDeductionTargetArray& rhs)
+{
+  if (lhs.has_size_literal() && rhs.has_size_literal())
+  {
+    return true;
+  }
+  else if (!lhs.has_size_literal() && !rhs.has_size_literal())
+  {
+    // In range clause.
+    // E.g. "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
+    return true;
+  }
 
   return false;
-}
-
-// -----------------------------------------------------------------------------
-
-bool operator!=(const ASTDeductionTarget& lhs,
-                const ASTDeductionTarget& rhs)
-{
-  return !operator==(lhs, rhs);
-}
-
-// -----------------------------------------------------------------------------
-
-bool operator==(const ASTDeductionTargetSingular& lhs,
-                const ASTDeductionTargetSingular& rhs)
-{
-  return lhs.name() == rhs.name();
-}
-
-// -----------------------------------------------------------------------------
-
-bool operator==(const ASTDeductionTargetArray& lhs,
-                const ASTDeductionTargetArray& rhs)
-{
-  if (lhs.name() != rhs.name())
-  {
-    return false;
-  }
-  else if (lhs.has_size_literal() && rhs.has_size_literal())
-  {
-    return lhs.size_literal() == rhs.size_literal();
-  }
-
-  return true;
 }
 
 // -----------------------------------------------------------------------------

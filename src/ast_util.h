@@ -32,15 +32,13 @@ typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 std::string
 canonicalize_ASTIdentifiable(const ASTIdentifiable&);
 
-bool operator==(const ASTDeductionTarget&, const ASTDeductionTarget&);
+bool are_targets_compatible(const ASTDeductionTarget&, const ASTDeductionTarget&);
 
-bool operator!=(const ASTDeductionTarget&, const ASTDeductionTarget&);
+bool are_targets_compatible(const ASTDeductionTargetSingular&,
+                            const ASTDeductionTargetSingular&);
 
-bool operator==(const ASTDeductionTargetSingular&,
-                const ASTDeductionTargetSingular&);
-
-bool operator==(const ASTDeductionTargetArray&,
-                const ASTDeductionTargetArray&);
+bool are_targets_compatible(const ASTDeductionTargetArray&,
+                            const ASTDeductionTargetArray&);
 
 const std::string&
 get_root_of_ASTIdentifiable(const ASTIdentifiable&);
