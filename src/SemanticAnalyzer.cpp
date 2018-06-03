@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SemanticAnalyzer.h"
 #include "ast.h"
-#include <unordered_set>
+#include "ast_util.h"
 
 // -----------------------------------------------------------------------------
 
@@ -162,19 +162,19 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 {
   INIT_RES;
 
-  // Used for both global declarations and arguments,
-  // as names across both sets need to be unique.
-  std::unordered_set<std::string> name_set;
+  InferenceDefnContext context {
+    .name = inference_defn.name()
+  };
 
   // Global declarations.
   {
     for (const auto& decl: inference_defn.global_decls())
     {
       const auto& name = decl.name();
-      if (name_set.count(name)) {
+      if (context.symbol_set.count(name)) {
         ON_WARNING("Found duplicate symbol (global declaration) with name \"%s\".", name.c_str());
       } else {
-        name_set.insert(name);
+        context.symbol_set.insert(name);
       }
     }
   }
@@ -184,10 +184,21 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
     for (const auto& argument: inference_defn.arguments())
     {
       const auto& name = argument.name();
-      if (name_set.count(name)) {
+      if (context.symbol_set.count(name)) {
         ON_ERROR("Found duplicate symbol (argument) with name \"%s\".", name.c_str());
       } else {
-        name_set.insert(name);
+        context.symbol_set.insert(name);
+      }
+    }
+  }
+
+  // Premise definitions.
+  {
+    for (const auto& premise_defn : inference_defn.premise_defns())
+    {
+      if (!recursive_premise_defn_check(premise_defn, &context))
+      {
+        return res;
       }
     }
   }
@@ -197,21 +208,71 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 
 // -----------------------------------------------------------------------------
 
-/* virtual */
+template <>
 bool
-SemanticAnalyzer::previsit(const ASTInferencePremiseDefn& defn)
+SemanticAnalyzer::recursive_premise_defn_check(const ASTInferencePremiseDefn& defn,
+                                               InferenceDefnContext* context)
 {
   INIT_RES;
+
+  // Handle source.
+  {
+    const auto& source = defn.source();
+    const auto& source_root = get_root_of_ASTIdentifiable(source);
+    if (context->symbol_set.count(source_root))
+    {
+      ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
+        source_root.c_str(), context->name.c_str());
+    }
+  }
+
+  // Handle target.
+  {
+    // TODO: Check if incompatble target already exists.
+    const auto& target = defn.deduction_target();
+    add_target_to_table(target, &context->target_tbl);
+  }
+
   DEFAULT_RETURN;
 }
 
 // -----------------------------------------------------------------------------
 
-/* virtual */
+template <>
 bool
-SemanticAnalyzer::previsit(const ASTInferenceEqualityDefn& defn)
+SemanticAnalyzer::recursive_premise_defn_check(const ASTInferenceEqualityDefn&,
+                                               InferenceDefnContext*)
 {
   INIT_RES;
+  // TODO: to be implemented...
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+SemanticAnalyzer::recursive_premise_defn_check(const ASTPremiseDefn& premise_defn,
+                                               InferenceDefnContext* context)
+{
+  INIT_RES;
+
+  const char* inference_defn_name = context->name.c_str();
+
+  if (premise_defn.is_type<ASTInferencePremiseDefn>())
+  {
+    const auto& defn_value = premise_defn.value<ASTInferencePremiseDefn>();
+  }
+  else if (premise_defn.is_type<ASTInferenceEqualityDefn>())
+  {
+    const auto& defn_value = premise_defn.value<ASTInferenceEqualityDefn>();
+    recursive_premise_defn_check(defn_value, context);
+  }
+  else
+  {
+    ON_ERROR("Found unknown type of premise definition in inference \"%s\".",
+      inference_defn_name);
+  }
+
   DEFAULT_RETURN;
 }
 

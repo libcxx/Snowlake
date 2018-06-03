@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "ASTVisitor.h"
+#include "ast_util.h"
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class SemanticAnalyzer : public ASTVisitor
@@ -66,8 +69,21 @@ private:
   virtual bool previsit(const ASTModule&) override;
   virtual bool previsit(const ASTInferenceGroup&) override;
   virtual bool previsit(const ASTInferenceDefn&) override;
-  virtual bool previsit(const ASTInferencePremiseDefn&) override;
-  virtual bool previsit(const ASTInferenceEqualityDefn&) override;
+
+  typedef std::unordered_set<std::string> SymbolSet;
+
+  struct InferenceDefnContext
+  {
+    const std::string& name;
+    SymbolSet symbol_set;
+    TargetTable target_tbl;
+  };
+
+  bool recursive_premise_defn_check(const ASTPremiseDefn&,
+                                    InferenceDefnContext*);
+
+  template <typename T>
+  bool recursive_premise_defn_check(const T&, InferenceDefnContext*);
 
 private:
   enum {

@@ -120,3 +120,20 @@ get_root_of_ASTIdentifiable(const ASTIdentifiable& identifiable)
 }
 
 // -----------------------------------------------------------------------------
+
+void
+add_target_to_table(const ASTDeductionTarget& target, TargetTable* tbl)
+{
+  if (target.is_type<ASTDeductionTargetSingular>())
+  {
+    const auto& value = target.value<ASTDeductionTargetSingular>();
+    tbl->operator[](value.name()) = &target;
+  }
+  else if (target.is_type<ASTDeductionTargetArray>())
+  {
+    const auto& value = target.value<ASTDeductionTargetArray>();
+    tbl->operator[](value.name()) = &target;
+  }
+}
+
+// -----------------------------------------------------------------------------

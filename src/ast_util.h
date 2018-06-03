@@ -25,6 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ast_fwd.h"
 #include <string>
+#include <unordered_map>
+
+typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable; 
 
 std::string
 canonicalize_ASTIdentifiable(const ASTIdentifiable&);
@@ -39,3 +42,6 @@ bool operator==(const ASTDeductionTargetArray&,
 
 const std::string&
 get_root_of_ASTIdentifiable(const ASTIdentifiable&);
+
+void
+add_target_to_table(const ASTDeductionTarget&, TargetTable*);
