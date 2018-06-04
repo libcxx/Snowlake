@@ -37,7 +37,16 @@ YY_DECL;
 class ParserDriver
 {
 public:
+  struct Options
+  {
+    bool trace_lexer;
+    bool trace_parser;
+    bool suppress_error_messages;
+  };
+
+public:
   ParserDriver();
+  explicit ParserDriver(Options);
   ~ParserDriver();
 
   /**
@@ -51,6 +60,12 @@ public:
    */
   bool trace_parser() const;
   void set_trace_parser(bool);
+
+  /**
+   * Getter and setter for suppressing error messages.
+   */
+  bool suppress_error_messages() const;
+  void set_suppress_error_messages(bool);
 
   /**
    * Run the parser on input file.
@@ -84,8 +99,7 @@ public:
   void error(const std::string& m);
 
 private:
-  bool m_trace_lexer;
-  bool m_trace_parser;
+  Options m_opts;
   std::string m_input_file;
   ASTModule m_module;
 };

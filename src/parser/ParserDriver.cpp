@@ -31,10 +31,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-    : m_trace_lexer(false)
-    , m_trace_parser(false)
+    : m_opts(ParserDriver::Options {
+                                      .trace_lexer=false,
+                                      .trace_parser=false,
+                                      .suppress_error_messages=false
+                                    })
     , m_input_file()
     , m_module()
+{
+}
+
+// -----------------------------------------------------------------------------
+
+ParserDriver::ParserDriver(Options opts)
+  : m_opts(opts)
+  , m_input_file()
+  , m_module()
 {
 }
 
@@ -49,7 +61,7 @@ ParserDriver::~ParserDriver()
 bool
 ParserDriver::trace_lexer() const
 {
-  return m_trace_lexer;
+  return m_opts.trace_lexer;
 }
 
 // -----------------------------------------------------------------------------
@@ -57,7 +69,7 @@ ParserDriver::trace_lexer() const
 void
 ParserDriver::set_trace_lexer(bool val)
 {
-  m_trace_lexer = val;
+  m_opts.trace_lexer = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -65,7 +77,7 @@ ParserDriver::set_trace_lexer(bool val)
 bool
 ParserDriver::trace_parser() const
 {
-  return m_trace_parser;
+  return m_opts.trace_parser;
 }
 
 // -----------------------------------------------------------------------------
@@ -73,7 +85,23 @@ ParserDriver::trace_parser() const
 void
 ParserDriver::set_trace_parser(bool val)
 {
-  m_trace_parser = val;
+  m_opts.trace_parser = val;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+ParserDriver::suppress_error_messages() const
+{
+  return m_opts.suppress_error_messages;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ParserDriver::set_suppress_error_messages(bool val)
+{
+  m_opts.suppress_error_messages = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -152,7 +180,10 @@ ParserDriver::set_module(ASTModule&& module)
 void
 ParserDriver::error(const yy::location& l, const std::string& m)
 {
-  std::cerr << "Parser error [" << l << "] : " << m << std::endl;
+  if (!suppress_error_messages())
+  {
+    std::cerr << "Parser error [" << l << "] : " << m << std::endl;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -160,7 +191,10 @@ ParserDriver::error(const yy::location& l, const std::string& m)
 void
 ParserDriver::error(const std::string& m)
 {
-  std::cerr << "Parser error: " << m << std::endl;
+  if (!suppress_error_messages())
+  {
+    std::cerr << "Parser error: " << m << std::endl;
+  }
 }
 
 // -----------------------------------------------------------------------------
