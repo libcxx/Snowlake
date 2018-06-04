@@ -34,7 +34,7 @@ class ParserTests : public ::testing::Test
 
 // -----------------------------------------------------------------------------
 
-TEST_F(ParserTests, TestDriverInitialization)
+TEST_F(ParserTests, TestDefaultInitialization)
 {
   ParserDriver driver;
 
@@ -42,6 +42,22 @@ TEST_F(ParserTests, TestDriverInitialization)
   ASSERT_FALSE(driver.trace_lexer());
   ASSERT_FALSE(driver.trace_parser());
   ASSERT_FALSE(driver.suppress_error_messages());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ParserTests, TestInitializationWithOptions)
+{
+  ParserDriver::Options opts {
+    .trace_lexer = true,
+    .trace_parser = true,
+    .suppress_error_messages = true
+  };
+  ParserDriver driver(opts);
+
+  ASSERT_EQ(opts.trace_lexer, driver.trace_lexer());
+  ASSERT_EQ(opts.trace_parser, driver.trace_parser());
+  ASSERT_EQ(opts.suppress_error_messages, driver.suppress_error_messages());
 }
 
 // -----------------------------------------------------------------------------
