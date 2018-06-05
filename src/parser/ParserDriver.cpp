@@ -31,20 +31,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-    : m_opts(ParserDriver::Options{.trace_lexer = false,
-                                   .trace_parser = false,
-                                   .suppress_error_messages = false})
-    , m_input_file()
-    , m_module()
+  : m_opts(ParserDriver::Options{.trace_lexer = false,
+                                 .trace_parser = false,
+                                 .suppress_error_messages = false})
+  , m_input_file()
+  , m_module()
 {
 }
 
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver(Options opts)
-    : m_opts(opts)
-    , m_input_file()
-    , m_module()
+  : m_opts(opts)
+  , m_input_file()
+  , m_module()
 {
 }
 

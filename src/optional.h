@@ -45,12 +45,12 @@ private:
 
 public:
   optional()
-      : m_value(nullopt_t{})
+    : m_value(nullopt_t{})
   {
   }
 
   optional(const T& val)
-      : m_value(val)
+    : m_value(val)
   {
   }
 

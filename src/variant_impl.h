@@ -287,7 +287,7 @@ class comparer
 {
 public:
   explicit comparer(Variant const& lhs) noexcept
-      : m_lhs(lhs)
+    : m_lhs(lhs)
   {
   }
 

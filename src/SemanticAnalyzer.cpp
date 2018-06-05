@@ -58,18 +58,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 SemanticAnalyzer::SemanticAnalyzer()
-    : ASTVisitor()
-    , m_errors()
-    , m_opts()
+  : ASTVisitor()
+  , m_errors()
+  , m_opts()
 {
 }
 
 // -----------------------------------------------------------------------------
 
 SemanticAnalyzer::SemanticAnalyzer(const Options& opts)
-    : ASTVisitor()
-    , m_errors()
-    , m_opts(opts)
+  : ASTVisitor()
+  , m_errors()
+  , m_opts(opts)
 {
 }
 

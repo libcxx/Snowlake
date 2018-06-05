@@ -60,18 +60,18 @@ private:
 
 public:
   variant()
-      : m_type_index(impl::invalid_type_index)
+    : m_type_index(impl::invalid_type_index)
   {
   }
 
   variant(variant<Types...> const& other)
-      : m_type_index(other.m_type_index)
+    : m_type_index(other.m_type_index)
   {
     helper_type::copy(other.m_type_index, &other.m_data, &m_data);
   }
 
   variant(variant<Types...>&& other) noexcept
-      : m_type_index(other.m_type_index)
+    : m_type_index(other.m_type_index)
   {
     helper_type::move(other.m_type_index, &other.m_data, &m_data);
     other.m_type_index = impl::invalid_type_index;
@@ -82,8 +82,8 @@ public:
       class = typename std::enable_if<impl::is_valid_type<
           typename std::remove_reference<T>::type, Types...>::value>::type>
   variant(T&& val) noexcept
-      : m_type_index(impl::value_traits<typename std::remove_reference<T>::type,
-                                        Types...>::index)
+    : m_type_index(impl::value_traits<typename std::remove_reference<T>::type,
+                                      Types...>::index)
   {
     constexpr std::size_t index =
         sizeof...(Types) -
