@@ -32,10 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <type_traits>
 #include <utility>
 
-namespace sl
-{
-namespace variant
-{
+namespace sl {
+namespace variant {
 
 // -----------------------------------------------------------------------------
 
@@ -126,10 +124,9 @@ public:
 
   bool operator==(variant const& rhs) const
   {
-    if (type_index() != rhs.type_index())
-      {
-        return false;
-      }
+    if (type_index() != rhs.type_index()) {
+      return false;
+    }
 
     impl::comparer<variant, impl::equal_to> visitor(*this);
     return visit(rhs, visitor);
@@ -154,10 +151,9 @@ public:
 
   bool operator<(variant const& rhs) const
   {
-    if (which() != rhs.which())
-      {
-        return which() < rhs.which();
-      }
+    if (which() != rhs.which()) {
+      return which() < rhs.which();
+    }
 
     impl::comparer<variant, impl::less_than> visitor(*this);
     return visit(rhs, visitor);
@@ -180,14 +176,11 @@ public:
                                impl::invalid_type_index)>::type* = nullptr>
   T& get()
   {
-    if (m_type_index == impl::direct_type<T, Types...>::index)
-      {
-        return *reinterpret_cast<T*>(&m_data);
-      }
-    else
-      {
-        THROW(std::runtime_error("failed get<T>() in variant type"));
-      }
+    if (m_type_index == impl::direct_type<T, Types...>::index) {
+      return *reinterpret_cast<T*>(&m_data);
+    } else {
+      THROW(std::runtime_error("failed get<T>() in variant type"));
+    }
   }
 
   template <
@@ -196,14 +189,11 @@ public:
                                impl::invalid_type_index)>::type* = nullptr>
   T const& get() const
   {
-    if (m_type_index == impl::direct_type<T, Types...>::index)
-      {
-        return *reinterpret_cast<T const*>(&m_data);
-      }
-    else
-      {
-        THROW(std::runtime_error("failed get<T>() in variant type"));
-      }
+    if (m_type_index == impl::direct_type<T, Types...>::index) {
+      return *reinterpret_cast<T const*>(&m_data);
+    } else {
+      THROW(std::runtime_error("failed get<T>() in variant type"));
+    }
   }
 
   /**

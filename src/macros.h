@@ -37,13 +37,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 #define ASSERT(expr)                                                           \
-  if (!(expr))                                                                 \
-    {                                                                          \
-      std::cerr << "Assertion failed: " << #expr << " (" << __FILE__ << ")"    \
-                << " [" << __FUNCTION__ << "() line " << __LINE__ << "]"       \
-                << std::endl;                                                  \
-      abort();                                                                 \
-    }
+  if (!(expr)) {                                                               \
+    std::cerr << "Assertion failed: " << #expr << " (" << __FILE__ << ")"      \
+              << " [" << __FUNCTION__ << "() line " << __LINE__ << "]"         \
+              << std::endl;                                                    \
+    abort();                                                                   \
+  }
 
 // -----------------------------------------------------------------------------
 

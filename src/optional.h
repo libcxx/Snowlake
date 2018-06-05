@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "variant.h"
 
-namespace sl
-{
+namespace sl {
 
-namespace
-{
+namespace {
 struct nullopt_t
 {
 };
