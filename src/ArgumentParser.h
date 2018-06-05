@@ -34,20 +34,27 @@ public:
   explicit ArgumentParser(const char*);
 
   void add_string_parameter(const char* name, const char* description,
-                            std::string*);
+                            bool required, std::string*,
+                            const char* default_val = nullptr);
 
   void add_uint32_parameter(const char* name, const char* description,
-                            uint32_t* res);
+                            bool required, uint32_t* res,
+                            uint32_t default_val = 0);
 
   void add_uint64_parameter(const char* name, const char* description,
-                            uint64_t* res);
+                            bool required, uint64_t* res,
+                            uint64_t default_val = 0);
 
   void add_float_parameter(const char* name, const char* description,
-                           float* res);
+                           bool required, float* res, float default_val = 0.0f);
+
+  void add_boolean_parameter(const char* name, const char* description,
+                             bool required, bool* res,
+                             bool default_val = false);
 
   template <typename T>
-  void add_array_parameter(const char* name, const char* desc,
-                           std::vector<T>* res)
+  void add_array_parameter(const char* name, const char* description,
+                           bool required, std::vector<T>* res)
   {
   }
 

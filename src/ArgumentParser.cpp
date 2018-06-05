@@ -39,7 +39,8 @@ ArgumentParser::ArgumentParser(const char*)
 
 void
 ArgumentParser::add_string_parameter(const char* name, const char* description,
-                                     std::string*)
+                                     bool required, std::string*,
+                                     const char* default_val)
 {
 }
 
@@ -47,7 +48,8 @@ ArgumentParser::add_string_parameter(const char* name, const char* description,
 
 void
 ArgumentParser::add_uint32_parameter(const char* name, const char* description,
-                                     uint32_t* res)
+                                     bool required, uint32_t* res,
+                                     uint32_t default_val)
 {
 }
 
@@ -55,7 +57,8 @@ ArgumentParser::add_uint32_parameter(const char* name, const char* description,
 
 void
 ArgumentParser::add_uint64_parameter(const char* name, const char* description,
-                                     uint64_t* res)
+                                     bool required, uint64_t* res,
+                                     uint64_t default_val)
 {
 }
 
@@ -63,7 +66,17 @@ ArgumentParser::add_uint64_parameter(const char* name, const char* description,
 
 void
 ArgumentParser::add_float_parameter(const char* name, const char* description,
-                                    float* res)
+                                    bool required, float* res,
+                                    float default_val)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::add_boolean_parameter(const char* name, const char* description,
+                                      bool required, bool* res,
+                                      bool default_val)
 {
 }
 
