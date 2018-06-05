@@ -28,6 +28,7 @@ add_executable(run_tests
     ParserTests.cpp
     VariantTests.cpp
     OptionalTests.cpp
+    ArgumentParserTests.cpp
     main.cpp
     )
 

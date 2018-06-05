@@ -35,6 +35,7 @@ set(sources
     ast_util.cpp
     ASTVisitor.cpp
     SemanticAnalyzer.cpp
+    ArgumentParser.cpp
     )
 
 
