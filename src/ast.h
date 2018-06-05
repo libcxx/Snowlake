@@ -59,12 +59,12 @@ class ASTIdentifier : public ASTNode
 {
 public:
   ASTIdentifier()
-      : m_value()
+    : m_value()
   {
   }
 
   ASTIdentifier(StringType&& value)
-      : m_value(value)
+    : m_value(value)
   {
   }
 
@@ -81,12 +81,12 @@ class ASTIdentifiable : public ASTNode
 {
 public:
   ASTIdentifiable()
-      : m_identifiers()
+    : m_identifiers()
   {
   }
 
   ASTIdentifiable(ASTIdentifierList&& identifiers)
-      : m_identifiers(identifiers)
+    : m_identifiers(identifiers)
   {
   }
 
@@ -108,12 +108,12 @@ class ASTDeductionTargetSingular
 {
 public:
   ASTDeductionTargetSingular()
-      : m_name()
+    : m_name()
   {
   }
 
   explicit ASTDeductionTargetSingular(StringType&& name)
-      : m_name(name)
+    : m_name(name)
   {
   }
 
@@ -130,20 +130,20 @@ class ASTDeductionTargetArray
 {
 public:
   ASTDeductionTargetArray()
-      : m_name()
-      , m_array_size()
+    : m_name()
+    , m_array_size()
   {
   }
 
   explicit ASTDeductionTargetArray(StringType&& name)
-      : m_name(name)
-      , m_array_size()
+    : m_name(name)
+    , m_array_size()
   {
   }
 
   ASTDeductionTargetArray(StringType&& name, IntegerType array_size)
-      : m_name(name)
-      , m_array_size(array_size)
+    : m_name(name)
+    , m_array_size(array_size)
   {
   }
 
@@ -171,15 +171,15 @@ class ASTDeductionTargetComputed
 {
 public:
   ASTDeductionTargetComputed()
-      : m_name()
-      , m_arguments()
+    : m_name()
+    , m_arguments()
   {
   }
 
   ASTDeductionTargetComputed(StringType&& name,
                              ASTDeductionTargetList&& arguments)
-      : m_name(name)
-      , m_arguments(arguments)
+    : m_name(name)
+    , m_arguments(arguments)
   {
   }
 
@@ -202,22 +202,22 @@ class ASTDeductionTarget : public ASTNode
 {
 public:
   ASTDeductionTarget()
-      : m_value()
+    : m_value()
   {
   }
 
   ASTDeductionTarget(ASTDeductionTargetSingular&& value)
-      : m_value(value)
+    : m_value(value)
   {
   }
 
   ASTDeductionTarget(ASTDeductionTargetArray&& value)
-      : m_value(value)
+    : m_value(value)
   {
   }
 
   ASTDeductionTarget(ASTDeductionTargetComputed&& value)
-      : m_value(value)
+    : m_value(value)
   {
   }
 
@@ -243,12 +243,12 @@ class ASTPropositionDefn
 {
 public:
   ASTPropositionDefn()
-      : m_target()
+    : m_target()
   {
   }
 
   ASTPropositionDefn(ASTDeductionTarget&& target)
-      : m_target(target)
+    : m_target(target)
   {
   }
 
@@ -265,17 +265,17 @@ class ASTRangeClause : public ASTNode
 {
 public:
   ASTRangeClause()
-      : m_lhs_idx(0)
-      , m_rhs_idx(0)
-      , m_deduction_target()
+    : m_lhs_idx(0)
+    , m_rhs_idx(0)
+    , m_deduction_target()
   {
   }
 
   ASTRangeClause(IntegerType lhs_idx, IntegerType rhs_idx,
                  ASTDeductionTarget&& deduction_target)
-      : m_lhs_idx(lhs_idx)
-      , m_rhs_idx(rhs_idx)
-      , m_deduction_target(deduction_target)
+    : m_lhs_idx(lhs_idx)
+    , m_rhs_idx(rhs_idx)
+    , m_deduction_target(deduction_target)
   {
   }
 
@@ -304,26 +304,26 @@ class ASTInferenceEqualityDefn
 {
 public:
   ASTInferenceEqualityDefn()
-      : m_lhs()
-      , m_rhs()
-      , m_range_clause()
+    : m_lhs()
+    , m_rhs()
+    , m_range_clause()
   {
   }
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs, ASTDeductionTarget&& rhs,
                            EqualityOperator oprt)
-      : m_lhs(lhs)
-      , m_rhs(rhs)
-      , m_oprt(oprt)
+    : m_lhs(lhs)
+    , m_rhs(rhs)
+    , m_oprt(oprt)
   {
   }
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs, ASTDeductionTarget&& rhs,
                            EqualityOperator oprt, ASTRangeClause&& range_clause)
-      : m_lhs(lhs)
-      , m_rhs(rhs)
-      , m_oprt(oprt)
-      , m_range_clause(range_clause)
+    : m_lhs(lhs)
+    , m_rhs(rhs)
+    , m_oprt(oprt)
+    , m_range_clause(range_clause)
   {
   }
 
@@ -363,12 +363,12 @@ class ASTWhileClause : public ASTNode
 {
 public:
   ASTWhileClause()
-      : m_premise_defns()
+    : m_premise_defns()
   {
   }
 
   explicit ASTWhileClause(ASTPremiseDefnList&& premise_defns)
-      : m_premise_defns(premise_defns)
+    : m_premise_defns(premise_defns)
   {
   }
 
@@ -385,26 +385,26 @@ class ASTInferencePremiseDefn
 {
 public:
   ASTInferencePremiseDefn()
-      : m_source()
-      , m_deduction_target()
-      , m_while_clause()
+    : m_source()
+    , m_deduction_target()
+    , m_while_clause()
   {
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
                           ASTDeductionTarget&& deduction_target)
-      : m_source(source)
-      , m_deduction_target(deduction_target)
-      , m_while_clause()
+    : m_source(source)
+    , m_deduction_target(deduction_target)
+    , m_while_clause()
   {
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
                           ASTDeductionTarget&& deduction_target,
                           ASTWhileClause&& while_clause)
-      : m_source(source)
-      , m_deduction_target(deduction_target)
-      , m_while_clause(while_clause)
+    : m_source(source)
+    , m_deduction_target(deduction_target)
+    , m_while_clause(while_clause)
   {
   }
 
@@ -438,17 +438,17 @@ class ASTPremiseDefn : public ASTNode
 {
 public:
   ASTPremiseDefn()
-      : m_value()
+    : m_value()
   {
   }
 
   ASTPremiseDefn(ASTInferencePremiseDefn&& defn)
-      : m_value(defn)
+    : m_value(defn)
   {
   }
 
   ASTPremiseDefn(ASTInferenceEqualityDefn&& defn)
-      : m_value(defn)
+    : m_value(defn)
   {
   }
 
@@ -473,14 +473,14 @@ class ASTInferenceArgument : public ASTNode
 {
 public:
   ASTInferenceArgument()
-      : m_name()
-      , m_type_name()
+    : m_name()
+    , m_type_name()
   {
   }
 
   ASTInferenceArgument(StringType&& name, StringType&& type_name)
-      : m_name(name)
-      , m_type_name(type_name)
+    : m_name(name)
+    , m_type_name(type_name)
   {
   }
 
@@ -503,12 +503,12 @@ class ASTGlobalDecl : public ASTNode
 {
 public:
   ASTGlobalDecl()
-      : m_name()
+    : m_name()
   {
   }
 
   ASTGlobalDecl(StringType&& name)
-      : m_name(name)
+    : m_name(name)
   {
   }
 
@@ -525,11 +525,11 @@ class ASTInferenceDefn : public ASTNode
 {
 public:
   ASTInferenceDefn()
-      : m_name()
-      , m_global_decls()
-      , m_arguments()
-      , m_premise_defns()
-      , m_proposition_defn()
+    : m_name()
+    , m_global_decls()
+    , m_arguments()
+    , m_premise_defns()
+    , m_proposition_defn()
   {
   }
 
@@ -537,11 +537,11 @@ public:
                    ASTInferenceArgumentList&& arguments,
                    ASTPremiseDefnList&& premise_defns,
                    ASTPropositionDefn&& proposition_defn)
-      : m_name(name)
-      , m_global_decls(global_decls)
-      , m_arguments(arguments)
-      , m_premise_defns(premise_defns)
-      , m_proposition_defn(proposition_defn)
+    : m_name(name)
+    , m_global_decls(global_decls)
+    , m_arguments(arguments)
+    , m_premise_defns(premise_defns)
+    , m_proposition_defn(proposition_defn)
   {
   }
 
@@ -582,14 +582,14 @@ class ASTEnvironmentDefn : public ASTNode
 {
 public:
   ASTEnvironmentDefn()
-      : m_field()
-      , m_value()
+    : m_field()
+    , m_value()
   {
   }
 
   ASTEnvironmentDefn(StringType&& field, StringType&& value)
-      : m_field(field)
-      , m_value(value)
+    : m_field(field)
+    , m_value(value)
   {
   }
 
@@ -612,18 +612,18 @@ class ASTInferenceGroup : public ASTNode
 {
 public:
   ASTInferenceGroup()
-      : m_name()
-      , m_environment_defns()
-      , m_inference_defns()
+    : m_name()
+    , m_environment_defns()
+    , m_inference_defns()
   {
   }
 
   ASTInferenceGroup(StringType&& name,
                     ASTEnvironmentDefnList&& environment_defns,
                     ASTInferenceDefnList&& inference_defns)
-      : m_name(name)
-      , m_environment_defns(environment_defns)
-      , m_inference_defns(inference_defns)
+    : m_name(name)
+    , m_environment_defns(environment_defns)
+    , m_inference_defns(inference_defns)
   {
   }
 
@@ -652,12 +652,12 @@ class ASTModule : public ASTNode
 {
 public:
   ASTModule()
-      : m_inference_groups()
+    : m_inference_groups()
   {
   }
 
   explicit ASTModule(ASTInferenceGroupList&& inference_groups)
-      : m_inference_groups(inference_groups)
+    : m_inference_groups(inference_groups)
   {
   }
 

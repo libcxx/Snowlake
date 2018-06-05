@@ -31,13 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-    : m_opts(ParserDriver::Options {
-                                      .trace_lexer=false,
-                                      .trace_parser=false,
-                                      .suppress_error_messages=false
-                                    })
-    , m_input_file()
-    , m_module()
+  : m_opts(ParserDriver::Options{.trace_lexer = false,
+                                 .trace_parser = false,
+                                 .suppress_error_messages = false})
+  , m_input_file()
+  , m_module()
 {
 }
 
@@ -180,8 +178,7 @@ ParserDriver::set_module(ASTModule&& module)
 void
 ParserDriver::error(const yy::location& l, const std::string& m)
 {
-  if (!suppress_error_messages())
-  {
+  if (!suppress_error_messages()) {
     std::cerr << "Parser error [" << l << "] : " << m << std::endl;
   }
 }
@@ -191,8 +188,7 @@ ParserDriver::error(const yy::location& l, const std::string& m)
 void
 ParserDriver::error(const std::string& m)
 {
-  if (!suppress_error_messages())
-  {
+  if (!suppress_error_messages()) {
     std::cerr << "Parser error: " << m << std::endl;
   }
 }

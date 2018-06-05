@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "variant.h"
 
-namespace sl
-{
+namespace sl {
 
-namespace
-{
+namespace {
 struct nullopt_t
 {
 };
@@ -47,12 +45,12 @@ private:
 
 public:
   optional()
-      : m_value(nullopt_t{})
+    : m_value(nullopt_t{})
   {
   }
 
   optional(const T& val)
-      : m_value(val)
+    : m_value(val)
   {
   }
 

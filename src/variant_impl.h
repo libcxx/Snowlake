@@ -26,12 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdlib>
 #include <type_traits>
 
-namespace sl
-{
-namespace variant
-{
-namespace impl
-{
+namespace sl {
+namespace variant {
+namespace impl {
 
 // -----------------------------------------------------------------------------
 
@@ -218,39 +215,30 @@ struct variant_helper<T, Types...>
 {
   static void destroy(const std::size_t id, void* m_data)
   {
-    if (id == sizeof...(Types))
-      {
-        reinterpret_cast<T*>(m_data)->~T();
-      }
-    else
-      {
-        variant_helper<Types...>::destroy(id, m_data);
-      }
+    if (id == sizeof...(Types)) {
+      reinterpret_cast<T*>(m_data)->~T();
+    } else {
+      variant_helper<Types...>::destroy(id, m_data);
+    }
   }
 
   static void move(const std::size_t old_id, void* old_value, void* new_value)
   {
-    if (old_id == sizeof...(Types))
-      {
-        new (new_value) T(std::move(*reinterpret_cast<T*>(old_value)));
-      }
-    else
-      {
-        variant_helper<Types...>::move(old_id, old_value, new_value);
-      }
+    if (old_id == sizeof...(Types)) {
+      new (new_value) T(std::move(*reinterpret_cast<T*>(old_value)));
+    } else {
+      variant_helper<Types...>::move(old_id, old_value, new_value);
+    }
   }
 
   static void copy(const std::size_t old_id, const void* old_value,
                    void* new_value)
   {
-    if (old_id == sizeof...(Types))
-      {
-        new (new_value) T(*reinterpret_cast<const T*>(old_value));
-      }
-    else
-      {
-        variant_helper<Types...>::copy(old_id, old_value, new_value);
-      }
+    if (old_id == sizeof...(Types)) {
+      new (new_value) T(*reinterpret_cast<const T*>(old_value));
+    } else {
+      variant_helper<Types...>::copy(old_id, old_value, new_value);
+    }
   }
 };
 
@@ -299,7 +287,7 @@ class comparer
 {
 public:
   explicit comparer(Variant const& lhs) noexcept
-      : m_lhs(lhs)
+    : m_lhs(lhs)
   {
   }
 

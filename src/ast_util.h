@@ -27,12 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <unordered_map>
 
-typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable; 
+typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 
-std::string
-canonicalize_ASTIdentifiable(const ASTIdentifiable&);
+std::string canonicalize_ASTIdentifiable(const ASTIdentifiable&);
 
-bool are_targets_compatible(const ASTDeductionTarget&, const ASTDeductionTarget&);
+bool are_targets_compatible(const ASTDeductionTarget&,
+                            const ASTDeductionTarget&);
 
 bool are_targets_compatible(const ASTDeductionTargetSingular&,
                             const ASTDeductionTargetSingular&);
@@ -40,14 +40,12 @@ bool are_targets_compatible(const ASTDeductionTargetSingular&,
 bool are_targets_compatible(const ASTDeductionTargetArray&,
                             const ASTDeductionTargetArray&);
 
-const std::string&
-get_root_of_ASTIdentifiable(const ASTIdentifiable&);
+const std::string& get_root_of_ASTIdentifiable(const ASTIdentifiable&);
 
-void
-add_target_to_table(const ASTDeductionTarget&, TargetTable*);
+void add_target_to_table(const ASTDeductionTarget&, TargetTable*);
 
-bool
-has_compatible_target_in_table(const ASTDeductionTarget&, const TargetTable&);
+bool has_compatible_target_in_table(const ASTDeductionTarget&,
+                                    const TargetTable&);
 
-bool
-has_incompatible_target_in_table(const ASTDeductionTarget&, const TargetTable&);
+bool has_incompatible_target_in_table(const ASTDeductionTarget&,
+                                      const TargetTable&);

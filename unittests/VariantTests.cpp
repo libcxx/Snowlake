@@ -301,16 +301,14 @@ protected:
       std::stringstream ss;
 
       ss << '[';
-      for (auto itr = val.cbegin(); itr != val.cend(); ++itr)
-        {
-          ss << *itr;
+      for (auto itr = val.cbegin(); itr != val.cend(); ++itr) {
+        ss << *itr;
 
-          auto itr_ = itr;
-          if (++itr_ != val.cend())
-            {
-              ss << ", ";
-            }
+        auto itr_ = itr;
+        if (++itr_ != val.cend()) {
+          ss << ", ";
         }
+      }
       ss << ']';
 
       return ss.str();

@@ -35,7 +35,7 @@ private:
   {
     NoError = 0x00,
     Warning = 0x01,
-    Error   = 0x10
+    Error = 0x10
   };
 
   struct Error
@@ -85,12 +85,14 @@ private:
   bool recursive_premise_defn_check(const T&, InferenceDefnContext*);
 
 private:
-  enum {
-    MAX_MSG_LEN=1024
+  enum
+  {
+    MAX_MSG_LEN = 1024
   };
 
   template <typename U, typename... Args>
-  void add_warning(const U& msg, Args... args) {
+  void add_warning(const U& msg, Args... args)
+  {
     if (m_opts.warningsAsErrors) {
       add_error(msg, args...);
     } else {
@@ -101,7 +103,8 @@ private:
   }
 
   template <typename U, typename... Args>
-  void add_error(const U& msg, Args... args) {
+  void add_error(const U& msg, Args... args)
+  {
     char buffer[MAX_MSG_LEN];
     snprintf(buffer, sizeof(buffer), msg, args...);
     m_errors.emplace_back(Error{ErrorCode::Error, buffer});

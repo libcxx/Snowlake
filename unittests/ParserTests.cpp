@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <gtest/gtest.h>
 
-
 // -----------------------------------------------------------------------------
 
 class ParserTests : public ::testing::Test
@@ -48,11 +47,9 @@ TEST_F(ParserTests, TestDefaultInitialization)
 
 TEST_F(ParserTests, TestInitializationWithOptions)
 {
-  ParserDriver::Options opts {
-    .trace_lexer = true,
-    .trace_parser = true,
-    .suppress_error_messages = true
-  };
+  ParserDriver::Options opts{.trace_lexer = true,
+                             .trace_parser = true,
+                             .suppress_error_messages = true};
   ParserDriver driver(opts);
 
   ASSERT_EQ(opts.trace_lexer, driver.trace_lexer());

@@ -23,10 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-namespace sl
-{
-namespace variant
-{
+namespace sl {
+namespace variant {
 
 // -----------------------------------------------------------------------------
 
