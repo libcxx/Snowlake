@@ -31,3 +31,10 @@ class ProgramDriverTests : public ::testing::Test
 };
 
 // -----------------------------------------------------------------------------
+
+TEST_F(ProgramDriverTests, TestDefaultInitialization)
+{
+  ProgramDriver driver;
+}
+
+// -----------------------------------------------------------------------------

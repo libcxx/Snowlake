@@ -31,3 +31,10 @@ class ArgumentParserTests : public ::testing::Test
 };
 
 // -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestDefaultInitialization)
+{
+  ArgumentParser argparser;
+}
+
+// -----------------------------------------------------------------------------
