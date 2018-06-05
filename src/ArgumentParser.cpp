@@ -74,6 +74,15 @@ ArgumentParser::add_float_parameter(const char* name, const char* description,
 // -----------------------------------------------------------------------------
 
 void
+ArgumentParser::add_double_parameter(const char* name, const char* description,
+                                     bool required, double* res,
+                                     double default_val = 0.0)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+void
 ArgumentParser::add_boolean_parameter(const char* name, const char* description,
                                       bool required, bool* res,
                                       bool default_val)
