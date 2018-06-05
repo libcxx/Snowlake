@@ -22,7 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ProgramDriver.h"
 
-int main(int argc, char** argv)
+int
+main(int argc, char** argv)
 {
   ProgramDriver driver;
   return driver.run(argc, argv);
