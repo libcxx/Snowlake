@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ArgumentParser.h"
 
-
 // -----------------------------------------------------------------------------
 
 class ArgumentParserTests : public ::testing::Test
