@@ -63,9 +63,15 @@ public:
   bool parse_args(int argc, char** argv);
 
 private:
-  bool check_parameters() const;
+  bool __defined_boolean_option(const std::string&) const;
 
-  void assign_default_values();
+  void __update_option_value(const std::string&, const std::string&);
+
+  bool __parse_args(int argc, char** argv);
+
+  bool __check_parameters() const;
+
+  void __assign_values();
 
   template <typename T>
   void add_parameter(const char* name, const char* description, bool required,

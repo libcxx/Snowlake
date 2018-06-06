@@ -93,8 +93,6 @@ TEST_F(ArgumentParserTests, TestParseWithMissingRequiredOption)
 
   bool res = argparser.parse_args(args.size(), (char**)args.data());
   ASSERT_FALSE(res);
-
-  ASSERT_STREQ(default_val, dst.c_str());
 }
 
 // -----------------------------------------------------------------------------

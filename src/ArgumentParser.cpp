@@ -22,6 +22,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ArgumentParser.h"
+#include <sstream>
+#include <string>
+
+// -----------------------------------------------------------------------------
+
+#define ADVANCE_ARGV                                                           \
+  do {                                                                         \
+    ++argv;                                                                    \
+    --argc;                                                                    \
+  } while (0)
+
+#define CHECK_ARGV                                                             \
+  do {                                                                         \
+    if (argc < 1 || argv == nullptr) {                                         \
+      return false;                                                            \
+    }                                                                          \
+  } while (0)
 
 // -----------------------------------------------------------------------------
 
@@ -130,7 +147,7 @@ ArgumentParser::option_provided(const char* name) const
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::check_parameters() const
+ArgumentParser::__check_parameters() const
 {
   for (const auto& pair : m_opts) {
     const auto& option = pair.second;
@@ -146,47 +163,140 @@ ArgumentParser::check_parameters() const
 bool
 ArgumentParser::parse_args(int argc, char** argv)
 {
-  // Parsing logic.
-  // TODO: to be implemented.
-
-  if (!check_parameters()) {
+  if (!__parse_args(argc, argv)) {
     return false;
   }
 
-  assign_default_values();
+  if (!__check_parameters()) {
+    return false;
+  }
+
+  __assign_values();
 
   return true;
 }
 
 // -----------------------------------------------------------------------------
 
+bool
+ArgumentParser::__parse_args(int argc, char** argv)
+{
+  CHECK_ARGV;
+
+  // Skip program name.
+  ADVANCE_ARGV;
+
+  while (argc) {
+    char* arg = *(argv);
+    if (arg == nullptr) {
+      return false;
+    }
+    std::string s(arg);
+    if (s.find("--") == 0) {
+      std::string key = s.substr(2);
+      if (key.empty()) {
+        return false;
+      }
+      if (!m_opts.count(key)) {
+        return false;
+      }
+      if (__defined_boolean_option(key)) {
+        m_opts[key].value.value = true;
+      } else {
+        ADVANCE_ARGV;
+        CHECK_ARGV;
+        std::string val(*argv);
+        // Update option value.
+        __update_option_value(key, val);
+      }
+    } else {
+      return false;
+    }
+    ADVANCE_ARGV;
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+ArgumentParser::__defined_boolean_option(const std::string& name) const
+{
+  auto itr = m_opts.find(name);
+  if (itr == m_opts.end()) {
+    return false;
+  }
+  const auto& option = itr->second;
+  return option.default_value.value.is<bool>();
+}
+
+// -----------------------------------------------------------------------------
+
 void
-ArgumentParser::assign_default_values()
+ArgumentParser::__update_option_value(const std::string& key,
+                                      const std::string& value)
+{
+  // TODO: Rework this mechanism.
+  auto& option = m_opts.at(key);
+  const auto& default_value = option.default_value.value;
+  if (default_value.is<std::string>()) {
+    option.value.value = value;
+  } else if (default_value.is<uint32_t>()) {
+    uint32_t val = 0;
+    std::stringstream ss(value);
+    ss >> val;
+    option.value.value = val;
+  } else if (default_value.is<uint64_t>()) {
+    uint64_t val = 0;
+    std::stringstream ss(value);
+    ss >> val;
+    option.value.value = val;
+  } else if (default_value.is<float>()) {
+    float val = 0.0f;
+    std::stringstream ss(value);
+    ss >> val;
+    option.value.value = val;
+  } else if (default_value.is<double>()) {
+    double val = 0.0;
+    std::stringstream ss(value);
+    ss >> val;
+    option.value.value = val;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::__assign_values()
 {
   // TODO: Rework this mechanism.
   for (auto& pair : m_opts) {
     auto& option = pair.second;
-    if (!option.value.value.valid()) {
-      const auto& default_value = option.default_value.value;
-      if (default_value.is<std::string>()) {
-        std::string* dst = reinterpret_cast<std::string*>(option.dst);
+    const auto& value = option.value.value;
+    const auto& default_value = option.default_value.value;
+    if (default_value.is<std::string>()) {
+      std::string* dst = reinterpret_cast<std::string*>(option.dst);
+      if (value.valid()) {
+        dst->assign(value.get<std::string>());
+      } else {
         dst->assign(default_value.get<std::string>());
-      } else if (default_value.is<bool>()) {
-        bool* dst = reinterpret_cast<bool*>(option.dst);
-        *dst = default_value.get<bool>();
-      } else if (default_value.is<uint32_t>()) {
-        uint32_t* dst = reinterpret_cast<uint32_t*>(option.dst);
-        *dst = default_value.get<uint32_t>();
-      } else if (default_value.is<uint64_t>()) {
-        uint64_t* dst = reinterpret_cast<uint64_t*>(option.dst);
-        *dst = default_value.get<uint64_t>();
-      } else if (default_value.is<float>()) {
-        float* dst = reinterpret_cast<float*>(option.dst);
-        *dst = default_value.get<float>();
-      } else if (default_value.is<double>()) {
-        double* dst = reinterpret_cast<double*>(option.dst);
-        *dst = default_value.get<double>();
       }
+    } else if (default_value.is<bool>()) {
+      bool* dst = reinterpret_cast<bool*>(option.dst);
+      *dst = (value.valid() ? value : default_value).get<bool>();
+    } else if (default_value.is<uint32_t>()) {
+      uint32_t* dst = reinterpret_cast<uint32_t*>(option.dst);
+      *dst = (value.valid() ? value : default_value).get<uint32_t>();
+    } else if (default_value.is<uint64_t>()) {
+      uint64_t* dst = reinterpret_cast<uint64_t*>(option.dst);
+      *dst = (value.valid() ? value : default_value).get<uint64_t>();
+    } else if (default_value.is<float>()) {
+      float* dst = reinterpret_cast<float*>(option.dst);
+      *dst = (value.valid() ? value : default_value).get<float>();
+    } else if (default_value.is<double>()) {
+      double* dst = reinterpret_cast<double*>(option.dst);
+      *dst = (value.valid() ? value : default_value).get<double>();
     }
   }
 }
