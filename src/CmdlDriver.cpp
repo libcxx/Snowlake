@@ -21,17 +21,40 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#pragma once
-
 #include "CmdlDriver.h"
+#include "ArgumentParser.h"
 
-class ProgramDriver
+// -----------------------------------------------------------------------------
+
+CmdlDriver::CmdlDriver()
+  : m_opts()
 {
-public:
-  ProgramDriver();
+}
 
-  int run(int argc, char** argv);
+// -----------------------------------------------------------------------------
 
-private:
-  CmdlDriver m_cmdl_driver;
-};
+const CmdlDriver::Options&
+CmdlDriver::options() const
+{
+  return m_opts;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+CmdlDriver::run(int argc, char** argv)
+{
+  ArgumentParser argparser;
+  argparser.add_string_parameter("output", "Output path", true,
+                                 &m_opts.output_path);
+  argparser.add_boolean_parameter("errors", "Treat warnings as errors", false,
+                                  &m_opts.warningsAsErrors, false);
+  argparser.add_boolean_parameter("bail", "Bail on first error", false,
+                                  &m_opts.bailOnFirstError, false);
+  argparser.add_boolean_parameter("debug", "Debug mode", false,
+                                  &m_opts.debugMode, false);
+
+  return argparser.parse_args(argc, argv);
+}
+
+// -----------------------------------------------------------------------------

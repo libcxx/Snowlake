@@ -20,18 +20,45 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-
-#pragma once
+#include <gtest/gtest.h>
 
 #include "CmdlDriver.h"
 
-class ProgramDriver
+#include <vector>
+
+// -----------------------------------------------------------------------------
+
+class CmdlDriverTests : public ::testing::Test
 {
-public:
-  ProgramDriver();
-
-  int run(int argc, char** argv);
-
-private:
-  CmdlDriver m_cmdl_driver;
 };
+
+// -----------------------------------------------------------------------------
+
+TEST_F(CmdlDriverTests, TestDefaultInitialization)
+{
+  CmdlDriver driver;
+
+  ASSERT_FALSE(driver.options().warningsAsErrors);
+  ASSERT_FALSE(driver.options().bailOnFirstError);
+  ASSERT_FALSE(driver.options().debugMode);
+  ASSERT_STREQ("", driver.options().output_path.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(CmdlDriverTests, TestRun)
+{
+  const std::vector<char*> args{"MyProgram", "--errors", "--bail",
+                                "--debug",   "--output", "/tmp/out"};
+
+  CmdlDriver driver;
+  bool res = driver.run(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_TRUE(driver.options().warningsAsErrors);
+  ASSERT_TRUE(driver.options().bailOnFirstError);
+  ASSERT_TRUE(driver.options().debugMode);
+  ASSERT_STREQ("/tmp/out", driver.options().output_path.c_str());
+}
+
+// -----------------------------------------------------------------------------

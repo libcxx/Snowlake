@@ -29,6 +29,7 @@ add_executable(run_tests
     VariantTests.cpp
     OptionalTests.cpp
     ArgumentParserTests.cpp
+    CmdlDriverTests.cpp
     ProgramDriverTests.cpp
     main.cpp
     )

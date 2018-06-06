@@ -20,18 +20,27 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-
 #pragma once
 
-#include "CmdlDriver.h"
+#include <string>
 
-class ProgramDriver
+class CmdlDriver
 {
 public:
-  ProgramDriver();
+  CmdlDriver();
 
-  int run(int argc, char** argv);
+  struct Options
+  {
+    bool warningsAsErrors;
+    bool bailOnFirstError;
+    bool debugMode;
+    std::string output_path;
+  };
+
+  const Options& options() const;
+
+  bool run(int argc, char** argv);
 
 private:
-  CmdlDriver m_cmdl_driver;
+  Options m_opts;
 };

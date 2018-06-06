@@ -23,14 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ProgramDriver.h"
 
-#include "ArgumentParser.h"
 #include <cstdlib>
-
-#define DEFAULT_DESCRIPTION "Snowlake compiler"
 
 // -----------------------------------------------------------------------------
 
 ProgramDriver::ProgramDriver()
+  : m_cmdl_driver()
 {
 }
 
@@ -39,15 +37,15 @@ ProgramDriver::ProgramDriver()
 int
 ProgramDriver::run(int argc, char** argv)
 {
-  ArgumentParser argparser(DEFAULT_DESCRIPTION);
-  bool res = argparser.parse_args(argc, argv);
+  bool res = true;
+  res = m_cmdl_driver.run(argc, argv);
   if (!res) {
     return EXIT_FAILURE;
   }
 
   // TODO: to be implemented.
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 // -----------------------------------------------------------------------------
