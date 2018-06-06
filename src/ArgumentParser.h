@@ -23,9 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "variant.h"
 #include <cstddef>
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 class ArgumentParser
 {
@@ -57,15 +58,35 @@ public:
                              bool required, bool* res,
                              bool default_val = false);
 
-  template <typename T>
-  void add_array_parameter(const char* name, const char* description,
-                           bool required, std::vector<T>* res)
-  {
-  }
-
   bool option_provided(const char* name) const;
 
   bool check_parameters() const;
 
   bool parse_args(int argc, char** argv);
+
+private:
+  template <typename T>
+  void add_parameter(const char* name, const char* description, bool required,
+                     void* res, T default_val);
+
+  struct CmdlOptionValue
+  {
+    using value_type = sl::variant::variant<std::string, uint32_t, uint64_t,
+                                            bool, float, double>;
+    value_type value;
+  };
+
+  struct CmdlOption
+  {
+    const char* description;
+    bool required;
+    CmdlOptionValue default_value;
+    CmdlOptionValue value;
+    void* dst;
+  };
+
+  using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
+
+  std::string m_desc;
+  CmdlOptionMap m_opts;
 };
