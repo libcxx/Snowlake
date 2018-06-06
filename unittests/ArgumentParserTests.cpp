@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ArgumentParser.h"
 
+#include <vector>
+
 // -----------------------------------------------------------------------------
 
 class ArgumentParserTests : public ::testing::Test
@@ -35,6 +37,165 @@ class ArgumentParserTests : public ::testing::Test
 TEST_F(ArgumentParserTests, TestDefaultInitialization)
 {
   ArgumentParser argparser;
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseStringOption)
+{
+  ArgumentParser argparser;
+  std::string dst;
+  const char* default_val = "DefaltName";
+  argparser.add_string_parameter("name", "Name of character", true, &dst,
+                                 default_val);
+
+  const std::vector<char*> args{"MyProgram", "--name", "HelloWorld"};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ("HelloWorld", dst.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseStringAndUInt32Options)
+{
+  ArgumentParser argparser;
+  std::string name_dst;
+  uint32_t age_dst;
+  argparser.add_string_parameter("name", "Name of character", true, &name_dst,
+                                 "DefaltName");
+  argparser.add_uint32_parameter("age", "Age of character", true, &age_dst, 20);
+
+  const std::vector<char*> args{"MyProgram", "--name", "NoName", "--age", "18"};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ("NoName", name_dst.c_str());
+  ASSERT_EQ(18, age_dst);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseWithMissingRequiredOption)
+{
+  ArgumentParser argparser;
+  std::string dst;
+  const char* default_val = "DefaltName";
+  argparser.add_string_parameter("name", "Name of character", true, &dst,
+                                 default_val);
+
+  const std::vector<char*> args{
+      "MyProgram",
+  };
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_FALSE(res);
+
+  ASSERT_STREQ(default_val, dst.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseWithMissingNonRequiredOption)
+{
+  ArgumentParser argparser;
+  std::string dst;
+  const char* default_val = "DefaltName";
+  argparser.add_string_parameter("name", "Name of character", false, &dst,
+                                 default_val);
+
+  const std::vector<char*> args{
+      "MyProgram",
+  };
+
+  const bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ(default_val, dst.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseWithAllOptionTypes)
+{
+  ArgumentParser argparser;
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+  argparser.add_string_parameter("str", "String value", true, &str_dst);
+  argparser.add_uint32_parameter("uint32", "UInt32 value", true, &uint32_dst);
+  argparser.add_uint64_parameter("uint64", "UInt64 value", true, &uint64_dst);
+  argparser.add_boolean_parameter("bool", "Boolean value", true, &bool_dst);
+  argparser.add_float_parameter("float", "Float value", true, &float_dst);
+  argparser.add_double_parameter("double", "Double value", true, &double_dst);
+
+  const std::vector<char*> args{"MyProgram", "--str",    "MyStringValue",
+                                "--uint32",  "32",       "--uint64",
+                                "64",        "--bool",   "--float",
+                                "3.14",      "--double", "2.71828"};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ("MyStringValue", str_dst.c_str());
+  ASSERT_EQ(32, uint32_dst);
+  ASSERT_EQ(64, uint64_dst);
+  ASSERT_EQ(true, bool_dst);
+  ASSERT_DOUBLE_EQ(3.14f, float_dst);
+  ASSERT_DOUBLE_EQ(2.71828, double_dst);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestParseWithAllOptionTypesAndDefaultValues)
+{
+  ArgumentParser argparser;
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+
+  const char* str_dst_default = "DefaultStringValue";
+  const uint32_t uint32_dst_default = 32;
+  const uint64_t uint64_dst_default = 64;
+  const bool bool_dst_default = false;
+  const float float_dst_default = 3.14f;
+  const double double_dst_default = 2.71828;
+
+  argparser.add_string_parameter("str", "String value", false, &str_dst,
+                                 str_dst_default);
+  argparser.add_uint32_parameter("uint32", "UInt32 value", false, &uint32_dst,
+                                 uint32_dst_default);
+  argparser.add_uint64_parameter("uint64", "UInt64 value", false, &uint64_dst,
+                                 uint64_dst_default);
+  argparser.add_boolean_parameter("bool", "Boolean value", false, &bool_dst,
+                                  bool_dst_default);
+  argparser.add_float_parameter("float", "Float value", false, &float_dst,
+                                float_dst_default);
+  argparser.add_double_parameter("double", "Double value", false, &double_dst,
+                                 double_dst_default);
+
+  const std::vector<char*> args{
+      "MyProgram",
+  };
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ(str_dst_default, str_dst.c_str());
+  ASSERT_EQ(uint32_dst_default, uint32_dst);
+  ASSERT_EQ(uint64_dst_default, uint64_dst);
+  ASSERT_EQ(bool_dst_default, bool_dst);
+  ASSERT_DOUBLE_EQ(float_dst_default, float_dst);
+  ASSERT_DOUBLE_EQ(double_dst_default, double_dst);
 }
 
 // -----------------------------------------------------------------------------

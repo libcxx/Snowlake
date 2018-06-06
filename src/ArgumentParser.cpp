@@ -44,7 +44,7 @@ ArgumentParser::ArgumentParser(const char* desc)
 template <typename T>
 void
 ArgumentParser::add_parameter(const char* name, const char* description,
-                              bool required, void* res, T default_val)
+                              bool required, T* res, T default_val)
 {
   CmdlOption opts{.description = description,
                   .required = required,
@@ -146,8 +146,49 @@ ArgumentParser::check_parameters() const
 bool
 ArgumentParser::parse_args(int argc, char** argv)
 {
+  // Parsing logic.
   // TODO: to be implemented.
-  return false;
+
+  if (!check_parameters()) {
+    return false;
+  }
+
+  assign_default_values();
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::assign_default_values()
+{
+  // TODO: Rework this mechanism.
+  for (auto& pair : m_opts) {
+    auto& option = pair.second;
+    if (!option.value.value.valid()) {
+      const auto& default_value = option.default_value.value;
+      if (default_value.is<std::string>()) {
+        std::string* dst = reinterpret_cast<std::string*>(option.dst);
+        dst->assign(default_value.get<std::string>());
+      } else if (default_value.is<bool>()) {
+        bool* dst = reinterpret_cast<bool*>(option.dst);
+        *dst = default_value.get<bool>();
+      } else if (default_value.is<uint32_t>()) {
+        uint32_t* dst = reinterpret_cast<uint32_t*>(option.dst);
+        *dst = default_value.get<uint32_t>();
+      } else if (default_value.is<uint64_t>()) {
+        uint64_t* dst = reinterpret_cast<uint64_t*>(option.dst);
+        *dst = default_value.get<uint64_t>();
+      } else if (default_value.is<float>()) {
+        float* dst = reinterpret_cast<float*>(option.dst);
+        *dst = default_value.get<float>();
+      } else if (default_value.is<double>()) {
+        double* dst = reinterpret_cast<double*>(option.dst);
+        *dst = default_value.get<double>();
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------

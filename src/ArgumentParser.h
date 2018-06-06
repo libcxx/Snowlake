@@ -36,8 +36,8 @@ public:
   explicit ArgumentParser(const char*);
 
   void add_string_parameter(const char* name, const char* description,
-                            bool required, std::string*,
-                            const char* default_val = nullptr);
+                            bool required, std::string* res,
+                            const char* default_val = "");
 
   void add_uint32_parameter(const char* name, const char* description,
                             bool required, uint32_t* res,
@@ -60,14 +60,16 @@ public:
 
   bool option_provided(const char* name) const;
 
-  bool check_parameters() const;
-
   bool parse_args(int argc, char** argv);
 
 private:
+  bool check_parameters() const;
+
+  void assign_default_values();
+
   template <typename T>
   void add_parameter(const char* name, const char* description, bool required,
-                     void* res, T default_val);
+                     T* res, T default_val);
 
   struct CmdlOptionValue
   {
