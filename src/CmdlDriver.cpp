@@ -59,6 +59,7 @@ CmdlDriver::run(int argc, char** argv)
 
   const bool res = argparser.parse_args(argc, argv);
   if (!res) {
+    argparser.print_help();
     return false;
   }
 

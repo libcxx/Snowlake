@@ -162,3 +162,14 @@ TEST_F(ProgramDriverTests, TestRunWithFailure)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(ProgramDriverTests, TestRunWithNoArguments)
+{
+  ProgramDriver driver;
+  const std::vector<char*> args{"snowlake"};
+
+  const int res = driver.run(args.size(), (char**)args.data());
+  ASSERT_EQ(EXIT_FAILURE, res);
+}
+
+// -----------------------------------------------------------------------------
