@@ -34,6 +34,7 @@ public:
     bool warningsAsErrors;
     bool bailOnFirstError;
     bool debugMode;
+    std::string input_path;
     std::string output_path;
   };
 

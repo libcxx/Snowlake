@@ -44,7 +44,8 @@ CmdlDriver::options() const
 bool
 CmdlDriver::run(int argc, char** argv)
 {
-  ArgumentParser argparser;
+  ArgumentParser argparser("Snowlake");
+
   argparser.add_string_parameter("output", "Output path", true,
                                  &m_opts.output_path);
   argparser.add_boolean_parameter("errors", "Treat warnings as errors", false,
@@ -53,8 +54,16 @@ CmdlDriver::run(int argc, char** argv)
                                   &m_opts.bailOnFirstError, false);
   argparser.add_boolean_parameter("debug", "Debug mode", false,
                                   &m_opts.debugMode, false);
+  argparser.set_positional_args_required(1);
 
-  return argparser.parse_args(argc, argv);
+  const bool res = argparser.parse_args(argc, argv);
+  if (!res) {
+    return false;
+  }
+
+  m_opts.input_path = argparser.positional_args().front();
+
+  return true;
 }
 
 // -----------------------------------------------------------------------------
