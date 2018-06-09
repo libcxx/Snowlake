@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
-
 // -----------------------------------------------------------------------------
 
 class ArgumentParserTests : public ::testing::Test
@@ -218,10 +217,18 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
   argparser.add_float_parameter("float", "Float value", true, &float_dst);
   argparser.add_double_parameter("double", "Double value", true, &double_dst);
 
-  const std::vector<char*> args{"MyProgram", "--str",    "MyStringValue",
-                                "--uint32",  "32",       "--uint64",
-                                "64",        "--bool",   "--float",
-                                "3.14",      "--double", "2.71828",
+  const std::vector<char*> args{"MyProgram",
+                                "--str",
+                                "MyStringValue",
+                                "--uint32",
+                                "32",
+                                "--uint64",
+                                "64",
+                                "--bool",
+                                "--float",
+                                "3.14",
+                                "--double",
+                                "2.71828",
                                 const_cast<char*>(input_path)};
 
   bool res = argparser.parse_args(args.size(), (char**)args.data());
