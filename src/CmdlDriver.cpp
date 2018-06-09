@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "CmdlDriver.h"
 #include "ArgumentParser.h"
+#include "version.h"
 
 // -----------------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ CmdlDriver::options() const
 bool
 CmdlDriver::run(int argc, char** argv)
 {
-  ArgumentParser argparser("Snowlake");
+  ArgumentParser argparser(SNOWLAKE_PROG_NAME, SNOWLAKE_VERSION_STRING, SNOWLAKE_PROG_DESC);
 
   argparser.add_string_parameter("output", "Output path", true,
                                  &m_opts.output_path);

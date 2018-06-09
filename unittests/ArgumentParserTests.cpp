@@ -252,7 +252,7 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
 
 TEST_F(ArgumentParserTests, TestPrintHelpMessage)
 {
-  ArgumentParser argparser("My Program", "This is a test program.");
+  ArgumentParser argparser("My Program", "1.0.0", "This is a test program.");
   std::string str_dst;
   uint32_t uint32_dst = 0;
   uint64_t uint64_dst = 0;

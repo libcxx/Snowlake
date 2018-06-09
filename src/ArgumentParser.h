@@ -36,7 +36,9 @@ public:
 
   explicit ArgumentParser(const char* name);
 
-  ArgumentParser(const char* name, const char* description);
+  ArgumentParser(const char* name, const char* version);
+
+  ArgumentParser(const char* name, const char* version, const char* description);
 
   void add_string_parameter(const char* name, const char* description,
                             bool required, std::string* res,
@@ -114,6 +116,7 @@ private:
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
 
   std::string m_name;
+  std::string m_version;
   std::string m_desc;
   CmdlOptionMap m_opts;
   PositionalArgumentList m_positional_args;

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ArgumentParser.h"
+#include "version.h"
 #include <sstream>
 #include <string>
 
@@ -44,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ArgumentParser::ArgumentParser()
   : m_name()
+  , m_version()
   , m_desc()
   , m_opts()
   , m_positional_args()
@@ -55,6 +57,7 @@ ArgumentParser::ArgumentParser()
 
 ArgumentParser::ArgumentParser(const char* name)
   : m_name(name)
+  , m_version()
   , m_desc()
   , m_opts()
   , m_positional_args()
@@ -64,8 +67,21 @@ ArgumentParser::ArgumentParser(const char* name)
 
 // -----------------------------------------------------------------------------
 
-ArgumentParser::ArgumentParser(const char* name, const char* description)
+ArgumentParser::ArgumentParser(const char* name, const char* version)
   : m_name(name)
+  , m_version(version)
+  , m_desc()
+  , m_opts()
+  , m_positional_args()
+  , m_min_positional_args_required(0)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+ArgumentParser::ArgumentParser(const char* name, const char* version, const char* description)
+  : m_name(name)
+  , m_version(version)
   , m_desc(description)
   , m_opts()
   , m_positional_args()
@@ -220,7 +236,11 @@ template <typename Stream>
 void
 ArgumentParser::__print_help(Stream& stream) const
 {
-  stream << (m_name.empty() ? "PROGRAM" : m_name) << std::endl;
+  stream << (m_name.empty() ? "PROGRAM" : m_name);
+  if (!m_version.empty()) {
+    stream << " (version " << m_version << ')';
+  }
+  stream << std::endl;
 
   if (!m_desc.empty()) {
     stream << std::endl;

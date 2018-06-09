@@ -41,3 +41,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Default program name.
 #define SNOWLAKE_PROG_NAME "Snowlake"
+
+// Default program description.
+#define SNOWLAKE_PROG_DESC "Snowlake compiler."
