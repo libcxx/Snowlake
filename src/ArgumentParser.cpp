@@ -45,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ArgumentParser::ArgumentParser()
   : m_desc()
   , m_opts()
+  , m_positional_args()
 {
 }
 
@@ -53,6 +54,7 @@ ArgumentParser::ArgumentParser()
 ArgumentParser::ArgumentParser(const char* desc)
   : m_desc(desc)
   , m_opts()
+  , m_positional_args()
 {
 }
 
@@ -178,6 +180,22 @@ ArgumentParser::parse_args(int argc, char** argv)
 
 // -----------------------------------------------------------------------------
 
+const ArgumentParser::PositionalArgumentList&
+ArgumentParser::positional_args() const
+{
+  return m_positional_args;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::__add_positional_parameter(std::string&& arg)
+{
+  m_positional_args.emplace_back(arg);
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 ArgumentParser::__parse_args(int argc, char** argv)
 {
@@ -210,7 +228,7 @@ ArgumentParser::__parse_args(int argc, char** argv)
         __update_option_value(key, val);
       }
     } else {
-      return false;
+      __add_positional_parameter(std::move(s));
     }
     ADVANCE_ARGV;
   }

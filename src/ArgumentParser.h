@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstddef>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class ArgumentParser
 {
@@ -62,6 +63,10 @@ public:
 
   bool parse_args(int argc, char** argv);
 
+  using PositionalArgumentList = std::vector<std::string>;
+
+  const PositionalArgumentList& positional_args() const;
+
 private:
   bool __defined_boolean_option(const std::string&) const;
 
@@ -72,6 +77,8 @@ private:
   bool __check_parameters() const;
 
   void __assign_values();
+
+  void __add_positional_parameter(std::string&& arg);
 
   template <typename T>
   void add_parameter(const char* name, const char* description, bool required,
@@ -97,4 +104,5 @@ private:
 
   std::string m_desc;
   CmdlOptionMap m_opts;
+  PositionalArgumentList m_positional_args;
 };
