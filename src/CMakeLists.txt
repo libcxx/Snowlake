@@ -36,6 +36,7 @@ set(sources
     ast_util.cpp
     ASTVisitor.cpp
     SemanticAnalyzer.cpp
+    Synthesizer.cpp
     ArgumentParser.cpp
     CmdlDriver.cpp
     ProgramDriver.cpp

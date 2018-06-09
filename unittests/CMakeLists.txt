@@ -25,6 +25,7 @@
 # Build executable `run_tests`.
 add_executable(run_tests
     SemanticAnalyzerTests.cpp
+    SynthesizerTests.cpp
     ParserTests.cpp
     VariantTests.cpp
     OptionalTests.cpp
