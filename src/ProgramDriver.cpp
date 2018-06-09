@@ -33,6 +33,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+static void print_semantic_analyzer_errors(const SemanticAnalyzer&,
+                                           std::ostream&);
+
+// -----------------------------------------------------------------------------
+
 ProgramDriver::ProgramDriver()
 {
 }
@@ -76,6 +81,7 @@ ProgramDriver::run(int argc, char** argv)
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
   if (!res) {
+    print_semantic_analyzer_errors(sema_analyzer, std::cout);
     return EXIT_FAILURE;
   }
 
@@ -93,6 +99,34 @@ ProgramDriver::run(int argc, char** argv)
 
   // SUCCESS.
   return EXIT_SUCCESS;
+}
+
+// -----------------------------------------------------------------------------
+
+static void
+print_semantic_analyzer_errors(const SemanticAnalyzer& sema_analyzer,
+                               std::ostream& out)
+{
+  size_t errors_count = 0;
+  size_t warnings_count = 0;
+  for (const auto& error : sema_analyzer.errors()) {
+    if (error.code == SemanticAnalyzer::ErrorCode::Error) {
+      ++errors_count;
+      out << "Error: ";
+    } else if (error.code == SemanticAnalyzer::ErrorCode::Warning) {
+      ++warnings_count;
+      out << "Warning: ";
+    }
+    out << error.msg << std::endl;
+  }
+
+  out << std::endl;
+  if (errors_count) {
+    out << "Errors: " << errors_count;
+  }
+  if (warnings_count) {
+    out << "Warnings: " << warnings_count;
+  }
 }
 
 // -----------------------------------------------------------------------------

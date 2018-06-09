@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class SemanticAnalyzer : public ASTVisitor
 {
-private:
+public:
   enum class ErrorCode
   {
     NoError = 0x00,
