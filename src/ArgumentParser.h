@@ -34,7 +34,9 @@ class ArgumentParser
 public:
   ArgumentParser();
 
-  explicit ArgumentParser(const char*);
+  explicit ArgumentParser(const char* name);
+
+  ArgumentParser(const char* name, const char* description);
 
   void add_string_parameter(const char* name, const char* description,
                             bool required, std::string* res,
@@ -67,6 +69,10 @@ public:
 
   const PositionalArgumentList& positional_args() const;
 
+  std::string help() const;
+
+  void print_help() const;
+
 private:
   bool __defined_boolean_option(const std::string&) const;
 
@@ -79,6 +85,9 @@ private:
   void __assign_values();
 
   void __add_positional_parameter(std::string&& arg);
+
+  template <typename Stream>
+  void __print_help(Stream&) const;
 
   template <typename T>
   void add_parameter(const char* name, const char* description, bool required,
@@ -102,6 +111,7 @@ private:
 
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
 
+  std::string m_name;
   std::string m_desc;
   CmdlOptionMap m_opts;
   PositionalArgumentList m_positional_args;

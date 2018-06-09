@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
+
 // -----------------------------------------------------------------------------
 
 class ArgumentParserTests : public ::testing::Test
@@ -238,6 +239,29 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
   ASSERT_FALSE(positional_args.empty());
   ASSERT_EQ(1, positional_args.size());
   ASSERT_STREQ(input_path, positional_args.front().c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestPrintHelpMessage)
+{
+  ArgumentParser argparser("My Program", "This is a test program.");
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+
+  argparser.add_string_parameter("str", "String value", true, &str_dst);
+  argparser.add_uint32_parameter("uint32", "UInt32 value", true, &uint32_dst);
+  argparser.add_uint64_parameter("uint64", "UInt64 value", true, &uint64_dst);
+  argparser.add_boolean_parameter("bool", "Boolean value", true, &bool_dst);
+  argparser.add_float_parameter("float", "Float value", true, &float_dst);
+  argparser.add_double_parameter("double", "Double value", true, &double_dst);
+
+  // Get help message.
+  argparser.print_help();
 }
 
 // -----------------------------------------------------------------------------

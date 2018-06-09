@@ -43,7 +43,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ArgumentParser::ArgumentParser()
-  : m_desc()
+  : m_name()
+  , m_desc()
   , m_opts()
   , m_positional_args()
 {
@@ -51,8 +52,19 @@ ArgumentParser::ArgumentParser()
 
 // -----------------------------------------------------------------------------
 
-ArgumentParser::ArgumentParser(const char* desc)
-  : m_desc(desc)
+ArgumentParser::ArgumentParser(const char* name)
+  : m_name(name)
+  , m_desc()
+  , m_opts()
+  , m_positional_args()
+{
+}
+
+// -----------------------------------------------------------------------------
+
+ArgumentParser::ArgumentParser(const char* name, const char* description)
+  : m_name(name)
+  , m_desc(description)
   , m_opts()
   , m_positional_args()
 {
@@ -184,6 +196,64 @@ const ArgumentParser::PositionalArgumentList&
 ArgumentParser::positional_args() const
 {
   return m_positional_args;
+}
+
+// -----------------------------------------------------------------------------
+
+template <typename Stream>
+void
+ArgumentParser::__print_help(Stream& stream) const
+{
+  stream << (m_name.empty() ? "PROGRAM" : m_name) << std::endl;
+
+  if (!m_desc.empty()) {
+    stream << std::endl;
+    stream << m_desc;
+    stream << std::endl;
+  }
+  stream << std::endl;
+
+#define HELP_MENU_DASHDASH "--"
+#define HELP_MENU_VALUE_PLACEHOLDER " <value>"
+#define HELP_MENU_INDENT "\t\t\t"
+#define HELP_MENU_OPTIONS_LABEL "OPTIONS:"
+
+  stream << HELP_MENU_OPTIONS_LABEL << std::endl;
+
+  for (const auto& pair : m_opts) {
+    const auto& name = pair.first;
+    const auto& option = pair.second;
+    const auto& default_value = option.default_value.value;
+
+    stream << HELP_MENU_DASHDASH << name;
+    if (!default_value.is<bool>()) {
+      stream << HELP_MENU_VALUE_PLACEHOLDER;
+    }
+    stream << std::endl;
+    stream << HELP_MENU_INDENT << option.description;
+    if (option.required) {
+      stream << " (Optional)";
+    }
+    stream << '.' << std::endl;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+std::string
+ArgumentParser::help() const
+{
+  std::stringstream ss;
+  __print_help(ss);
+  return ss.str();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::print_help() const
+{
+  __print_help(std::cout);
 }
 
 // -----------------------------------------------------------------------------
