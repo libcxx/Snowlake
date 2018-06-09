@@ -122,10 +122,10 @@ print_semantic_analyzer_errors(const SemanticAnalyzer& sema_analyzer,
 
   out << std::endl;
   if (errors_count) {
-    out << "Errors: " << errors_count;
+    out << "Errors: " << errors_count << std::endl;
   }
   if (warnings_count) {
-    out << "Warnings: " << warnings_count;
+    out << "Warnings: " << warnings_count << std::endl;
   }
 }
 
