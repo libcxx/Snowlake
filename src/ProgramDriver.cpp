@@ -33,7 +33,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-static void print_semantic_analyzer_errors(const SemanticAnalyzer&,
+static void print_semantic_analyzer_errors(const std::string&,
+                                           const SemanticAnalyzer&,
                                            std::ostream&);
 
 // -----------------------------------------------------------------------------
@@ -81,7 +82,8 @@ ProgramDriver::run(int argc, char** argv)
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
   if (!res) {
-    print_semantic_analyzer_errors(sema_analyzer, std::cout);
+    print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
+                                   std::cout);
     return EXIT_FAILURE;
   }
 
@@ -104,7 +106,8 @@ ProgramDriver::run(int argc, char** argv)
 // -----------------------------------------------------------------------------
 
 static void
-print_semantic_analyzer_errors(const SemanticAnalyzer& sema_analyzer,
+print_semantic_analyzer_errors(const std::string& input_path,
+                               const SemanticAnalyzer& sema_analyzer,
                                std::ostream& out)
 {
   size_t errors_count = 0;
@@ -112,20 +115,30 @@ print_semantic_analyzer_errors(const SemanticAnalyzer& sema_analyzer,
   for (const auto& error : sema_analyzer.errors()) {
     if (error.code == SemanticAnalyzer::ErrorCode::Error) {
       ++errors_count;
-      out << "Error: ";
+      out << input_path << ": error: ";
     } else if (error.code == SemanticAnalyzer::ErrorCode::Warning) {
       ++warnings_count;
-      out << "Warning: ";
+      out << input_path << ": warning: ";
     }
     out << error.msg << std::endl;
   }
 
   out << std::endl;
-  if (errors_count) {
-    out << "Errors: " << errors_count << std::endl;
-  }
   if (warnings_count) {
-    out << "Warnings: " << warnings_count << std::endl;
+    out << warnings_count;
+    out << " warning";
+    if (warnings_count > 1) {
+      out << 's';
+    }
+    out << " generated." << std::endl;
+  }
+  if (errors_count) {
+    out << errors_count;
+    out << " error";
+    if (errors_count > 1) {
+      out << 's';
+    }
+    out << " generated." << std::endl;
   }
 }
 
