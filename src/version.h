@@ -44,3 +44,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Default program description.
 #define SNOWLAKE_PROG_DESC "Snowlake compiler."
+
+// Default program long description.
+#define SNOWLAKE_PROG_DESC_LONG                                                \
+  "Snowlake is both a declarative language "                                   \
+  "for defining static type inference rules\n"                                 \
+  "of programming languages, as well as a "                                    \
+  "compiler-compiler that can synthesize\n"                                    \
+  "such inference rule definitions into"                                       \
+  "code used for static type checking,\n"                                      \
+  "typically used for semantic analysis "                                      \
+  "in language compilers."

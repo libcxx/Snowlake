@@ -45,7 +45,8 @@ CmdlDriver::options() const
 bool
 CmdlDriver::run(int argc, char** argv)
 {
-  ArgumentParser argparser(SNOWLAKE_PROG_NAME, SNOWLAKE_VERSION_STRING, SNOWLAKE_PROG_DESC);
+  ArgumentParser argparser(SNOWLAKE_PROG_NAME, SNOWLAKE_VERSION_STRING,
+                           SNOWLAKE_PROG_DESC, SNOWLAKE_PROG_DESC_LONG);
 
   argparser.add_string_parameter("output", "Output path", true,
                                  &m_opts.output_path);

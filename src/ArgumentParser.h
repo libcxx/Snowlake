@@ -38,7 +38,11 @@ public:
 
   ArgumentParser(const char* name, const char* version);
 
-  ArgumentParser(const char* name, const char* version, const char* description);
+  ArgumentParser(const char* name, const char* version,
+                 const char* description);
+
+  ArgumentParser(const char* name, const char* version, const char* description,
+                 const char* long_description);
 
   void add_string_parameter(const char* name, const char* description,
                             bool required, std::string* res,
@@ -118,6 +122,7 @@ private:
   std::string m_name;
   std::string m_version;
   std::string m_desc;
+  std::string m_long_desc;
   CmdlOptionMap m_opts;
   PositionalArgumentList m_positional_args;
   size_t m_min_positional_args_required;

@@ -47,6 +47,7 @@ ArgumentParser::ArgumentParser()
   : m_name()
   , m_version()
   , m_desc()
+  , m_long_desc()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -59,6 +60,7 @@ ArgumentParser::ArgumentParser(const char* name)
   : m_name(name)
   , m_version()
   , m_desc()
+  , m_long_desc()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -71,6 +73,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   : m_name(name)
   , m_version(version)
   , m_desc()
+  , m_long_desc()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -79,10 +82,27 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
 
 // -----------------------------------------------------------------------------
 
-ArgumentParser::ArgumentParser(const char* name, const char* version, const char* description)
+ArgumentParser::ArgumentParser(const char* name, const char* version,
+                               const char* description)
   : m_name(name)
   , m_version(version)
   , m_desc(description)
+  , m_long_desc()
+  , m_opts()
+  , m_positional_args()
+  , m_min_positional_args_required(0)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+ArgumentParser::ArgumentParser(const char* name, const char* version,
+                               const char* description,
+                               const char* long_description)
+  : m_name(name)
+  , m_version(version)
+  , m_desc(description)
+  , m_long_desc(long_description)
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -236,25 +256,38 @@ template <typename Stream>
 void
 ArgumentParser::__print_help(Stream& stream) const
 {
+  // Name and version.
   stream << (m_name.empty() ? "PROGRAM" : m_name);
   if (!m_version.empty()) {
     stream << " (version " << m_version << ')';
   }
   stream << std::endl;
 
+  // Description.
   if (!m_desc.empty()) {
     stream << std::endl;
     stream << m_desc;
+  }
+  stream << std::endl;
+
+  // Long description.
+  if (!m_long_desc.empty()) {
+    stream << std::endl;
+    stream << m_long_desc;
     stream << std::endl;
   }
   stream << std::endl;
+
+// Menu.
 
 #define HELP_MENU_DASHDASH "--"
 #define HELP_MENU_VALUE_PLACEHOLDER " <value>"
 #define HELP_MENU_INDENT "\t\t\t"
 #define HELP_MENU_OPTIONS_LABEL "OPTIONS:"
 
+  stream << std::endl;
   stream << HELP_MENU_OPTIONS_LABEL << std::endl;
+  stream << std::endl;
 
   for (const auto& pair : m_opts) {
     const auto& name = pair.first;
