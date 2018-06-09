@@ -23,10 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ProgramDriver.h"
 #include "SemanticAnalyzer.h"
+#include "Synthesizer.h"
 #include "ast_fwd.h"
 #include "parser/ParserDriver.h"
 
 #include <cstdlib>
+#include <fstream>
 
 // -----------------------------------------------------------------------------
 
@@ -75,8 +77,18 @@ ProgramDriver::run(int argc, char** argv)
   }
 
   // Synthesis.
-  // TODO: to be implemented.
+  std::ofstream file_stream(cmdl_opts.output_path.c_str(), std::ofstream::out);
+  if (!file_stream.good()) {
+    return EXIT_FAILURE;
+  }
+  Synthesizer::Options synthesis_opts{};
+  Synthesizer synthesizer(synthesis_opts);
+  res = synthesizer.run(module, file_stream);
+  if (!res) {
+    return EXIT_FAILURE;
+  }
 
+  // SUCCESS.
   return EXIT_SUCCESS;
 }
 
