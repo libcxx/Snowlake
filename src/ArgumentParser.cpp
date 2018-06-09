@@ -321,11 +321,27 @@ ArgumentParser::__print_help(Stream& stream) const
       stream << HELP_MENU_VALUE_PLACEHOLDER;
     }
     stream << std::endl;
-    stream << HELP_MENU_INDENT << option.description;
+    stream << HELP_MENU_INDENT << option.description << '.';
+    stream << std::endl;
+
+    // Show default value for non-required options.
     if (!option.required) {
-      stream << " (Optional)";
+      stream << HELP_MENU_INDENT << "Optional. Default value: ";
+      if (default_value.is<bool>()) {
+        stream << default_value.get<bool>();
+      } else if (default_value.is<std::string>()) {
+        stream << default_value.get<std::string>();
+      } else if (default_value.is<uint32_t>()) {
+        stream << default_value.get<uint32_t>();
+      } else if (default_value.is<uint64_t>()) {
+        stream << default_value.get<uint64_t>();
+      } else if (default_value.is<float>()) {
+        stream << default_value.get<float>();
+      } else if (default_value.is<double>()) {
+        stream << default_value.get<double>();
+      }
+      stream << std::endl;
     }
-    stream << '.' << std::endl;
   }
 }
 
