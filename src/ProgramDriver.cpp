@@ -22,6 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ProgramDriver.h"
+#include "ast_fwd.h"
+#include "parser/ParserDriver.h"
+#include "SemanticAnalyzer.h"
 
 #include <cstdlib>
 
@@ -43,6 +46,36 @@ ProgramDriver::run(int argc, char** argv)
     return EXIT_FAILURE;
   }
 
+  const auto& cmdl_opts = m_cmdl_driver.options();
+
+  // Parsing.
+  ParserDriver::Options parser_opts {
+    .trace_lexer = cmdl_opts.debugMode,
+    .trace_parser = cmdl_opts.debugMode,
+    .suppress_error_messages = !(cmdl_opts.debugMode),
+  };
+
+  ParserDriver parser(parser_opts);
+  res = parser.parse_from_file(cmdl_opts.input_path);
+  if (res != 0) {
+    return EXIT_FAILURE;
+  }
+
+  const auto& module = parser.module();
+
+  // Semantic analysis.
+  SemanticAnalyzer::Options sema_opts {
+    .bailOnFirstError = cmdl_opts.bailOnFirstError,
+    .warningsAsErrors = cmdl_opts.warningsAsErrors,
+    .verbose = cmdl_opts.debugMode
+  };
+  SemanticAnalyzer sema_analyzer(sema_opts);
+  res = sema_analyzer.run(module);
+  if (!res) {
+    return EXIT_FAILURE;
+  }
+
+  // Synthesis.
   // TODO: to be implemented.
 
   return EXIT_SUCCESS;
