@@ -54,7 +54,7 @@ CmdlDriver::run(int argc, char** argv)
                                   &m_opts.bailOnFirstError, false);
   argparser.add_boolean_parameter("debug", "Debug mode", false,
                                   &m_opts.debugMode, false);
-  argparser.set_positional_args_required(1);
+  argparser.set_minimum_positional_args_required(1);
 
   const bool res = argparser.parse_args(argc, argv);
   if (!res) {

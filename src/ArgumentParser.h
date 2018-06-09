@@ -61,7 +61,7 @@ public:
                              bool required, bool* res,
                              bool default_val = false);
 
-  void set_positional_args_required(size_t n);
+  void set_minimum_positional_args_required(size_t n);
 
   bool option_provided(const char* name) const;
 
@@ -117,5 +117,5 @@ private:
   std::string m_desc;
   CmdlOptionMap m_opts;
   PositionalArgumentList m_positional_args;
-  size_t m_positional_args_required;
+  size_t m_min_positional_args_required;
 };

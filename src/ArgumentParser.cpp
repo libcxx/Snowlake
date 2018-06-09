@@ -47,7 +47,7 @@ ArgumentParser::ArgumentParser()
   , m_desc()
   , m_opts()
   , m_positional_args()
-  , m_positional_args_required(0)
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -58,7 +58,7 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_desc()
   , m_opts()
   , m_positional_args()
-  , m_positional_args_required(0)
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -69,7 +69,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* description)
   , m_desc(description)
   , m_opts()
   , m_positional_args()
-  , m_positional_args_required(0)
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -167,7 +167,7 @@ bool
 ArgumentParser::__check_parameters() const
 {
   // Check if we meet the required number of positional arguments.
-  if (m_positional_args.size() < m_positional_args_required) {
+  if (m_positional_args.size() < m_min_positional_args_required) {
     return false;
   }
 
@@ -183,9 +183,9 @@ ArgumentParser::__check_parameters() const
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::set_positional_args_required(size_t n)
+ArgumentParser::set_minimum_positional_args_required(size_t n)
 {
-  m_positional_args_required = n;
+  m_min_positional_args_required = n;
 }
 
 // -----------------------------------------------------------------------------
