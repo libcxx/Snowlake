@@ -47,6 +47,7 @@ ArgumentParser::ArgumentParser()
   , m_desc()
   , m_opts()
   , m_positional_args()
+  , m_positional_args_required(0)
 {
 }
 
@@ -57,6 +58,7 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_desc()
   , m_opts()
   , m_positional_args()
+  , m_positional_args_required(0)
 {
 }
 
@@ -67,6 +69,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* description)
   , m_desc(description)
   , m_opts()
   , m_positional_args()
+  , m_positional_args_required(0)
 {
 }
 
@@ -163,6 +166,11 @@ ArgumentParser::option_provided(const char* name) const
 bool
 ArgumentParser::__check_parameters() const
 {
+  // Check if we meet the required number of positional arguments.
+  if (m_positional_args.size() < m_positional_args_required) {
+    return false;
+  }
+
   for (const auto& pair : m_opts) {
     const auto& option = pair.second;
     if (option.required && !option.value.value.valid()) {
@@ -170,6 +178,14 @@ ArgumentParser::__check_parameters() const
     }
   }
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::set_positional_args_required(size_t n)
+{
+  m_positional_args_required = n;
 }
 
 // -----------------------------------------------------------------------------

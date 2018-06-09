@@ -265,3 +265,16 @@ TEST_F(ArgumentParserTests, TestPrintHelpMessage)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestsWithInvalidNumberOfPositionalArguments)
+{
+  ArgumentParser argparser;
+  argparser.set_positional_args_required(1);
+
+  const std::vector<char*> args{"MyProgram"};
+
+  const bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_FALSE(res);
+}
+
+// -----------------------------------------------------------------------------
