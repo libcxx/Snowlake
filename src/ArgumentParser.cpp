@@ -322,7 +322,7 @@ ArgumentParser::__print_help(Stream& stream) const
     }
     stream << std::endl;
     stream << HELP_MENU_INDENT << option.description;
-    if (option.required) {
+    if (!option.required) {
       stream << " (Optional)";
     }
     stream << '.' << std::endl;
