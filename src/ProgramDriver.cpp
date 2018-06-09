@@ -22,9 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ProgramDriver.h"
+#include "SemanticAnalyzer.h"
 #include "ast_fwd.h"
 #include "parser/ParserDriver.h"
-#include "SemanticAnalyzer.h"
 
 #include <cstdlib>
 
@@ -49,10 +49,10 @@ ProgramDriver::run(int argc, char** argv)
   const auto& cmdl_opts = m_cmdl_driver.options();
 
   // Parsing.
-  ParserDriver::Options parser_opts {
-    .trace_lexer = cmdl_opts.debugMode,
-    .trace_parser = cmdl_opts.debugMode,
-    .suppress_error_messages = !(cmdl_opts.debugMode),
+  ParserDriver::Options parser_opts{
+      .trace_lexer = cmdl_opts.debugMode,
+      .trace_parser = cmdl_opts.debugMode,
+      .suppress_error_messages = !(cmdl_opts.debugMode),
   };
 
   ParserDriver parser(parser_opts);
@@ -64,11 +64,10 @@ ProgramDriver::run(int argc, char** argv)
   const auto& module = parser.module();
 
   // Semantic analysis.
-  SemanticAnalyzer::Options sema_opts {
-    .bailOnFirstError = cmdl_opts.bailOnFirstError,
-    .warningsAsErrors = cmdl_opts.warningsAsErrors,
-    .verbose = cmdl_opts.debugMode
-  };
+  SemanticAnalyzer::Options sema_opts{
+      .bailOnFirstError = cmdl_opts.bailOnFirstError,
+      .warningsAsErrors = cmdl_opts.warningsAsErrors,
+      .verbose = cmdl_opts.debugMode};
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
   if (!res) {
