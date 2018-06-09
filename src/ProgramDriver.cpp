@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdlib>
 #include <fstream>
+#include <iostream>
 
 // -----------------------------------------------------------------------------
 
@@ -90,6 +91,7 @@ ProgramDriver::run(int argc, char** argv)
   // Synthesis.
   std::ofstream file_stream(cmdl_opts.output_path.c_str(), std::ofstream::out);
   if (!file_stream.good()) {
+    std::cerr << "Cannot write to output path: " << cmdl_opts.output_path;
     return EXIT_FAILURE;
   }
   Synthesizer::Options synthesis_opts{};
