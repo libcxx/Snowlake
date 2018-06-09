@@ -48,6 +48,8 @@ CmdlDriver::run(int argc, char** argv)
   ArgumentParser argparser(SNOWLAKE_PROG_NAME, SNOWLAKE_VERSION_STRING,
                            SNOWLAKE_PROG_DESC, SNOWLAKE_PROG_DESC_LONG);
 
+  argparser.set_usage_string(SNOWLAKE_PROG_USAGE);
+
   argparser.add_string_parameter("output", "Output path", true,
                                  &m_opts.output_path);
   argparser.add_boolean_parameter("errors", "Treat warnings as errors", false,

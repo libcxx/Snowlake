@@ -48,6 +48,7 @@ ArgumentParser::ArgumentParser()
   , m_version()
   , m_desc()
   , m_long_desc()
+  , m_usage()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -61,6 +62,7 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_version()
   , m_desc()
   , m_long_desc()
+  , m_usage()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -74,6 +76,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   , m_version(version)
   , m_desc()
   , m_long_desc()
+  , m_usage()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -88,6 +91,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_version(version)
   , m_desc(description)
   , m_long_desc()
+  , m_usage()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -103,6 +107,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_version(version)
   , m_desc(description)
   , m_long_desc(long_description)
+  , m_usage()
   , m_opts()
   , m_positional_args()
   , m_min_positional_args_required(0)
@@ -226,6 +231,14 @@ ArgumentParser::set_minimum_positional_args_required(size_t n)
 
 // -----------------------------------------------------------------------------
 
+void
+ArgumentParser::set_usage_string(const char* usage)
+{
+  m_usage.assign(usage);
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 ArgumentParser::parse_args(int argc, char** argv)
 {
@@ -274,6 +287,15 @@ ArgumentParser::__print_help(Stream& stream) const
   if (!m_long_desc.empty()) {
     stream << std::endl;
     stream << m_long_desc;
+    stream << std::endl;
+  }
+  stream << std::endl;
+
+  // Usage.
+  if (!m_usage.empty()) {
+    stream << "Usage: ";
+    stream << (m_name.empty() ? "PROGRAM" : m_name) << ' ';
+    stream << m_usage;
     stream << std::endl;
   }
   stream << std::endl;

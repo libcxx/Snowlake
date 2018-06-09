@@ -77,6 +77,8 @@ public:
 
   const PositionalArgumentList& positional_args() const;
 
+  void set_usage_string(const char*);
+
   std::string help() const;
 
   void print_help() const;
@@ -123,6 +125,7 @@ private:
   std::string m_version;
   std::string m_desc;
   std::string m_long_desc;
+  std::string m_usage;
   CmdlOptionMap m_opts;
   PositionalArgumentList m_positional_args;
   size_t m_min_positional_args_required;

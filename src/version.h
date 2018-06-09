@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SNOWLAKE_VERSION_STRING "0.0.1"
 
 // Default program name.
-#define SNOWLAKE_PROG_NAME "Snowlake"
+#define SNOWLAKE_PROG_NAME "snowlake"
 
 // Default program description.
 #define SNOWLAKE_PROG_DESC "Snowlake compiler."
@@ -55,3 +55,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   "code used for static type checking,\n"                                      \
   "typically used for semantic analysis "                                      \
   "in language compilers."
+
+// Default program usage string.
+#define SNOWLAKE_PROG_USAGE "[OPTION]... INPUT"
