@@ -23,15 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "CmdlDriver.h"
-
 class ProgramDriver
 {
 public:
   ProgramDriver();
 
   int run(int argc, char** argv);
-
-private:
-  CmdlDriver m_cmdl_driver;
 };

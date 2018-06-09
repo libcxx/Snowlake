@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ProgramDriver.h"
+#include "CmdlDriver.h"
 #include "SemanticAnalyzer.h"
 #include "Synthesizer.h"
 #include "ast_fwd.h"
@@ -33,7 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ProgramDriver::ProgramDriver()
-  : m_cmdl_driver()
 {
 }
 
@@ -43,12 +43,15 @@ int
 ProgramDriver::run(int argc, char** argv)
 {
   bool res = true;
-  res = m_cmdl_driver.run(argc, argv);
+
+  // Cmdl driver.
+  CmdlDriver cmdl_driver;
+  res = cmdl_driver.run(argc, argv);
   if (!res) {
     return EXIT_FAILURE;
   }
 
-  const auto& cmdl_opts = m_cmdl_driver.options();
+  const auto& cmdl_opts = cmdl_driver.options();
 
   // Parsing.
   ParserDriver::Options parser_opts{
