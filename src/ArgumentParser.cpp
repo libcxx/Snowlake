@@ -465,34 +465,39 @@ ArgumentParser::__update_option_value(const std::string& key,
 void
 ArgumentParser::__assign_values()
 {
-  // TODO: Rework this mechanism.
   for (auto& pair : m_opts) {
     auto& option = pair.second;
-    const auto& value = option.value.value;
-    const auto& default_value = option.default_value.value;
-    if (default_value.is<std::string>()) {
-      std::string* dst = reinterpret_cast<std::string*>(option.dst);
-      if (value.valid()) {
-        dst->assign(value.get<std::string>());
-      } else {
-        dst->assign(default_value.get<std::string>());
-      }
-    } else if (default_value.is<bool>()) {
-      bool* dst = reinterpret_cast<bool*>(option.dst);
-      *dst = (value.valid() ? value : default_value).get<bool>();
-    } else if (default_value.is<uint32_t>()) {
-      uint32_t* dst = reinterpret_cast<uint32_t*>(option.dst);
-      *dst = (value.valid() ? value : default_value).get<uint32_t>();
-    } else if (default_value.is<uint64_t>()) {
-      uint64_t* dst = reinterpret_cast<uint64_t*>(option.dst);
-      *dst = (value.valid() ? value : default_value).get<uint64_t>();
-    } else if (default_value.is<float>()) {
-      float* dst = reinterpret_cast<float*>(option.dst);
-      *dst = (value.valid() ? value : default_value).get<float>();
-    } else if (default_value.is<double>()) {
-      double* dst = reinterpret_cast<double*>(option.dst);
-      *dst = (value.valid() ? value : default_value).get<double>();
-    }
+    option.assign_value_to_dst();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+template <typename T>
+void
+ArgumentParser::CmdlOption::__assign_value_to_dst()
+{
+  T* dst_ = reinterpret_cast<T*>(dst);
+  *dst_ = (value.value.valid() ? value.value : default_value.value).get<T>();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::CmdlOption::assign_value_to_dst()
+{
+  if (default_value.value.is<std::string>()) {
+    __assign_value_to_dst<std::string>();
+  } else if (default_value.value.is<bool>()) {
+    __assign_value_to_dst<bool>();
+  } else if (default_value.value.is<uint32_t>()) {
+    __assign_value_to_dst<uint32_t>();
+  } else if (default_value.value.is<uint64_t>()) {
+    __assign_value_to_dst<uint64_t>();
+  } else if (default_value.value.is<float>()) {
+    __assign_value_to_dst<float>();
+  } else if (default_value.value.is<double>()) {
+    __assign_value_to_dst<double>();
   }
 }
 

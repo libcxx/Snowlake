@@ -117,6 +117,12 @@ private:
     CmdlOptionValue default_value;
     CmdlOptionValue value;
     void* dst;
+
+    void assign_value_to_dst();
+
+  private:
+    template <typename T>
+    void __assign_value_to_dst();
   };
 
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
