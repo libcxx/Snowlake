@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Synthesizer::Synthesizer()
   : m_opts()
+  , m_msg()
 {
 }
 
@@ -40,11 +41,19 @@ Synthesizer::Synthesizer()
 
 Synthesizer::Synthesizer(const Options& opts)
   : m_opts(opts)
+  , m_msg()
 {
 }
 
 // -----------------------------------------------------------------------------
 
+const std::string&
+Synthesizer::msg() const
+{
+  return m_msg;
+}
+
+// -----------------------------------------------------------------------------
 bool
 Synthesizer::run(const ASTModule& module)
 {
