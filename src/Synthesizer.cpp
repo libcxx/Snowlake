@@ -55,6 +55,7 @@ typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 struct InferenceGroupSynthesisContext
 {
   std::string cls_name;
+  std::string type_cls;
   EnvDefnMap env_defn_map;
   std::unique_ptr<std::ofstream> header_file_ofs;
   std::unique_ptr<std::ofstream> cpp_file_ofs;
@@ -81,6 +82,8 @@ private:
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
   void set_msg(const char*);
+
+  void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*);
 
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
@@ -171,6 +174,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   const auto cls_name = get_class_name_from_env_defn(env_defn_map);
 
+  const auto type_cls = env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
+
   // Create header file.
   std::string header_filepath(m_opts.output_path);
   if (!header_filepath.empty() && header_filepath.back() != FORWARD_SLASH) {
@@ -218,6 +223,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   m_context->header_file_ofs = std::move(header_file_ofs);
   m_context->cpp_file_ofs = std::move(cpp_file_ofs);
   m_context->cls_name = std::move(cls_name);
+  m_context->type_cls = std::move(type_cls);
   m_context->env_defn_map = std::move(env_defn_map);
 
   // Write to header file.
@@ -282,13 +288,23 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 
 /* virtual */
 bool
-SynthesizerImpl::previsit(const ASTInferenceDefn&)
+SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
 {
   SYNTHESIZER_ASSERT(m_context);
   SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
-  // TODO:...
+  // Synthesize member function declaration.
+  {
+    *(m_context->header_file_ofs) << CPP_INDENTATION;
+    *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
+    *(m_context->header_file_ofs) << inference_defn.name();
+    *(m_context->header_file_ofs) << CPP_OPEN_PAREN;
+    synthesize_argument_list(inference_defn.arguments(), m_context->header_file_ofs.get());
+    *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
+    *(m_context->header_file_ofs) << CPP_SEMICOLON;
+    *(m_context->header_file_ofs) << std::endl;
+  }
 
   return true;
 }
@@ -336,6 +352,20 @@ SynthesizerImpl::get_class_name_from_env_defn(const EnvDefnMap& env_defn_map)
     return std::string(buf);
   }
   return itr->second;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args, std::ostream* ofs)
+{
+  for (size_t i = 0; i < args.size(); ++i) {
+    const auto& arg = args[i];
+    (*ofs) << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name() << CPP_AMPERSAND << CPP_SPACE << arg.name();
+    if (i + 1 < args.size()) {
+      (*ofs) << CPP_COMA << CPP_SPACE;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------

@@ -39,6 +39,7 @@ protected:
     static const char* INPUT =
       "group MyGroup {"
         "ClassName                 : MyInference;"
+        "TypeClass                 : TypeCls;"
         "EnvironmentClass          : ASTContext;"
         "EnvironmentName           : context;"
         ""

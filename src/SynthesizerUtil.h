@@ -30,11 +30,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_CLASS_KEYWORD "class"
 #define CPP_OPEN_BRACE '{'
 #define CPP_CLOSE_BRACE '}'
+#define CPP_OPEN_PAREN '('
+#define CPP_CLOSE_PAREN ')'
 #define CPP_SEMICOLON ';'
 #define CPP_COLON ':'
 #define CPP_PUBLIC_KEYWORD "public"
 #define CPP_PROTECTED_KEYWORD "protected"
 #define CPP_PRIVATE_KEYWORD "private"
+#define CPP_INDENTATION "    "
+#define CPP_SPACE ' '
+#define CPP_CONST_KEYWORD "const"
+#define CPP_AMPERSAND '&'
+#define CPP_COMA ','
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \
