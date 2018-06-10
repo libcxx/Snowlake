@@ -23,6 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Synthesizer.h"
 #include "ast.h"
+#include "macros.h"
+
+// -----------------------------------------------------------------------------
+
+#define SYNTHESIZER_ASSERT(expr) ASSERT( (expr) )
 
 // -----------------------------------------------------------------------------
 
