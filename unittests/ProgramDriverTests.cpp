@@ -112,7 +112,7 @@ private:
   }
 
 protected:
-  const char* m_output_path = "test_output.txt";
+  const char* m_output_path = "./";
   const char* m_input_path = "test_input.txt";
 };
 

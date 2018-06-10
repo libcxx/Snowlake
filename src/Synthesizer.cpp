@@ -26,12 +26,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "format_defn.h"
 #include "macros.h"
 #include <cstdio>
+#include <fstream>
 #include <unordered_map>
 
 // -----------------------------------------------------------------------------
 
 #define SYNTHESIZER_ASSERT(expr) ASSERT((expr))
 #define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
+#define FORWARD_SLASH '/'
+#define HEADER_FILE_EXT ".h"
+#define CPP_FILE_EXT ".cpp"
 
 // -----------------------------------------------------------------------------
 
@@ -47,7 +51,7 @@ get_incremental_int()
 class SynthesizerImpl
 {
 public:
-  explicit SynthesizerImpl(std::string*);
+  explicit SynthesizerImpl(const Synthesizer::Options&, std::string*);
 
   typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 
@@ -57,6 +61,9 @@ private:
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
+  void set_msg(const char*);
+
+  const Synthesizer::Options& m_opts;
   std::string* m_msg;
 };
 
@@ -85,18 +92,39 @@ Synthesizer::msg() const
 }
 
 // -----------------------------------------------------------------------------
+
 bool
 Synthesizer::run(const ASTModule& module)
 {
-  // TODO: [SNOWLAKE-15] Design and implement code synthesis pipeline
-  return true;
+  bool res = true;
+
+  SynthesizerImpl impl(m_opts, &m_msg);
+
+  for (const auto& inference_group : module.inference_groups()) {
+    res = impl.synthesize_group(inference_group);
+    if (!res) {
+      break;
+    }
+  }
+
+  return res;
 }
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::SynthesizerImpl(std::string* msg)
-  : m_msg(msg)
+SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
+                                 std::string* msg)
+  : m_opts(opts)
+  , m_msg(msg)
 {
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::set_msg(const char* msg)
+{
+  m_msg->assign(msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -107,6 +135,33 @@ SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
   EnvDefnMap env_defn_map =
       get_envn_defn_map_from_inference_group(inference_group);
   const auto cls_name = get_class_name_from_env_defn(env_defn_map);
+
+  // Create header file.
+  std::string header_filepath(m_opts.output_path);
+  if (!header_filepath.empty() && header_filepath.back() != FORWARD_SLASH) {
+    header_filepath.push_back(FORWARD_SLASH);
+  }
+  header_filepath.append(cls_name);
+  header_filepath.append(HEADER_FILE_EXT);
+
+  std::ofstream header_file_ofs(header_filepath, std::ofstream::out);
+  if (!header_file_ofs.good()) {
+    return false;
+  }
+
+  // Create .cpp file.
+  std::string cpp_filepath(m_opts.output_path);
+  if (!cpp_filepath.empty() && cpp_filepath.back() != FORWARD_SLASH) {
+    cpp_filepath.push_back(FORWARD_SLASH);
+  }
+  cpp_filepath.append(cls_name);
+  cpp_filepath.append(CPP_FILE_EXT);
+
+  std::ofstream cpp_file_ofs(cpp_filepath, std::ofstream::out);
+  if (!cpp_file_ofs.good()) {
+    return false;
+  }
+
   return true;
 }
 
