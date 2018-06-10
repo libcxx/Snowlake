@@ -31,6 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_OPEN_BRACE '{'
 #define CPP_CLOSE_BRACE '}'
 #define CPP_SEMICOLON ';'
+#define CPP_COLON ':'
+#define CPP_PUBLIC_KEYWORD "public"
+#define CPP_PROTECTED_KEYWORD "protected"
+#define CPP_PRIVATE_KEYWORD "private"
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \

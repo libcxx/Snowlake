@@ -231,6 +231,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_OPEN_BRACE;
     *(m_context->header_file_ofs) << std::endl;
+    *(m_context->header_file_ofs) << CPP_PUBLIC_KEYWORD << CPP_COLON;
+    *(m_context->header_file_ofs) << std::endl;
   }
 
   // Write to .cpp file.
