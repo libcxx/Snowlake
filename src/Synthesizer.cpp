@@ -296,6 +296,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
 
   // Synthesize member function declaration.
   {
+    *(m_context->cpp_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_INDENTATION;
     *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
     *(m_context->header_file_ofs) << inference_defn.name();
@@ -304,6 +305,21 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->header_file_ofs) << CPP_SEMICOLON;
     *(m_context->header_file_ofs) << std::endl;
+  }
+
+  // Synthesize member function definition.
+  {
+    *(m_context->cpp_file_ofs) << std::endl;
+    *(m_context->cpp_file_ofs) << m_context->type_cls << std::endl;
+    *(m_context->cpp_file_ofs) << m_context->cls_name;
+    *(m_context->cpp_file_ofs) << CPP_COLON << CPP_COLON;
+    *(m_context->cpp_file_ofs) << inference_defn.name();
+    *(m_context->cpp_file_ofs) << CPP_OPEN_PAREN;
+    synthesize_argument_list(inference_defn.arguments(), m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
+    *(m_context->cpp_file_ofs) << std::endl;
+    *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
+    *(m_context->cpp_file_ofs) << std::endl;
   }
 
   return true;
@@ -319,7 +335,8 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
   SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
-  // TODO:...
+  *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
+  *(m_context->cpp_file_ofs) << std::endl;
 
   return true;
 }
