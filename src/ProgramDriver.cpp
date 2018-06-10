@@ -91,13 +91,16 @@ ProgramDriver::run(int argc, char** argv)
   // Synthesis.
   std::ofstream file_stream(cmdl_opts.output_path.c_str(), std::ofstream::out);
   if (!file_stream.good()) {
-    std::cerr << "Cannot write to output path: " << cmdl_opts.output_path;
+    std::cerr << "Error: Cannot write to output path: "
+              << cmdl_opts.output_path;
     return EXIT_FAILURE;
   }
   Synthesizer::Options synthesis_opts{};
   Synthesizer synthesizer(synthesis_opts);
   res = synthesizer.run(module, file_stream);
   if (!res) {
+    std::cerr << "Error: Failed to synthesize output to: "
+              << cmdl_opts.output_path;
     return EXIT_FAILURE;
   }
 
