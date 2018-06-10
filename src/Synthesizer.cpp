@@ -25,10 +25,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ast.h"
 #include "macros.h"
 #include "format_defn.h"
+#include <cstdio>
+#include <unordered_map>
 
 // -----------------------------------------------------------------------------
 
 #define SYNTHESIZER_ASSERT(expr) ASSERT( (expr) )
+#define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
+
+// -----------------------------------------------------------------------------
+
+static size_t
+get_incremental_int()
+{
+  static size_t val = 1;
+  return val++;
+}
 
 // -----------------------------------------------------------------------------
 
@@ -37,10 +49,13 @@ class SynthesizerImpl
 public:
   explicit SynthesizerImpl(std::string*);
 
+  typedef std::unordered_map<std::string, std::string> EnvDefnMap;
+
   bool synthesize_group(const ASTInferenceGroup&);
 
 private:
-  const char* get_class_name_from_inference_group(const ASTInferenceGroup&);
+  EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
+  std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
   std::string* m_msg;
 };
@@ -89,17 +104,37 @@ SynthesizerImpl::SynthesizerImpl(std::string* msg)
 bool
 SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
 {
-  // TODO: to be implemented.
+  EnvDefnMap env_defn_map = get_envn_defn_map_from_inference_group(inference_group);
+  const auto cls_name = get_class_name_from_env_defn(env_defn_map);
   return true;
 }
 
 // -----------------------------------------------------------------------------
 
-const char*
-SynthesizerImpl::get_class_name_from_inference_group(const ASTInferenceGroup& inference_group)
+SynthesizerImpl::EnvDefnMap
+SynthesizerImpl::get_envn_defn_map_from_inference_group(const ASTInferenceGroup& inference_group)
 {
-  // TODO: to be implemented.
-  return "Inference";
+  SynthesizerImpl::EnvDefnMap env_defn_map;
+
+  for (const auto& envn_defn : inference_group.environment_defns()) {
+    env_defn_map[envn_defn.field()] = envn_defn.value();
+  }
+
+  return env_defn_map;
+}
+
+// -----------------------------------------------------------------------------
+
+std::string
+SynthesizerImpl::get_class_name_from_env_defn(const SynthesizerImpl::EnvDefnMap& env_defn_map)
+{
+  const auto itr = env_defn_map.find(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS);
+  if (itr == env_defn_map.cend()) {
+    char buf[16] = {0};
+    snprintf(buf, sizeof(buf), "%s%lu", SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX, get_incremental_int());
+    return std::string(buf);
+  }
+  return itr->second;
 }
 
 // -----------------------------------------------------------------------------
