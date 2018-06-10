@@ -48,8 +48,14 @@ get_incremental_int()
 
 // -----------------------------------------------------------------------------
 
+typedef std::unordered_map<std::string, std::string> EnvDefnMap;
+
+// -----------------------------------------------------------------------------
+
 struct InferenceGroupSynthesisContext
 {
+  std::string cls_name;
+  EnvDefnMap env_defn_map;
   std::unique_ptr<std::ofstream> header_file_ofs;
   std::unique_ptr<std::ofstream> cpp_file_ofs;
   ~InferenceGroupSynthesisContext();
@@ -61,8 +67,6 @@ class SynthesizerImpl : public ASTVisitor
 {
 public:
   explicit SynthesizerImpl(const Synthesizer::Options&, std::string*);
-
-  typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 
   bool run(const ASTModule&);
 
@@ -164,6 +168,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 {
   EnvDefnMap env_defn_map =
       get_envn_defn_map_from_inference_group(inference_group);
+
   const auto cls_name = get_class_name_from_env_defn(env_defn_map);
 
   // Create header file.
@@ -212,6 +217,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   }
   m_context->header_file_ofs = std::move(header_file_ofs);
   m_context->cpp_file_ofs = std::move(cpp_file_ofs);
+  m_context->cls_name = std::move(cls_name);
+  m_context->env_defn_map = std::move(env_defn_map);
 
   // Write to header file.
   {
@@ -219,7 +226,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
     *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ' << cls_name;
+    *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
+    *(m_context->header_file_ofs) << m_context->cls_name;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_OPEN_BRACE;
     *(m_context->header_file_ofs) << std::endl;
@@ -300,11 +308,11 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::EnvDefnMap
+EnvDefnMap
 SynthesizerImpl::get_envn_defn_map_from_inference_group(
     const ASTInferenceGroup& inference_group)
 {
-  SynthesizerImpl::EnvDefnMap env_defn_map;
+  EnvDefnMap env_defn_map;
 
   for (const auto& envn_defn : inference_group.environment_defns()) {
     env_defn_map[envn_defn.field()] = envn_defn.value();
@@ -316,8 +324,7 @@ SynthesizerImpl::get_envn_defn_map_from_inference_group(
 // -----------------------------------------------------------------------------
 
 std::string
-SynthesizerImpl::get_class_name_from_env_defn(
-    const SynthesizerImpl::EnvDefnMap& env_defn_map)
+SynthesizerImpl::get_class_name_from_env_defn(const EnvDefnMap& env_defn_map)
 {
   const auto itr = env_defn_map.find(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS);
   if (itr == env_defn_map.cend()) {
