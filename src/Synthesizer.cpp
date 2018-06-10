@@ -174,7 +174,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   const auto cls_name = get_class_name_from_env_defn(env_defn_map);
 
-  const auto type_cls = env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
+  const auto type_cls =
+      env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
 
   // Create header file.
   std::string header_filepath(m_opts.output_path);
@@ -301,7 +302,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
     *(m_context->header_file_ofs) << inference_defn.name();
     *(m_context->header_file_ofs) << CPP_OPEN_PAREN;
-    synthesize_argument_list(inference_defn.arguments(), m_context->header_file_ofs.get());
+    synthesize_argument_list(inference_defn.arguments(),
+                             m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->header_file_ofs) << CPP_SEMICOLON;
     *(m_context->header_file_ofs) << std::endl;
@@ -315,7 +317,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->cpp_file_ofs) << CPP_COLON << CPP_COLON;
     *(m_context->cpp_file_ofs) << inference_defn.name();
     *(m_context->cpp_file_ofs) << CPP_OPEN_PAREN;
-    synthesize_argument_list(inference_defn.arguments(), m_context->cpp_file_ofs.get());
+    synthesize_argument_list(inference_defn.arguments(),
+                             m_context->cpp_file_ofs.get());
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << std::endl;
     *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
@@ -374,11 +377,13 @@ SynthesizerImpl::get_class_name_from_env_defn(const EnvDefnMap& env_defn_map)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args, std::ostream* ofs)
+SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
+                                          std::ostream* ofs)
 {
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
-    (*ofs) << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name() << CPP_AMPERSAND << CPP_SPACE << arg.name();
+    (*ofs) << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name() << CPP_AMPERSAND
+           << CPP_SPACE << arg.name();
     if (i + 1 < args.size()) {
       (*ofs) << CPP_COMA << CPP_SPACE;
     }
