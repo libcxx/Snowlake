@@ -90,12 +90,15 @@ TEST_F(SemanticAnalyzerTests, TestInitializationWithOptions)
 
 TEST_F(SemanticAnalyzerTests, TestWithRepeatingGroup)
 {
-  const char* INPUT = "group MyGroup {"
-                      "}"
-                      ""
-                      "group MyGroup {"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+    "}"
+    ""
+    "group MyGroup {"
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Found multiple inference group with name \"MyGroup\".";
 
@@ -106,17 +109,20 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingGroup)
 
 TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
 {
-  const char* INPUT = "group MyGroup {"
-                      "inference MyInference {"
-                      "globals: ["
-                      "Arg1"
-                      "]"
-                      "arguments: [Arg1 : ArgType]"
-                      "premises: []"
-                      "proposition: HelloWorld;"
-                      "}"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "inference MyInference {"
+        "globals: ["
+          "Arg1"
+        "]"
+        "arguments: [Arg1 : ArgType]"
+        "premises: []"
+        "proposition: HelloWorld;"
+      "}"
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Found duplicate symbol (argument) with name \"Arg1\".";
 
@@ -127,30 +133,33 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
 
 TEST_F(SemanticAnalyzerTests, TestWithValidInput)
 {
-  const char* INPUT = "group MyGroup {"
-                      "EnvironmentClass          : ASTContext;"
-                      "EnvironmentName           : context;"
-                      ""
-                      "inference MethodStaticDispatch {"
-                      ""
-                      "globals: ["
-                      "SELF_TYPE,"
-                      "CLS_TYPE"
-                      "]"
-                      ""
-                      "arguments: ["
-                      "StaticMethodCallStmt : ASTExpr"
-                      "]"
-                      ""
-                      "premises: ["
-                      "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
-                      "ArgumentsTypes[0] != SELF_TYPE;"
-                      "]"
-                      ""
-                      "proposition : lub(T1, T2);"
-                      "}"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+          "ArgumentsTypes[0] != SELF_TYPE;"
+        "]"
+        ""
+        "proposition : lub(T1, T2);"
+      "}"
+    "}"
+    "";
+  // clang-format on
 
   assert_no_error(INPUT);
 }
@@ -159,29 +168,32 @@ TEST_F(SemanticAnalyzerTests, TestWithValidInput)
 
 TEST_F(SemanticAnalyzerTests, TestWithValidPropositionTarget)
 {
-  const char* INPUT = "group MyGroup {"
-                      "EnvironmentClass          : ASTContext;"
-                      "EnvironmentName           : context;"
-                      ""
-                      "inference MethodStaticDispatch {"
-                      ""
-                      "globals: ["
-                      "SELF_TYPE,"
-                      "CLS_TYPE"
-                      "]"
-                      ""
-                      "arguments: ["
-                      "StaticMethodCallStmt : ASTExpr"
-                      "]"
-                      ""
-                      "premises: ["
-                      "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
-                      "]"
-                      ""
-                      "proposition : SomeType;"
-                      "}"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+        "]"
+        ""
+        "proposition : SomeType;"
+      "}"
+    "}"
+    "";
+  // clang-format on
 
   const char* msg =
       "Invalid proposition target type in inference \"MethodStaticDispatch\".";
@@ -193,33 +205,35 @@ TEST_F(SemanticAnalyzerTests, TestWithValidPropositionTarget)
 
 TEST_F(SemanticAnalyzerTests, TestWithInvalidRangeClauseTarget)
 {
+  // clang-format off
   const char* INPUT =
-      "group MyGroup {"
+    "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
       "EnvironmentName           : context;"
       ""
       "inference MethodStaticDispatch {"
-      ""
-      "globals: ["
-      "SELF_TYPE,"
-      "CLS_TYPE"
-      "]"
-      ""
-      "arguments: ["
-      "StaticMethodCallStmt : ASTExpr"
-      "]"
-      ""
-      "premises: ["
-      "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
-      "StaticMethodCallStmt.parameter_types : ParameterTypes;"
-      "StaticMethodCallStmt.return_type: ReturnType;"
-      "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
-      "]"
-      ""
-      "proposition : ReturnType;"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ParameterTypes;"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+          "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
+        "]"
+        ""
+        "proposition : ReturnType;"
       "}"
-      "}"
-      "";
+    "}"
+    "";
+  // clang-format on
 
   const char* msg =
       "Invalid target in range clause in inference \"MethodStaticDispatch\".";
@@ -231,33 +245,35 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidRangeClauseTarget)
 
 TEST_F(SemanticAnalyzerTests, TestWithIncompatibleTargetsInRangeClause)
 {
+  // clang-format off
   const char* INPUT =
-      "group MyGroup {"
+    "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
       "EnvironmentName           : context;"
       ""
       "inference MethodStaticDispatch {"
-      ""
-      "globals: ["
-      "SELF_TYPE,"
-      "CLS_TYPE"
-      "]"
-      ""
-      "arguments: ["
-      "StaticMethodCallStmt : ASTExpr"
-      "]"
-      ""
-      "premises: ["
-      "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
-      "StaticMethodCallStmt.parameter_types : ParameterTypes;"
-      "StaticMethodCallStmt.return_type: ReturnType;"
-      "ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
-      "]"
-      ""
-      "proposition : ReturnType;"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ParameterTypes;"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+          "ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
+        "]"
+        ""
+        "proposition : ReturnType;"
       "}"
-      "}"
-      "";
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Incompatible targets in expression in inference "
                     "\"MethodStaticDispatch\".";
@@ -269,34 +285,36 @@ TEST_F(SemanticAnalyzerTests, TestWithIncompatibleTargetsInRangeClause)
 
 TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
 {
+  // clang-format off
   const char* INPUT =
-      "group MyGroup {"
+    "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
       "EnvironmentName           : context;"
       ""
       "inference MethodStaticDispatch {"
       ""
-      "globals: ["
-      "SELF_TYPE,"
-      "CLS_TYPE"
-      "]"
-      ""
-      "arguments: ["
-      "StaticMethodCallStmt : ASTExpr"
-      "]"
-      ""
-      "premises: ["
-      "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
-      "StaticMethodCallStmt.parameter_types : ParameterTypes;"
-      "StaticMethodCallStmt.return_type: ReturnType while {"
-      "ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
-      "};"
-      "]"
-      ""
-      "proposition : ReturnType;"
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ParameterTypes;"
+          "StaticMethodCallStmt.return_type: ReturnType while {"
+          "ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
+          "};"
+        "]"
+        ""
+        "proposition : ReturnType;"
       "}"
-      "}"
-      "";
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Incompatible targets in expression in inference "
                     "\"MethodStaticDispatch\".";
@@ -309,31 +327,34 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
 TEST_F(SemanticAnalyzerTests,
        TestWithRepeatedIncompatibleTargetInPremiseDefinition)
 {
-  const char* INPUT = "group MyGroup {"
-                      "EnvironmentClass          : ASTContext;"
-                      "EnvironmentName           : context;"
-                      ""
-                      "inference MethodStaticDispatch {"
-                      ""
-                      "globals: ["
-                      "SELF_TYPE,"
-                      "CLS_TYPE"
-                      "]"
-                      ""
-                      "arguments: ["
-                      "StaticMethodCallStmt : ASTExpr"
-                      "]"
-                      ""
-                      "premises: ["
-                      "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
-                      "StaticMethodCallStmt.parameter_types : ArgumentsTypes[];"
-                      "StaticMethodCallStmt.return_type: ReturnType;"
-                      "]"
-                      ""
-                      "proposition : ReturnType;"
-                      "}"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes;"
+          "StaticMethodCallStmt.parameter_types : ArgumentsTypes[];"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Found duplicate and incompatible target in inference "
                     "\"MethodStaticDispatch\".";
@@ -346,31 +367,34 @@ TEST_F(SemanticAnalyzerTests,
 TEST_F(SemanticAnalyzerTests,
        TestWithRepeatedIncompatibleArrayTargetInPremiseDefinition)
 {
-  const char* INPUT = "group MyGroup {"
-                      "EnvironmentClass          : ASTContext;"
-                      "EnvironmentName           : context;"
-                      ""
-                      "inference MethodStaticDispatch {"
-                      ""
-                      "globals: ["
-                      "SELF_TYPE,"
-                      "CLS_TYPE"
-                      "]"
-                      ""
-                      "arguments: ["
-                      "StaticMethodCallStmt : ASTExpr"
-                      "]"
-                      ""
-                      "premises: ["
-                      "StaticMethodCallStmt.argument_types : ArgumentsTypes[5];"
-                      "StaticMethodCallStmt.parameter_types : ArgumentsTypes[];"
-                      "StaticMethodCallStmt.return_type: ReturnType;"
-                      "]"
-                      ""
-                      "proposition : ReturnType;"
-                      "}"
-                      "}"
-                      "";
+  // clang-format off
+  const char* INPUT =
+    "group MyGroup {"
+      "EnvironmentClass          : ASTContext;"
+      "EnvironmentName           : context;"
+      ""
+      "inference MethodStaticDispatch {"
+        ""
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : ArgumentsTypes[5];"
+          "StaticMethodCallStmt.parameter_types : ArgumentsTypes[];"
+          "StaticMethodCallStmt.return_type: ReturnType;"
+        "]"
+        ""
+        "proposition : ReturnType;"
+      "}"
+    "}"
+    "";
+  // clang-format on
 
   const char* msg = "Found duplicate and incompatible target in inference "
                     "\"MethodStaticDispatch\".";
@@ -382,32 +406,34 @@ TEST_F(SemanticAnalyzerTests,
 
 TEST_F(SemanticAnalyzerTests, TestValidInputWithAllComputedTargetTypes)
 {
+  // clang-format off
   const char* INPUT =
-      "group MyGroup {"
+    "group MyGroup {"
       "EnvironmentClass          : ASTContext;"
       "EnvironmentName           : context;"
       ""
       "inference MethodStaticDispatch {"
       ""
-      "globals: ["
-      "SELF_TYPE,"
-      "CLS_TYPE"
-      "]"
-      ""
-      "arguments: ["
-      "StaticMethodCallStmt : ASTExpr"
-      "]"
-      ""
-      "premises: ["
-      "StaticMethodCallStmt.argument_types : getArgumentsTypes();"
-      "StaticMethodCallStmt.parameter_types : getParametersTypes();"
-      "StaticMethodCallStmt.return_type: getReturnType();"
-      "]"
-      ""
-      "proposition : getReturnType();"
+        "globals: ["
+          "SELF_TYPE,"
+          "CLS_TYPE"
+        "]"
+        ""
+        "arguments: ["
+          "StaticMethodCallStmt : ASTExpr"
+        "]"
+        ""
+        "premises: ["
+          "StaticMethodCallStmt.argument_types : getArgumentsTypes();"
+          "StaticMethodCallStmt.parameter_types : getParametersTypes();"
+          "StaticMethodCallStmt.return_type: getReturnType();"
+        "]"
+        ""
+        "proposition : getReturnType();"
       "}"
-      "}"
-      "";
+    "}"
+    "";
+  // clang-format on
 
   assert_no_error(INPUT);
 }
