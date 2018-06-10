@@ -204,6 +204,11 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   }
 
   m_context.reset(new InferenceGroupSynthesisContext());
+  if (!m_context) {
+    header_file_ofs.release();
+    cpp_file_ofs.release();
+    return false;
+  }
   m_context->header_file_ofs = std::move(header_file_ofs);
   m_context->cpp_file_ofs = std::move(cpp_file_ofs);
 
