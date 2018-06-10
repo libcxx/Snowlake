@@ -38,6 +38,7 @@ protected:
     // clang-format off
     static const char* INPUT =
       "group MyGroup {"
+        "ClassName                 : MyInference;"
         "EnvironmentClass          : ASTContext;"
         "EnvironmentName           : context;"
         ""
