@@ -70,6 +70,9 @@ private:
   virtual bool previsit(const ASTInferenceGroup&);
   virtual bool postvisit(const ASTInferenceGroup&);
 
+  virtual bool previsit(const ASTInferenceDefn&);
+  virtual bool postvisit(const ASTInferenceDefn&);
+
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
@@ -244,6 +247,53 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
   *(m_context->header_file_ofs) << CPP_CLOSE_BRACE;
   *(m_context->header_file_ofs) << CPP_SEMICOLON;
   *(m_context->header_file_ofs) << std::endl;
+
+  // Close and release header file stream.
+  {
+    m_context->header_file_ofs->close();
+    m_context->header_file_ofs.release();
+  }
+
+  // Close and release .cpp file stream.
+  {
+    m_context->cpp_file_ofs->close();
+    m_context->cpp_file_ofs.release();
+  }
+
+  // Close and release context.
+  {
+    m_context.release();
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::previsit(const ASTInferenceDefn&)
+{
+  SYNTHESIZER_ASSERT(m_context);
+  SYNTHESIZER_ASSERT(m_context->header_file_ofs);
+  SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
+
+  // TODO:...
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::postvisit(const ASTInferenceDefn&)
+{
+  SYNTHESIZER_ASSERT(m_context);
+  SYNTHESIZER_ASSERT(m_context->header_file_ofs);
+  SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
+
+  // TODO:...
 
   return true;
 }
