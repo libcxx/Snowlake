@@ -22,11 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "Synthesizer.h"
+#include "ASTVisitor.h"
 #include "ast.h"
 #include "format_defn.h"
 #include "macros.h"
 #include <cstdio>
 #include <fstream>
+#include <memory>
 #include <unordered_map>
 
 // -----------------------------------------------------------------------------
@@ -48,16 +50,28 @@ get_incremental_int()
 
 // -----------------------------------------------------------------------------
 
-class SynthesizerImpl
+struct InferenceGroupSynthesisContext
+{
+  std::unique_ptr<std::ofstream> header_file_ofs;
+  std::unique_ptr<std::ofstream> cpp_file_ofs;
+  ~InferenceGroupSynthesisContext();
+};
+
+// -----------------------------------------------------------------------------
+
+class SynthesizerImpl : public ASTVisitor
 {
 public:
   explicit SynthesizerImpl(const Synthesizer::Options&, std::string*);
 
   typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 
-  bool synthesize_group(const ASTInferenceGroup&);
+  bool run(const ASTModule&);
 
 private:
+  virtual bool previsit(const ASTInferenceGroup&);
+  virtual bool postvisit(const ASTInferenceGroup&);
+
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
@@ -65,6 +79,7 @@ private:
 
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
+  std::unique_ptr<InferenceGroupSynthesisContext> m_context;
 };
 
 // -----------------------------------------------------------------------------
@@ -96,18 +111,22 @@ Synthesizer::msg() const
 bool
 Synthesizer::run(const ASTModule& module)
 {
-  bool res = true;
-
   SynthesizerImpl impl(m_opts, &m_msg);
+  return impl.run(module);
+}
 
-  for (const auto& inference_group : module.inference_groups()) {
-    res = impl.synthesize_group(inference_group);
-    if (!res) {
-      break;
-    }
+// -----------------------------------------------------------------------------
+
+InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
+{
+  if (header_file_ofs) {
+    header_file_ofs->close();
+    header_file_ofs.release();
   }
-
-  return res;
+  if (cpp_file_ofs) {
+    cpp_file_ofs->close();
+    cpp_file_ofs.release();
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -116,6 +135,7 @@ SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
                                  std::string* msg)
   : m_opts(opts)
   , m_msg(msg)
+  , m_context()
 {
 }
 
@@ -130,7 +150,16 @@ SynthesizerImpl::set_msg(const char* msg)
 // -----------------------------------------------------------------------------
 
 bool
-SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
+SynthesizerImpl::run(const ASTModule& module)
+{
+  return visit(module);
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 {
   EnvDefnMap env_defn_map =
       get_envn_defn_map_from_inference_group(inference_group);
@@ -144,8 +173,13 @@ SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
   header_filepath.append(cls_name);
   header_filepath.append(HEADER_FILE_EXT);
 
-  std::ofstream header_file_ofs(header_filepath, std::ofstream::out);
-  if (!header_file_ofs.good()) {
+  std::unique_ptr<std::ofstream> header_file_ofs(
+      new std::ofstream(header_filepath, std::ofstream::out));
+  if (!header_file_ofs) {
+    return false;
+  }
+  if (!header_file_ofs->good()) {
+    header_file_ofs.release();
     return false;
   }
 
@@ -157,11 +191,34 @@ SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
   cpp_filepath.append(cls_name);
   cpp_filepath.append(CPP_FILE_EXT);
 
-  std::ofstream cpp_file_ofs(cpp_filepath, std::ofstream::out);
-  if (!cpp_file_ofs.good()) {
+  std::unique_ptr<std::ofstream> cpp_file_ofs(
+      new std::ofstream(cpp_filepath, std::ofstream::out));
+  if (!cpp_file_ofs) {
+    header_file_ofs.release();
+    return false;
+  }
+  if (!cpp_file_ofs->good()) {
+    header_file_ofs.release();
+    cpp_file_ofs.release();
     return false;
   }
 
+  m_context.reset(new InferenceGroupSynthesisContext());
+  m_context->header_file_ofs = std::move(header_file_ofs);
+  m_context->cpp_file_ofs = std::move(cpp_file_ofs);
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::postvisit(const ASTInferenceGroup&)
+{
+  if (m_context) {
+    m_context.release();
+  }
   return true;
 }
 
