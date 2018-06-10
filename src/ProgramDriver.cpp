@@ -29,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "parser/ParserDriver.h"
 
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
 
 // -----------------------------------------------------------------------------
@@ -89,15 +88,11 @@ ProgramDriver::run(int argc, char** argv)
   }
 
   // Synthesis.
-  std::ofstream file_stream(cmdl_opts.output_path.c_str(), std::ofstream::out);
-  if (!file_stream.good()) {
-    std::cerr << "Error: Cannot write to output path: "
-              << cmdl_opts.output_path;
-    return EXIT_FAILURE;
-  }
-  Synthesizer::Options synthesis_opts{};
+  Synthesizer::Options synthesis_opts{
+    .output_path = cmdl_opts.output_path
+  };
   Synthesizer synthesizer(synthesis_opts);
-  res = synthesizer.run(module, file_stream);
+  res = synthesizer.run(module);
   if (!res) {
     std::cerr << "Error: Failed to synthesize output to: "
               << cmdl_opts.output_path;

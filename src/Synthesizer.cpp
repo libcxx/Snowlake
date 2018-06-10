@@ -46,7 +46,7 @@ Synthesizer::Synthesizer(const Options& opts)
 // -----------------------------------------------------------------------------
 
 bool
-Synthesizer::run(const ASTModule&, std::ostream&)
+Synthesizer::run(const ASTModule& module)
 {
   // TODO: [SNOWLAKE-15] Design and implement code synthesis pipeline
   return true;

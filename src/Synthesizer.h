@@ -24,20 +24,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "ast_fwd.h"
-#include <iosfwd>
+#include <string>
 
 class Synthesizer
 {
 public:
   struct Options
   {
+    std::string output_path;
   };
 
   Synthesizer();
 
   explicit Synthesizer(const Options&);
 
-  bool run(const ASTModule&, std::ostream&);
+  bool run(const ASTModule&);
 
 private:
   Options m_opts;
