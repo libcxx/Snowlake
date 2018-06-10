@@ -31,6 +31,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+class SynthesizerImpl
+{
+public:
+  explicit SynthesizerImpl(std::string*);
+
+  bool synthesize_group(const ASTInferenceGroup&);
+
+private:
+  const char* get_class_name_from_inference_group(const ASTInferenceGroup&);
+
+  std::string* m_msg;
+};
+
+// -----------------------------------------------------------------------------
+
 Synthesizer::Synthesizer()
   : m_opts()
   , m_msg()
@@ -59,6 +74,31 @@ Synthesizer::run(const ASTModule& module)
 {
   // TODO: [SNOWLAKE-15] Design and implement code synthesis pipeline
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+SynthesizerImpl::SynthesizerImpl(std::string* msg)
+  : m_msg(msg)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
+{
+  // TODO: to be implemented.
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+const char*
+SynthesizerImpl::get_class_name_from_inference_group(const ASTInferenceGroup& inference_group)
+{
+  // TODO: to be implemented.
+  return "Inference";
 }
 
 // -----------------------------------------------------------------------------
