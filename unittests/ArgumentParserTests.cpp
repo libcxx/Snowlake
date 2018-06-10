@@ -250,6 +250,32 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(ArgumentParserTests, TestWithSufficientNumberOfPositionalArguments)
+{
+  ArgumentParser argparser;
+  argparser.set_minimum_positional_args_required(3);
+
+  const std::vector<char*> args{"MyProgram", "1", "2", "3"};
+
+  const bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(ArgumentParserTests, TestWithInsufficientNumberOfPositionalArguments)
+{
+  ArgumentParser argparser;
+  argparser.set_minimum_positional_args_required(3);
+
+  const std::vector<char*> args{"MyProgram", "1", "2"};
+
+  const bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_FALSE(res);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(ArgumentParserTests, TestPrintHelpMessage)
 {
   ArgumentParser argparser("My Program", "1.0.0", "This is a test program.");
