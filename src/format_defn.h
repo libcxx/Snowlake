@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * Definitions of constants used in Snowlake language format.
  */
 
-
 /**
  * Name of the key for inference group environment definition class name.
  */

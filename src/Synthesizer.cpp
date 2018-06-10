@@ -23,14 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Synthesizer.h"
 #include "ast.h"
-#include "macros.h"
 #include "format_defn.h"
+#include "macros.h"
 #include <cstdio>
 #include <unordered_map>
 
 // -----------------------------------------------------------------------------
 
-#define SYNTHESIZER_ASSERT(expr) ASSERT( (expr) )
+#define SYNTHESIZER_ASSERT(expr) ASSERT((expr))
 #define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
 
 // -----------------------------------------------------------------------------
@@ -104,7 +104,8 @@ SynthesizerImpl::SynthesizerImpl(std::string* msg)
 bool
 SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
 {
-  EnvDefnMap env_defn_map = get_envn_defn_map_from_inference_group(inference_group);
+  EnvDefnMap env_defn_map =
+      get_envn_defn_map_from_inference_group(inference_group);
   const auto cls_name = get_class_name_from_env_defn(env_defn_map);
   return true;
 }
@@ -112,7 +113,8 @@ SynthesizerImpl::synthesize_group(const ASTInferenceGroup& inference_group)
 // -----------------------------------------------------------------------------
 
 SynthesizerImpl::EnvDefnMap
-SynthesizerImpl::get_envn_defn_map_from_inference_group(const ASTInferenceGroup& inference_group)
+SynthesizerImpl::get_envn_defn_map_from_inference_group(
+    const ASTInferenceGroup& inference_group)
 {
   SynthesizerImpl::EnvDefnMap env_defn_map;
 
@@ -126,12 +128,14 @@ SynthesizerImpl::get_envn_defn_map_from_inference_group(const ASTInferenceGroup&
 // -----------------------------------------------------------------------------
 
 std::string
-SynthesizerImpl::get_class_name_from_env_defn(const SynthesizerImpl::EnvDefnMap& env_defn_map)
+SynthesizerImpl::get_class_name_from_env_defn(
+    const SynthesizerImpl::EnvDefnMap& env_defn_map)
 {
   const auto itr = env_defn_map.find(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS);
   if (itr == env_defn_map.cend()) {
     char buf[16] = {0};
-    snprintf(buf, sizeof(buf), "%s%lu", SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX, get_incremental_int());
+    snprintf(buf, sizeof(buf), "%s%lu", SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX,
+             get_incremental_int());
     return std::string(buf);
   }
   return itr->second;
