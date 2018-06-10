@@ -78,12 +78,20 @@ private:
   virtual bool previsit(const ASTInferenceDefn&);
   virtual bool postvisit(const ASTInferenceDefn&);
 
+  virtual bool previsit(const ASTInferencePremiseDefn&);
+
+  virtual bool previsit(const ASTInferenceEqualityDefn&);
+
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
   void set_msg(const char*);
 
   void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*);
+
+  void synthesize_deduction_target(const ASTDeductionTarget&, std::ostream*);
+
+  void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
 
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
@@ -346,6 +354,45 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
+bool
+SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
+{
+  const auto& proof_method_name =
+      m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
+  const auto& type_cls = m_context->type_cls;
+
+  // Synthesize deduction.
+  {
+    *(m_context->cpp_file_ofs) << CPP_INDENTATION << type_cls << CPP_SPACE;
+    synthesize_deduction_target(premise_defn.deduction_target(),
+                                m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
+    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
+    synthesize_identifiable(premise_defn.source(),
+                            m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  }
+
+  // TODO: Handle while-clause.
+
+  *(m_context->cpp_file_ofs) << std::endl;
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
+{
+  // TODO...
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
 EnvDefnMap
 SynthesizerImpl::get_envn_defn_map_from_inference_group(
     const ASTInferenceGroup& inference_group)
@@ -386,6 +433,50 @@ SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
            << CPP_SPACE << arg.name();
     if (i + 1 < args.size()) {
       (*ofs) << CPP_COMA << CPP_SPACE;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_deduction_target(
+    const ASTDeductionTarget& deduction_target, std::ostream* ofs)
+{
+  if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
+    const auto& value = deduction_target.value<ASTDeductionTargetSingular>();
+    (*ofs) << value.name();
+  } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
+    const auto& value = deduction_target.value<ASTDeductionTargetArray>();
+    // TODO: Consider using std::vector instead of raw pointer.
+    (*ofs) << CPP_STAR;
+    (*ofs) << value.name();
+  } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
+    const auto& value = deduction_target.value<ASTDeductionTargetComputed>();
+    (*ofs) << value.name();
+    const auto& arguments = value.arguments();
+    for (size_t i = 0; i < arguments.size(); ++i) {
+      synthesize_deduction_target(arguments[i], ofs);
+      if (i + 1 < arguments.size()) {
+        (*ofs) << CPP_COMA << CPP_SPACE;
+      }
+    }
+  } else {
+    SYNTHESIZER_ASSERT(0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_identifiable(const ASTIdentifiable& identifiable,
+                                         std::ostream* ofs)
+{
+  const auto& identifiers = identifiable.identifiers();
+  for (size_t i = 0; i < identifiers.size(); ++i) {
+    (*ofs) << identifiers[i].value();
+    if (i + 1 < identifiers.size()) {
+      (*ofs) << CPP_DOT;
     }
   }
 }

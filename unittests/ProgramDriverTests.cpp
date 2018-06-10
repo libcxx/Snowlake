@@ -40,6 +40,7 @@ protected:
       "group MyGroup {"
         "ClassName                 : MyInference;"
         "TypeClass                 : TypeCls;"
+        "ProofMethod               : proveType;"
         "EnvironmentClass          : ASTContext;"
         "EnvironmentName           : context;"
         ""

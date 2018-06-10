@@ -36,3 +36,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * Name of the key for inference group environment definition type class.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS "TypeClass"
+
+/**
+ * Name of the key for inference group environment definition proof method.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD "ProofMethod"

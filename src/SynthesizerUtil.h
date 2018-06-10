@@ -42,6 +42,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_CONST_KEYWORD "const"
 #define CPP_AMPERSAND '&'
 #define CPP_COMA ','
+#define CPP_ASSIGN '='
+#define CPP_DOT '.'
+#define CPP_STAR '*'
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \
