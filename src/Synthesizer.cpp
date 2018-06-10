@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Synthesizer.h"
 #include "ASTVisitor.h"
+#include "SynthesizerUtil.h"
 #include "ast.h"
 #include "format_defn.h"
 #include "macros.h"
@@ -35,9 +36,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define SYNTHESIZER_ASSERT(expr) ASSERT((expr))
 #define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
-#define FORWARD_SLASH '/'
-#define HEADER_FILE_EXT ".h"
-#define CPP_FILE_EXT ".cpp"
 
 // -----------------------------------------------------------------------------
 
@@ -212,6 +210,24 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   m_context->header_file_ofs = std::move(header_file_ofs);
   m_context->cpp_file_ofs = std::move(cpp_file_ofs);
 
+  // Write to header file.
+  {
+    *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->header_file_ofs) << std::endl;
+    *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
+    *(m_context->header_file_ofs) << std::endl;
+    *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ' << cls_name;
+    *(m_context->header_file_ofs) << std::endl;
+    *(m_context->header_file_ofs) << CPP_OPEN_BRACE;
+    *(m_context->header_file_ofs) << std::endl;
+  }
+
+  // Write to .cpp file.
+  {
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->cpp_file_ofs) << std::endl;
+  }
+
   return true;
 }
 
@@ -221,9 +237,14 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 bool
 SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 {
-  if (m_context) {
-    m_context.release();
-  }
+  SYNTHESIZER_ASSERT(m_context);
+  SYNTHESIZER_ASSERT(m_context->header_file_ofs);
+  SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
+
+  *(m_context->header_file_ofs) << CPP_CLOSE_BRACE;
+  *(m_context->header_file_ofs) << CPP_SEMICOLON;
+  *(m_context->header_file_ofs) << std::endl;
+
   return true;
 }
 
