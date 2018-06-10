@@ -428,36 +428,42 @@ ArgumentParser::__defined_boolean_option(const std::string& name) const
 
 // -----------------------------------------------------------------------------
 
+template <typename T>
+void
+ArgumentParser::CmdlOption::__update_value(const std::string& new_value)
+{
+  T val;
+  std::stringstream ss(new_value);
+  ss >> val;
+  value.value = val;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ArgumentParser::CmdlOption::update_value(const std::string& new_value)
+{
+  if (default_value.value.is<std::string>()) {
+    value.value = new_value;
+  } else if (default_value.value.is<uint32_t>()) {
+    __update_value<uint32_t>(new_value);
+  } else if (default_value.value.is<uint64_t>()) {
+    __update_value<uint64_t>(new_value);
+  } else if (default_value.value.is<float>()) {
+    __update_value<float>(new_value);
+  } else if (default_value.value.is<double>()) {
+    __update_value<double>(new_value);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 void
 ArgumentParser::__update_option_value(const std::string& key,
                                       const std::string& value)
 {
-  // TODO: Rework this mechanism.
   auto& option = m_opts.at(key);
-  const auto& default_value = option.default_value.value;
-  if (default_value.is<std::string>()) {
-    option.value.value = value;
-  } else if (default_value.is<uint32_t>()) {
-    uint32_t val = 0;
-    std::stringstream ss(value);
-    ss >> val;
-    option.value.value = val;
-  } else if (default_value.is<uint64_t>()) {
-    uint64_t val = 0;
-    std::stringstream ss(value);
-    ss >> val;
-    option.value.value = val;
-  } else if (default_value.is<float>()) {
-    float val = 0.0f;
-    std::stringstream ss(value);
-    ss >> val;
-    option.value.value = val;
-  } else if (default_value.is<double>()) {
-    double val = 0.0;
-    std::stringstream ss(value);
-    ss >> val;
-    option.value.value = val;
-  }
+  option.update_value(value);
 }
 
 // -----------------------------------------------------------------------------

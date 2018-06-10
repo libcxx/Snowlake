@@ -120,9 +120,14 @@ private:
 
     void assign_value_to_dst();
 
+    void update_value(const std::string&);
+
   private:
     template <typename T>
     void __assign_value_to_dst();
+
+    template <typename T>
+    void __update_value(const std::string&);
   };
 
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
