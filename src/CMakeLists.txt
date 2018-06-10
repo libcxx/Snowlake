@@ -22,7 +22,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-## Add subdirectories.
+### LIBRARY
+
 
 # Add 'parser' subdirectory.
 set(PARSER_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/parser)
@@ -35,6 +36,10 @@ set(sources
     ast_util.cpp
     ASTVisitor.cpp
     SemanticAnalyzer.cpp
+    Synthesizer.cpp
+    ArgumentParser.cpp
+    CmdlDriver.cpp
+    ProgramDriver.cpp
     )
 
 
@@ -43,16 +48,58 @@ add_library(snowlake ${sources})
 
 
 # Additional compiler flags.
-set_target_properties(snowlake PROPERTIES OUTPUT_NAME "snowlake")
+set_target_properties(snowlake
+    PROPERTIES OUTPUT_NAME "snowlake"
+    )
 
 
 # Link with dependency "Parser".
 add_dependencies(snowlake Parser)
-target_link_libraries(snowlake Parser)
 
 
 # Post-build command.
-add_custom_command(TARGET snowlake POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>)
+add_custom_command(TARGET snowlake
+    POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>
+    )
+
+
+### MAIN EXECUTABLE
+
+
+# Add the necessary source files.
+set(exec_sources
+    main.cpp
+    )
+
+
+# Main executable `snowlake_exec`.
+add_executable(snowlake_exec
+    ${exec_sources}
+    )
+
+
+# Add the necessary dependencies.
+add_dependencies(snowlake_exec Parser)
+add_dependencies(snowlake_exec snowlake)
+
+
+# Link with the necessary libraries.
+target_link_libraries(snowlake_exec
+    Parser
+    snowlake
+    )
+
+
+# Additional compiler flags.
+set_target_properties(snowlake_exec
+    PROPERTIES OUTPUT_NAME "snowlake"
+    )
+
+
+# Post-build command.
+add_custom_command(TARGET snowlake_exec
+    POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>
+    )
 
 
 ### THE END ###
