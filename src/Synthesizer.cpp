@@ -272,6 +272,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   {
     *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
     *(m_context->header_file_ofs) << std::endl;
+    *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
