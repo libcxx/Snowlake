@@ -92,9 +92,16 @@ private:
 
   void set_msg(const char*);
 
+  enum class DeductionTargetArraySynthesisMode : uint32_t
+  {
+    AS_ARRAY              = 0x01,
+    AS_RAW_POINTER_ARRAY  = 0x02,
+    AS_SINGULAR           = 0x04,
+  };
+
   void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*);
 
-  void synthesize_deduction_target(const ASTDeductionTarget&, std::ostream*);
+  void synthesize_deduction_target(const ASTDeductionTarget&, const DeductionTargetArraySynthesisMode, std::ostream*);
 
   void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
 
@@ -394,6 +401,7 @@ SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
     render_indentation_in_cpp_file();
     *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE;
     synthesize_deduction_target(premise_defn.deduction_target(),
+                                DeductionTargetArraySynthesisMode::AS_ARRAY,
                                 m_context->cpp_file_ofs.get());
     *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
@@ -448,6 +456,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
       *(m_context->cpp_file_ofs) << var1 << CPP_SPACE << CPP_LESS_THAN
                                  << CPP_SPACE;
       synthesize_deduction_target(range_clause.deduction_target(),
+                                  DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                   m_context->cpp_file_ofs.get());
       *(m_context->cpp_file_ofs) << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
     }
@@ -474,6 +483,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
     *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
     synthesize_deduction_target(premise_defn.lhs(),
+                                DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                 m_context->cpp_file_ofs.get());
     if (has_range_clause) {
       *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var1
@@ -481,6 +491,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     }
     *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
     synthesize_deduction_target(premise_defn.rhs(),
+                                DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                 m_context->cpp_file_ofs.get());
     if (has_range_clause) {
       *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var2
@@ -561,23 +572,53 @@ SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
 
 void
 SynthesizerImpl::synthesize_deduction_target(
-    const ASTDeductionTarget& deduction_target, std::ostream* ofs)
+    const ASTDeductionTarget& deduction_target,
+    const DeductionTargetArraySynthesisMode array_mode,
+    std::ostream* ofs)
 {
   if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetSingular>();
     (*ofs) << value.name();
   } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetArray>();
-    // TODO: Consider using std::vector instead of raw pointer.
-    (*ofs) << CPP_STAR;
-    (*ofs) << value.name();
+    switch (array_mode) {
+      case DeductionTargetArraySynthesisMode::AS_ARRAY:
+        {
+          if (value.has_size_literal()) {
+            (*ofs) << value.name();
+            (*ofs) << CPP_OPEN_BRACKET;
+            (*ofs) << value.size_literal();
+            (*ofs) << CPP_CLOSE_BRACKET;
+          } else {
+            // If the target does not have a size literal,
+            // then just render it as a raw pointer star.
+            (*ofs) << CPP_STAR;
+            (*ofs) << value.name();
+          }
+        }
+        break;
+      case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
+        {
+          // TODO: Consider using std::vector instead of raw pointer.
+          (*ofs) << CPP_STAR;
+          (*ofs) << value.name();
+        }
+        break;
+      case DeductionTargetArraySynthesisMode::AS_SINGULAR:
+        {
+          (*ofs) << value.name();
+        }
+        break;
+      default:
+        break;
+    }
   } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetComputed>();
     (*ofs) << value.name();
     (*ofs) << CPP_OPEN_PAREN;
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
-      synthesize_deduction_target(arguments[i], ofs);
+      synthesize_deduction_target(arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
       if (i + 1 < arguments.size()) {
         (*ofs) << CPP_COMA << CPP_SPACE;
       }
@@ -639,6 +680,7 @@ SynthesizerImpl::previsit(const ASTPropositionDefn& proposition_defn)
   render_indentation_in_cpp_file();
   *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE;
   synthesize_deduction_target(proposition_defn.target(),
+                              DeductionTargetArraySynthesisMode::AS_ARRAY,
                               m_context->cpp_file_ofs.get());
   *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
 
