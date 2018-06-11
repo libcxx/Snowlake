@@ -300,6 +300,9 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   {
     *(m_context->cpp_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
     *(m_context->cpp_file_ofs) << std::endl;
+    render_custom_include(m_context->cls_name.c_str(),
+                          m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << std::endl;
     render_necessary_include_of_system_headers(m_context->cpp_file_ofs.get());
   }
 
