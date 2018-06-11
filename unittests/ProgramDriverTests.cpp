@@ -41,6 +41,7 @@ protected:
         "ClassName                 : MyInference;"
         "TypeClass                 : TypeCls;"
         "ProofMethod               : proveType;"
+        "TypeCmpMethod             : cmpType;"
         "EnvironmentClass          : ASTContext;"
         "EnvironmentName           : context;"
         ""

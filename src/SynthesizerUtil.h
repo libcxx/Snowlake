@@ -45,6 +45,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_ASSIGN '='
 #define CPP_DOT '.'
 #define CPP_STAR '*'
+#define CPP_IF "if"
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \

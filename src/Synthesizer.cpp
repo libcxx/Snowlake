@@ -93,6 +93,8 @@ private:
 
   void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
 
+  void synthesize_equality_operator(const EqualityOperator, std::ostream*);
+
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
@@ -387,7 +389,32 @@ SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
 bool
 SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
 {
-  // TODO...
+  const auto& type_cmp_method_name = m_context->env_defn_map.at(
+      SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
+
+  if (premise_defn.has_range_clause()) {
+    // TODO...
+  } else {
+    *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_IF << CPP_SPACE
+                               << CPP_OPEN_PAREN;
+    *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
+    synthesize_deduction_target(premise_defn.lhs(),
+                                m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+    synthesize_deduction_target(premise_defn.rhs(),
+                                m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+    synthesize_equality_operator(premise_defn.oprt(),
+                                 m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
+                               << CPP_OPEN_BRACE;
+    *(m_context->cpp_file_ofs) << std::endl;
+    // TODO...
+    *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_CLOSE_BRACE;
+    *(m_context->cpp_file_ofs) << std::endl;
+  }
+
   return true;
 }
 
@@ -479,6 +506,33 @@ SynthesizerImpl::synthesize_identifiable(const ASTIdentifiable& identifiable,
       (*ofs) << CPP_DOT;
     }
   }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
+                                              std::ostream* ofs)
+{
+  const auto& type_cls = m_context->type_cls;
+  switch (oprt) {
+    case EqualityOperator::OPERATOR_EQ:
+      (*ofs) << "std::equal_to";
+      break;
+    case EqualityOperator::OPERATOR_NEQ:
+      (*ofs) << "std::not_equal_to";
+      break;
+    case EqualityOperator::OPERATOR_LT:
+      (*ofs) << "std::less";
+      break;
+    case EqualityOperator::OPERATOR_LTE:
+      (*ofs) << "std::less_equal";
+      break;
+    default:
+      SYNTHESIZER_ASSERT(0);
+      break;
+  }
+  (*ofs) << '<' << type_cls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
 }
 
 // -----------------------------------------------------------------------------
