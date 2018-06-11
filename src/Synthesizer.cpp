@@ -59,6 +59,29 @@ struct InferenceGroupSynthesisContext
   EnvDefnMap env_defn_map;
   std::unique_ptr<std::ofstream> header_file_ofs;
   std::unique_ptr<std::ofstream> cpp_file_ofs;
+  size_t header_file_indent_lvl;
+  size_t cpp_file_indent_lvl;
+
+  void indent_header_file()
+  {
+    ++header_file_indent_lvl;
+  }
+
+  void dedent_header_file()
+  {
+    --header_file_indent_lvl;
+  }
+
+  void indent_cpp_file()
+  {
+    ++cpp_file_indent_lvl;
+  }
+
+  void dedent_cpp_file()
+  {
+    --cpp_file_indent_lvl;
+  }
+
   ~InferenceGroupSynthesisContext();
 };
 
@@ -96,6 +119,12 @@ private:
   void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
 
   void synthesize_equality_operator(const EqualityOperator, std::ostream*);
+
+  void render_indentation(const size_t, std::ostream*) const;
+
+  void render_indentation_in_header_file() const;
+
+  void render_indentation_in_cpp_file() const;
 
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
@@ -310,7 +339,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
   // Synthesize member function declaration.
   {
     *(m_context->cpp_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_INDENTATION;
+    m_context->indent_header_file();
+    render_indentation_in_header_file();
     *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
     *(m_context->header_file_ofs) << inference_defn.name();
     *(m_context->header_file_ofs) << CPP_OPEN_PAREN;
@@ -319,6 +349,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->header_file_ofs) << CPP_SEMICOLON;
     *(m_context->header_file_ofs) << std::endl;
+    m_context->dedent_header_file();
   }
 
   // Synthesize member function definition.
@@ -335,6 +366,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->cpp_file_ofs) << std::endl;
     *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
+
+    m_context->indent_cpp_file();
   }
 
   return true;
@@ -350,6 +383,7 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
   SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
+  m_context->dedent_cpp_file();
   *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
   *(m_context->cpp_file_ofs) << std::endl;
 
@@ -368,7 +402,8 @@ SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
 
   // Synthesize deduction.
   {
-    *(m_context->cpp_file_ofs) << CPP_INDENTATION << type_cls << CPP_SPACE;
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE;
     synthesize_deduction_target(premise_defn.deduction_target(),
                                 m_context->cpp_file_ofs.get());
     *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
@@ -397,8 +432,8 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
   if (premise_defn.has_range_clause()) {
     // TODO: Handle range clause...
   } else {
-    *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_IF << CPP_SPACE
-                               << CPP_OPEN_PAREN;
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
     *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
     synthesize_deduction_target(premise_defn.lhs(),
                                 m_context->cpp_file_ofs.get());
@@ -413,7 +448,8 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
                                << CPP_OPEN_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
     // TODO: Body of if statement...
-    *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_CLOSE_BRACE;
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
   }
 
@@ -545,13 +581,42 @@ SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
 bool
 SynthesizerImpl::previsit(const ASTPropositionDefn& proposition_defn)
 {
-  *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_RETURN_KEYWORD
-                             << CPP_SPACE;
+  render_indentation_in_cpp_file();
+  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE;
   synthesize_deduction_target(proposition_defn.target(),
                               m_context->cpp_file_ofs.get());
   *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
 
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_indentation(const size_t indent_lvl,
+                                    std::ostream* ofs) const
+{
+  for (size_t i = 0; i < indent_lvl; ++i) {
+    (*ofs) << CPP_INDENTATION;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_indentation_in_header_file() const
+{
+  render_indentation(m_context->header_file_indent_lvl,
+                     m_context->header_file_ofs.get());
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_indentation_in_cpp_file() const
+{
+  render_indentation(m_context->cpp_file_indent_lvl,
+                     m_context->cpp_file_ofs.get());
 }
 
 // -----------------------------------------------------------------------------
