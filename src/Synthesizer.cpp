@@ -94,14 +94,20 @@ private:
 
   enum class DeductionTargetArraySynthesisMode : uint32_t
   {
-    AS_ARRAY              = 0x01,
-    AS_RAW_POINTER_ARRAY  = 0x02,
-    AS_SINGULAR           = 0x04,
+    AS_SINGULAR = 0x01,
+    AS_ARRAY = 0x02,
+    AS_RAW_POINTER_ARRAY = 0x04,
+    AS_STD_VECTOR = 0x08,
   };
 
   void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*);
 
-  void synthesize_deduction_target(const ASTDeductionTarget&, const DeductionTargetArraySynthesisMode, std::ostream*);
+  void synthesize_deduction_target(const ASTDeductionTarget&,
+                                   const DeductionTargetArraySynthesisMode,
+                                   std::ostream*);
+
+  void synthesize_deduction_target_for_declaration(const ASTDeductionTarget&,
+                                                   std::ostream*);
 
   void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
 
@@ -394,15 +400,12 @@ SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
 {
   const auto& proof_method_name =
       m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
-  const auto& type_cls = m_context->type_cls;
 
   // Synthesize deduction.
   {
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE;
-    synthesize_deduction_target(premise_defn.deduction_target(),
-                                DeductionTargetArraySynthesisMode::AS_ARRAY,
-                                m_context->cpp_file_ofs.get());
+    synthesize_deduction_target_for_declaration(premise_defn.deduction_target(),
+                                                m_context->cpp_file_ofs.get());
     *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
     synthesize_identifiable(premise_defn.source(),
@@ -455,9 +458,10 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     {
       *(m_context->cpp_file_ofs) << var1 << CPP_SPACE << CPP_LESS_THAN
                                  << CPP_SPACE;
-      synthesize_deduction_target(range_clause.deduction_target(),
-                                  DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                                  m_context->cpp_file_ofs.get());
+      synthesize_deduction_target(
+          range_clause.deduction_target(),
+          DeductionTargetArraySynthesisMode::AS_SINGULAR,
+          m_context->cpp_file_ofs.get());
       *(m_context->cpp_file_ofs) << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
     }
 
@@ -573,14 +577,14 @@ SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
 void
 SynthesizerImpl::synthesize_deduction_target(
     const ASTDeductionTarget& deduction_target,
-    const DeductionTargetArraySynthesisMode array_mode,
-    std::ostream* ofs)
+    const DeductionTargetArraySynthesisMode array_mode, std::ostream* ofs)
 {
   if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetSingular>();
     (*ofs) << value.name();
   } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetArray>();
+    // clang-format off
     switch (array_mode) {
       case DeductionTargetArraySynthesisMode::AS_ARRAY:
         {
@@ -609,21 +613,51 @@ SynthesizerImpl::synthesize_deduction_target(
           (*ofs) << value.name();
         }
         break;
+      case DeductionTargetArraySynthesisMode::AS_STD_VECTOR:
+        {
+          const auto& type_cls = m_context->type_cls;
+          (*ofs) << "std::vector<" << type_cls << '>' << CPP_SPACE << value.name();
+        }
+        break;
       default:
         break;
     }
+    // clang-format on
   } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetComputed>();
     (*ofs) << value.name();
     (*ofs) << CPP_OPEN_PAREN;
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
-      synthesize_deduction_target(arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
+      synthesize_deduction_target(
+          arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
       if (i + 1 < arguments.size()) {
         (*ofs) << CPP_COMA << CPP_SPACE;
       }
     }
     (*ofs) << CPP_CLOSE_PAREN;
+  } else {
+    SYNTHESIZER_ASSERT(0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_deduction_target_for_declaration(
+    const ASTDeductionTarget& deduction_target, std::ostream* ofs)
+{
+  const auto& type_cls = m_context->type_cls;
+
+  if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
+    (*ofs) << type_cls << CPP_SPACE;
+    synthesize_deduction_target(
+        deduction_target, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
+        ofs);
+  } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
+    synthesize_deduction_target(
+        deduction_target, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
+        ofs);
   } else {
     SYNTHESIZER_ASSERT(0);
   }
