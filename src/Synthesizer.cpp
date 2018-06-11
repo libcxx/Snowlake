@@ -62,26 +62,6 @@ struct InferenceGroupSynthesisContext
   size_t header_file_indent_lvl;
   size_t cpp_file_indent_lvl;
 
-  void indent_header_file()
-  {
-    ++header_file_indent_lvl;
-  }
-
-  void dedent_header_file()
-  {
-    --header_file_indent_lvl;
-  }
-
-  void indent_cpp_file()
-  {
-    ++cpp_file_indent_lvl;
-  }
-
-  void dedent_cpp_file()
-  {
-    --cpp_file_indent_lvl;
-  }
-
   ~InferenceGroupSynthesisContext();
 };
 
@@ -125,6 +105,14 @@ private:
   void render_indentation_in_header_file() const;
 
   void render_indentation_in_cpp_file() const;
+
+  void indent_header_file();
+
+  void dedent_header_file();
+
+  void indent_cpp_file();
+
+  void dedent_cpp_file();
 
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
@@ -340,7 +328,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
   // Synthesize member function declaration.
   {
     *(m_context->cpp_file_ofs) << std::endl;
-    m_context->indent_header_file();
+    indent_header_file();
     render_indentation_in_header_file();
     *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
     *(m_context->header_file_ofs) << inference_defn.name();
@@ -350,7 +338,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->header_file_ofs) << CPP_SEMICOLON;
     *(m_context->header_file_ofs) << std::endl;
-    m_context->dedent_header_file();
+    dedent_header_file();
   }
 
   // Synthesize member function definition.
@@ -368,7 +356,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
 
-    m_context->indent_cpp_file();
+    indent_cpp_file();
   }
 
   return true;
@@ -384,7 +372,7 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
   SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
-  m_context->dedent_cpp_file();
+  dedent_cpp_file();
   *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
   *(m_context->cpp_file_ofs) << std::endl;
 
@@ -479,7 +467,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
   // Synthesize premise body.
   {
     if (has_range_clause) {
-      m_context->indent_cpp_file();
+      indent_cpp_file();
     }
 
     render_indentation_in_cpp_file();
@@ -511,7 +499,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     *(m_context->cpp_file_ofs) << std::endl;
 
     if (has_range_clause) {
-      m_context->dedent_cpp_file();
+      dedent_cpp_file();
     }
   }
 
@@ -684,6 +672,38 @@ SynthesizerImpl::render_indentation_in_cpp_file() const
 {
   render_indentation(m_context->cpp_file_indent_lvl,
                      m_context->cpp_file_ofs.get());
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::indent_header_file()
+{
+  ++m_context->header_file_indent_lvl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::dedent_header_file()
+{
+  --m_context->header_file_indent_lvl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::indent_cpp_file()
+{
+  ++m_context->cpp_file_indent_lvl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::dedent_cpp_file()
+{
+  --m_context->cpp_file_indent_lvl;
 }
 
 // -----------------------------------------------------------------------------
