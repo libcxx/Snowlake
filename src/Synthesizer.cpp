@@ -119,6 +119,8 @@ private:
 
   void render_indentation_in_cpp_file() const;
 
+  void render_necessary_include_of_system_headers(std::ostream*) const;
+
   void indent_header_file();
 
   void dedent_header_file();
@@ -289,6 +291,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   {
     *(m_context->cpp_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
     *(m_context->cpp_file_ofs) << std::endl;
+    render_necessary_include_of_system_headers(m_context->cpp_file_ofs.get());
   }
 
   return true;
@@ -780,6 +783,20 @@ void
 SynthesizerImpl::dedent_cpp_file()
 {
   --m_context->cpp_file_indent_lvl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_necessary_include_of_system_headers(
+    std::ostream* ofs) const
+{
+  static const char* system_headers[]{"cstdlib", "cstddef", "vector"};
+
+  for (size_t i = 0; i < sizeof(system_headers) / sizeof(char*); ++i) {
+    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << system_headers[i] << '>'
+           << std::endl;
+  }
 }
 
 // -----------------------------------------------------------------------------
