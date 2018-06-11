@@ -393,7 +393,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
 
   if (premise_defn.has_range_clause()) {
-    // TODO...
+    // TODO: Handle range clause...
   } else {
     *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_IF << CPP_SPACE
                                << CPP_OPEN_PAREN;
@@ -410,7 +410,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
                                << CPP_OPEN_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
-    // TODO...
+    // TODO: Body of if statement...
     *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_CLOSE_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
   }
