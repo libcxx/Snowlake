@@ -483,6 +483,7 @@ SynthesizerImpl::synthesize_deduction_target(
   } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetComputed>();
     (*ofs) << value.name();
+    (*ofs) << CPP_OPEN_PAREN;
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
       synthesize_deduction_target(arguments[i], ofs);
@@ -490,6 +491,7 @@ SynthesizerImpl::synthesize_deduction_target(
         (*ofs) << CPP_COMA << CPP_SPACE;
       }
     }
+    (*ofs) << CPP_CLOSE_PAREN;
   } else {
     SYNTHESIZER_ASSERT(0);
   }
@@ -543,7 +545,8 @@ SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
 bool
 SynthesizerImpl::previsit(const ASTPropositionDefn& proposition_defn)
 {
-  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE;
+  *(m_context->cpp_file_ofs) << CPP_INDENTATION << CPP_RETURN_KEYWORD
+                             << CPP_SPACE;
   synthesize_deduction_target(proposition_defn.target(),
                               m_context->cpp_file_ofs.get());
   *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
