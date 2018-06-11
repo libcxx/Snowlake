@@ -32,6 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_CLOSE_BRACE '}'
 #define CPP_OPEN_PAREN '('
 #define CPP_CLOSE_PAREN ')'
+#define CPP_OPEN_BRACKET '['
+#define CPP_CLOSE_BRACKET ']'
 #define CPP_SEMICOLON ';'
 #define CPP_COLON ':'
 #define CPP_PUBLIC_KEYWORD "public"
@@ -47,6 +49,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_STAR '*'
 #define CPP_IF "if"
 #define CPP_RETURN_KEYWORD "return"
+#define CPP_FOR_KEYWORD "for"
+#define CPP_SIZE_T "size_t"
+#define CPP_LESS_THAN "<"
+#define CPP_DOT_SIZE ".size()"
+#define CPP_INCREMENT_OPERATOR "++"
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \

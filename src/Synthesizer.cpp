@@ -430,17 +430,74 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
   const auto& type_cmp_method_name = m_context->env_defn_map.at(
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
 
-  if (premise_defn.has_range_clause()) {
-    // TODO: Handle range clause...
-  } else {
+  const bool has_range_clause = premise_defn.has_range_clause();
+
+  static const char var1 = 'i';
+  static const char var2 = 'j';
+
+  if (has_range_clause) {
+    const auto& range_clause = premise_defn.range_clause();
+
+    render_indentation_in_cpp_file();
+
+    *(m_context->cpp_file_ofs) << CPP_FOR_KEYWORD << CPP_SPACE
+                               << CPP_OPEN_PAREN;
+
+    // For-loop initializers.
+    {
+      *(m_context->cpp_file_ofs) << CPP_SIZE_T << CPP_SPACE << var1 << CPP_SPACE
+                                 << CPP_ASSIGN << CPP_SPACE
+                                 << range_clause.lhs_idx();
+      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+      *(m_context->cpp_file_ofs) << CPP_SIZE_T << CPP_SPACE << var2 << CPP_SPACE
+                                 << CPP_ASSIGN << CPP_SPACE
+                                 << range_clause.rhs_idx();
+      *(m_context->cpp_file_ofs) << CPP_SEMICOLON << CPP_SPACE;
+    }
+
+    // For-loop termination predicates.
+    {
+      *(m_context->cpp_file_ofs) << var1 << CPP_SPACE << CPP_LESS_THAN
+                                 << CPP_SPACE;
+      synthesize_deduction_target(range_clause.deduction_target(),
+                                  m_context->cpp_file_ofs.get());
+      *(m_context->cpp_file_ofs) << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
+    }
+
+    // For-loop increments.
+    {
+      *(m_context->cpp_file_ofs) << CPP_INCREMENT_OPERATOR << var1;
+      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+      *(m_context->cpp_file_ofs) << CPP_INCREMENT_OPERATOR << var2;
+    }
+
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
+                               << CPP_OPEN_BRACE;
+    *(m_context->cpp_file_ofs) << std::endl;
+  }
+
+  // Synthesize premise body.
+  {
+    if (has_range_clause) {
+      m_context->indent_cpp_file();
+    }
+
     render_indentation_in_cpp_file();
     *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
     *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
     synthesize_deduction_target(premise_defn.lhs(),
                                 m_context->cpp_file_ofs.get());
+    if (has_range_clause) {
+      *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var1
+                                 << CPP_CLOSE_BRACKET;
+    }
     *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
     synthesize_deduction_target(premise_defn.rhs(),
                                 m_context->cpp_file_ofs.get());
+    if (has_range_clause) {
+      *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var2
+                                 << CPP_CLOSE_BRACKET;
+    }
     *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
     synthesize_equality_operator(premise_defn.oprt(),
                                  m_context->cpp_file_ofs.get());
@@ -452,6 +509,15 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     render_indentation_in_cpp_file();
     *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
+
+    if (has_range_clause) {
+      m_context->dedent_cpp_file();
+    }
+  }
+
+  if (has_range_clause) {
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE << std::endl << std::endl;
   }
 
   return true;
