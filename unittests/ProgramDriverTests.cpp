@@ -38,6 +38,7 @@ protected:
     // clang-format off
     static const char* INPUT =
       "group MyGroup {"
+        "Header                    : AST;"
         "ClassName                 : ProgramDriverTestOutput;"
         "TypeClass                 : TypeCls;"
         "ProofMethod               : proveType;"

@@ -119,6 +119,8 @@ private:
 
   void render_indentation_in_cpp_file() const;
 
+  void render_custom_include(const char*, std::ostream*) const;
+
   void render_necessary_include_of_system_headers(std::ostream*) const;
 
   void indent_header_file();
@@ -273,10 +275,17 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
+    // TODO: maybe this should be optional?
+    const auto& header_name =
+        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER);
+
     *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
+    *(m_context->header_file_ofs) << std::endl;
+    render_custom_include(header_name.c_str(),
+                          m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
     *(m_context->header_file_ofs) << m_context->cls_name;
@@ -783,6 +792,16 @@ void
 SynthesizerImpl::dedent_cpp_file()
 {
   --m_context->cpp_file_indent_lvl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_custom_include(const char* header_name,
+                                       std::ostream* ofs) const
+{
+  (*ofs) << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
+         << header_name << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << std::endl;
 }
 
 // -----------------------------------------------------------------------------

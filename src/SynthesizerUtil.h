@@ -54,7 +54,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_LESS_THAN "<"
 #define CPP_DOT_SIZE ".size()"
 #define CPP_INCREMENT_OPERATOR "++"
+#define CPP_INCLUDE_DIRECTIVE "#include"
 #define CPP_INCLUDE_DIRECTIVE_PREFIX "#include <"
+#define CPP_DOUBLE_QUOTE '"'
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \

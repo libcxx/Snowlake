@@ -47,3 +47,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * type comparison method.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD "TypeCmpMethod"
+
+/**
+ * Name of the key for inference group environment definition header.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER "Header"

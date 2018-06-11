@@ -86,6 +86,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
   // clang-format off
   static const char* INPUT =
     "group MyGroup {"
+      "Header                    : AST;"
       "ClassName                 : MyInference;"
       "TypeClass                 : TypeCls;"
       "ProofMethod               : proveType;"
