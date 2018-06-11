@@ -82,6 +82,8 @@ private:
 
   virtual bool previsit(const ASTInferenceEqualityDefn&);
 
+  virtual bool previsit(const ASTPropositionDefn&);
+
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
 
@@ -533,6 +535,20 @@ SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
       break;
   }
   (*ofs) << '<' << type_cls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::previsit(const ASTPropositionDefn& proposition_defn)
+{
+  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE;
+  synthesize_deduction_target(proposition_defn.target(),
+                              m_context->cpp_file_ofs.get());
+  *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
+
+  return true;
 }
 
 // -----------------------------------------------------------------------------
