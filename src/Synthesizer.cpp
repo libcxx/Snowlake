@@ -126,6 +126,8 @@ private:
   void __render_system_header_includes(
       const std::vector<const char*>& system_headers, std::ostream*) const;
 
+  void render_inference_error_category(std::ostream*) const;
+
   void indent_header_file();
 
   void dedent_header_file();
@@ -307,6 +309,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->cpp_file_ofs) << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
+    render_inference_error_category(m_context->cpp_file_ofs.get());
   }
 
   return true;
@@ -842,6 +845,16 @@ SynthesizerImpl::__render_system_header_includes(
   for (const auto& header : system_headers) {
     (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
   }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
+{
+  (*ofs) << std::endl;
+  (*ofs) << CPP_CUSTOM_ERROR_CATEGORY_DEFINITION;
+  (*ofs) << std::endl;
 }
 
 // -----------------------------------------------------------------------------
