@@ -101,18 +101,24 @@ private:
     AS_STD_VECTOR = 0x08,
   };
 
-  void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*);
+  void synthesize_inference_premise_defn_with_while_clause(
+      const ASTInferencePremiseDefn&) const;
+
+  void synthesize_inference_premise_defn_without_while_clause(
+      const ASTInferencePremiseDefn&) const;
+
+  void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*) const;
 
   void synthesize_deduction_target(const ASTDeductionTarget&,
                                    const DeductionTargetArraySynthesisMode,
-                                   std::ostream*);
+                                   std::ostream*) const;
 
   void synthesize_deduction_target_for_declaration(const ASTDeductionTarget&,
-                                                   std::ostream*);
+                                                   std::ostream*) const;
 
-  void synthesize_identifiable(const ASTIdentifiable&, std::ostream*);
+  void synthesize_identifiable(const ASTIdentifiable&, std::ostream*) const;
 
-  void synthesize_equality_operator(const EqualityOperator, std::ostream*);
+  void synthesize_equality_operator(const EqualityOperator, std::ostream*) const;
 
   void render_indentation(const size_t, std::ostream*) const;
 
@@ -128,6 +134,10 @@ private:
       const std::vector<const char*>& system_headers, std::ostream*) const;
 
   void render_inference_error_category(std::ostream*) const;
+
+  void render_type_annotation_setup_teardown_fixture(
+      const ASTInferencePremiseDefn& premise_defn,
+      const std::string& method_name, std::ostream*) const;
 
   void render_error_handling() const;
 
@@ -432,24 +442,13 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 bool
 SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
 {
-  const auto& proof_method_name =
-      m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
+  const bool has_while_clause = premise_defn.has_while_clause();
 
-  // Synthesize deduction.
-  {
-    render_indentation_in_cpp_file();
-    synthesize_deduction_target_for_declaration(premise_defn.deduction_target(),
-                                                m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
-    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
-    synthesize_identifiable(premise_defn.source(),
-                            m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  if (has_while_clause) {
+    synthesize_inference_premise_defn_with_while_clause(premise_defn);
+  } else {
+    synthesize_inference_premise_defn_without_while_clause(premise_defn);
   }
-
-  // TODO: Handle while-clause.
-
-  *(m_context->cpp_file_ofs) << std::endl;
 
   return true;
 }
@@ -601,8 +600,89 @@ SynthesizerImpl::get_class_name_from_env_defn(const EnvDefnMap& env_defn_map)
 // -----------------------------------------------------------------------------
 
 void
+SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
+    const ASTInferencePremiseDefn& premise_defn) const
+{
+  SYNTHESIZER_ASSERT(premise_defn.has_while_clause());
+
+  // Type annotation setup fixture.
+  {
+    *(m_context->cpp_file_ofs) << std::endl;
+
+    const auto& type_annotation_setup_method =
+        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD);
+
+    // Synthesize type annotation setup comment.
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT << std::endl;
+
+    // Synthesize type annotation setup code.
+    render_type_annotation_setup_teardown_fixture(premise_defn,
+        type_annotation_setup_method, m_context->cpp_file_ofs.get());
+
+    *(m_context->cpp_file_ofs) << std::endl;
+  }
+
+  // Synthesize body of while-clause.
+  {
+    const auto& while_clause = premise_defn.while_clause();
+
+    for (const auto& defn : while_clause.premise_defns()) {
+      // TODO: This const_cast here is not ideal.
+      // Also because we have to make the `visit` members in `ASTVisitor`
+      // protected instead of private.
+      // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
+      (const_cast<SynthesizerImpl*>(this))->visit(defn);
+    } 
+  }
+
+  // Type annotation teardown fixture.
+  {
+    const auto& type_annotation_teardown_method =
+        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
+
+    // Synthesize type annotation teardown comment.
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT << std::endl;
+
+    // Synthesize type annotation teardown code.
+    render_type_annotation_setup_teardown_fixture(premise_defn,
+        type_annotation_teardown_method, m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << std::endl;
+  }
+
+  *(m_context->cpp_file_ofs) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
+    const ASTInferencePremiseDefn& premise_defn) const
+{
+  const auto& proof_method_name =
+      m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
+
+  // Synthesize deduction.
+  {
+    render_indentation_in_cpp_file();
+    synthesize_deduction_target_for_declaration(premise_defn.deduction_target(),
+                                                m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
+    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
+    synthesize_identifiable(premise_defn.source(),
+                            m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  }
+
+  *(m_context->cpp_file_ofs) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
 SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
-                                          std::ostream* ofs)
+                                          std::ostream* ofs) const
 {
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
@@ -619,7 +699,7 @@ SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
 void
 SynthesizerImpl::synthesize_deduction_target(
     const ASTDeductionTarget& deduction_target,
-    const DeductionTargetArraySynthesisMode array_mode, std::ostream* ofs)
+    const DeductionTargetArraySynthesisMode array_mode, std::ostream* ofs) const
 {
   if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetSingular>();
@@ -688,7 +768,7 @@ SynthesizerImpl::synthesize_deduction_target(
 
 void
 SynthesizerImpl::synthesize_deduction_target_for_declaration(
-    const ASTDeductionTarget& deduction_target, std::ostream* ofs)
+    const ASTDeductionTarget& deduction_target, std::ostream* ofs) const
 {
   const auto& type_cls = m_context->type_cls;
 
@@ -710,7 +790,7 @@ SynthesizerImpl::synthesize_deduction_target_for_declaration(
 
 void
 SynthesizerImpl::synthesize_identifiable(const ASTIdentifiable& identifiable,
-                                         std::ostream* ofs)
+                                         std::ostream* ofs) const
 {
   const auto& identifiers = identifiable.identifiers();
   for (size_t i = 0; i < identifiers.size(); ++i) {
@@ -725,7 +805,7 @@ SynthesizerImpl::synthesize_identifiable(const ASTIdentifiable& identifiable,
 
 void
 SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
-                                              std::ostream* ofs)
+                                              std::ostream* ofs) const
 {
   const auto& type_cls = m_context->type_cls;
   switch (oprt) {
@@ -869,6 +949,28 @@ SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
   (*ofs) << std::endl;
   (*ofs) << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
   (*ofs) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_type_annotation_setup_teardown_fixture(
+    const ASTInferencePremiseDefn& premise_defn,
+    const std::string& method_name,
+    std::ostream* ofs) const
+{
+  // Synthesize type annotation setup code.
+  render_indentation_in_cpp_file();
+  *(ofs) << method_name << CPP_OPEN_PAREN;
+  synthesize_identifiable(premise_defn.source(), ofs);
+  *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+  // Should assert that this deduction target here is singular form only.
+  // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
+  synthesize_deduction_target(premise_defn.deduction_target(),
+                              DeductionTargetArraySynthesisMode::AS_SINGULAR,
+                              ofs);
+  *(ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  *(ofs) << std::endl;
 }
 
 // -----------------------------------------------------------------------------
