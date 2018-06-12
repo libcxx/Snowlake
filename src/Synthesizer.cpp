@@ -283,6 +283,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   // Write to header file.
   {
     // TODO: maybe this should be optional?
+    // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
     const auto& header_name =
         m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER);
 
@@ -643,6 +644,7 @@ SynthesizerImpl::synthesize_deduction_target(
       case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
         {
           // TODO: Consider using std::vector instead of raw pointer.
+          // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
           (*ofs) << CPP_STAR;
           (*ofs) << value.name();
         }
