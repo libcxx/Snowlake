@@ -128,6 +128,8 @@ private:
 
   void render_inference_error_category(std::ostream*) const;
 
+  void render_error_handling() const;
+
   void indent_header_file();
 
   void dedent_header_file();
@@ -514,6 +516,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
 
     render_indentation_in_cpp_file();
     *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
+    *(m_context->cpp_file_ofs) << CPP_NEGATION;
     *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
     synthesize_deduction_target(premise_defn.lhs(),
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
@@ -537,7 +540,14 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
                                << CPP_OPEN_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
-    // TODO: Body of if statement...
+
+    // Body of if statement
+    {
+      indent_cpp_file();
+      render_error_handling();
+      dedent_cpp_file();
+    }
+
     render_indentation_in_cpp_file();
     *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
     *(m_context->cpp_file_ofs) << std::endl;
@@ -855,6 +865,19 @@ SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
   (*ofs) << std::endl;
   (*ofs) << CPP_CUSTOM_ERROR_CATEGORY_DEFINITION;
   (*ofs) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::render_error_handling() const
+{
+  render_indentation_in_cpp_file();
+  *(m_context->cpp_file_ofs)
+      << CPP_STAR << "err" << CPP_SPACE << CPP_ASSIGN << CPP_SPACE
+      << CPP_STD_ERROR_CODE << CPP_OPEN_PAREN << '0' << CPP_COMA << CPP_SPACE
+      << SYNTHESIZED_GLOBAL_ERROR_CATEGORY_INSTANCE_NAME << CPP_CLOSE_PAREN
+      << CPP_SEMICOLON << std::endl;
 }
 
 // -----------------------------------------------------------------------------

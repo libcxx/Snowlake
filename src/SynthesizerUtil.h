@@ -58,6 +58,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_INCLUDE_DIRECTIVE_PREFIX "#include <"
 #define CPP_DOUBLE_QUOTE '"'
 #define CPP_STD_ERROR_CODE "std::error_code"
+#define CPP_NEGATION '!'
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \
@@ -75,4 +76,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   "        return \"inference failed.\";\n"                                    \
   "    }\n"                                                                    \
   "};\n"                                                                       \
+  "\n"                                                                         \
+  "const InferenceErrorCategory inference_error_category {};\n"                \
   ""
+
+#define SYNTHESIZED_ERROR_CATEGORY_CLASS_NAME "InferenceErrorCategory"
+
+#define SYNTHESIZED_GLOBAL_ERROR_CATEGORY_INSTANCE_NAME                        \
+  "inference_error_category"
