@@ -152,7 +152,6 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     " */\n"
     "#include \"MyInference.h\"\n"
     "\n"
-    "\n"
     "TypeCls\n"
     "MyInference::MethodStaticDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code* err)\n"
     "{\n"
@@ -167,7 +166,6 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     "    }\n"
     "    return lub(T1, T2);\n"
     "}\n"
-    "\n"
     "\n"
     "TypeCls\n"
     "MyInference::BinaryExpressionInference(const Expr& expr, std::error_code* err)\n"
@@ -203,8 +201,8 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     "{\n"
     "public:\n"
     "    TypeCls MethodStaticDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code*);\n"
-    ")    TypeCls BinaryExpressionInference(const Expr& expr, std::error_code*);\n"
-    ")};\n"
+    "    TypeCls BinaryExpressionInference(const Expr& expr, std::error_code*);\n"
+    "};\n"
     "";
   // clang-format on
 

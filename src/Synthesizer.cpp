@@ -358,7 +358,6 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
 
   // Synthesize member function declaration.
   {
-    *(m_context->cpp_file_ofs) << std::endl;
     indent_header_file();
     render_indentation_in_header_file();
     *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
@@ -391,7 +390,6 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
       *(m_context->cpp_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
       *(m_context->cpp_file_ofs) << CPP_SPACE << "err";
     }
-    *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << std::endl;
     *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
