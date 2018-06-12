@@ -121,7 +121,11 @@ private:
 
   void render_custom_include(const char*, std::ostream*) const;
 
-  void render_necessary_include_of_system_headers(std::ostream*) const;
+  void render_system_header_includes(std::ostream*) const;
+
+  void __render_system_header_includes(
+    const std::vector<const char*>& system_headers,
+    std::ostream*) const;
 
   void indent_header_file();
 
@@ -287,6 +291,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     render_custom_include(header_name.c_str(),
                           m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
+    render_system_header_includes(m_context->header_file_ofs.get());
+    *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
     *(m_context->header_file_ofs) << m_context->cls_name;
     *(m_context->header_file_ofs) << std::endl;
@@ -302,8 +308,6 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->cpp_file_ofs) << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << std::endl;
-    render_necessary_include_of_system_headers(m_context->cpp_file_ofs.get());
   }
 
   return true;
@@ -820,13 +824,27 @@ SynthesizerImpl::render_custom_include(const char* header_name,
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::render_necessary_include_of_system_headers(
+SynthesizerImpl::render_system_header_includes(std::ostream* ofs) const
+{
+  std::vector<const char*> system_headers {"cstdlib", "cstddef", "vector"};
+  if (m_opts.use_exception) {
+    system_headers.push_back("exception");
+  } else {
+    system_headers.push_back("system_error");
+  }
+
+  __render_system_header_includes(system_headers, ofs);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::__render_system_header_includes(
+    const std::vector<const char*>& system_headers,
     std::ostream* ofs) const
 {
-  static const char* system_headers[]{"cstdlib", "cstddef", "vector"};
-
-  for (size_t i = 0; i < sizeof(system_headers) / sizeof(char*); ++i) {
-    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << system_headers[i] << '>'
+  for (const auto& header : system_headers) {
+    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>'
            << std::endl;
   }
 }
