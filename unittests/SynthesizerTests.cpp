@@ -48,7 +48,10 @@ protected:
     res = analyzer.run(module);
     ASSERT_TRUE(res);
 
-    Synthesizer::Options opts{.output_path = output_path};
+    Synthesizer::Options opts{
+      .use_exception = false,
+      .output_path = output_path,
+    };
     Synthesizer synthesizer(opts);
 
     res = synthesizer.run(module);
@@ -145,7 +148,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     "\n"
     "\n"
     "TypeCls\n"
-    "MyInference::MethodStaticDispatch(const ASTExpr& StaticMethodCallStmt)\n"
+    "MyInference::MethodStaticDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code* err)\n"
     "{\n"
     "    std::vector<TypeCls> ArgumentsTypes = proveType(StaticMethodCallStmt.argument_types);\n"
     "    std::vector<TypeCls> ParameterTypes = proveType(StaticMethodCallStmt.callee.parameter_types);\n"
@@ -161,7 +164,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     "\n"
     "\n"
     "TypeCls\n"
-    "MyInference::BinaryExpressionInference(const Expr& expr)\n"
+    "MyInference::BinaryExpressionInference(const Expr& expr, std::error_code* err)\n"
     "{\n"
     "    TypeCls Expr = proveType(expr.lhs);\n"
     "    TypeCls Expr = proveType(expr.rhs);\n"

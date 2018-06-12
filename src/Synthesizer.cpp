@@ -363,6 +363,10 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->header_file_ofs) << CPP_OPEN_PAREN;
     synthesize_argument_list(inference_defn.arguments(),
                              m_context->header_file_ofs.get());
+    if (!m_opts.use_exception) {
+      *(m_context->header_file_ofs) << CPP_COMA << CPP_SPACE;
+      *(m_context->header_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
+    }
     *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->header_file_ofs) << CPP_SEMICOLON;
     *(m_context->header_file_ofs) << std::endl;
@@ -379,6 +383,12 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     *(m_context->cpp_file_ofs) << CPP_OPEN_PAREN;
     synthesize_argument_list(inference_defn.arguments(),
                              m_context->cpp_file_ofs.get());
+    if (!m_opts.use_exception) {
+      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+      *(m_context->cpp_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
+      *(m_context->cpp_file_ofs) << CPP_SPACE << "err";
+    }
+    *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << std::endl;
     *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;

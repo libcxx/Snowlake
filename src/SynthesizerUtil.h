@@ -57,6 +57,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CPP_INCLUDE_DIRECTIVE "#include"
 #define CPP_INCLUDE_DIRECTIVE_PREFIX "#include <"
 #define CPP_DOUBLE_QUOTE '"'
+#define CPP_STD_ERROR_CODE "std::error_code"
 
 #define SYNTHESIZED_PREFIX_COMMENT                                             \
   "/**\n"                                                                      \

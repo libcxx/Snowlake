@@ -31,6 +31,7 @@ class Synthesizer
 public:
   struct Options
   {
+    bool use_exception;
     std::string output_path;
   };
 
