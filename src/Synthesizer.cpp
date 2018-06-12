@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define SYNTHESIZER_ASSERT(expr) ASSERT((expr))
 #define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
+#define SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME "err"
 
 // -----------------------------------------------------------------------------
 
@@ -394,7 +395,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
     if (!m_opts.use_exception) {
       *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
       *(m_context->cpp_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
-      *(m_context->cpp_file_ofs) << CPP_SPACE << "err";
+      *(m_context->cpp_file_ofs)
+          << CPP_SPACE << SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME;
     }
     *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
     *(m_context->cpp_file_ofs) << std::endl;
@@ -880,8 +882,9 @@ SynthesizerImpl::render_error_handling() const
   // Assign to output error parameter.
   render_indentation_in_cpp_file();
   *(m_context->cpp_file_ofs)
-      << CPP_STAR << "err" << CPP_SPACE << CPP_ASSIGN << CPP_SPACE
-      << CPP_STD_ERROR_CODE << CPP_OPEN_PAREN << '0' << CPP_COMA << CPP_SPACE
+      << CPP_STAR << SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME
+      << CPP_SPACE << CPP_ASSIGN << CPP_SPACE << CPP_STD_ERROR_CODE
+      << CPP_OPEN_PAREN << '0' << CPP_COMA << CPP_SPACE
       << SYNTHESIZED_GLOBAL_ERROR_CATEGORY_INSTANCE_NAME << CPP_CLOSE_PAREN
       << CPP_SEMICOLON << std::endl;
 
