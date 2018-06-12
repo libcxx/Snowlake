@@ -863,7 +863,7 @@ void
 SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
 {
   (*ofs) << std::endl;
-  (*ofs) << CPP_CUSTOM_ERROR_CATEGORY_DEFINITION;
+  (*ofs) << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
   (*ofs) << std::endl;
 }
 
