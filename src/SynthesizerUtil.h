@@ -72,7 +72,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   "        return \"Inference error\";\n"                                      \
   "    }\n"                                                                    \
   "\n"                                                                         \
-  "    virtual std::string message( int condition ) const override {\n"        \
+  "    virtual std::string message(int condition) const override {\n"          \
   "        return \"Inference failed\";\n"                                     \
   "    }\n"                                                                    \
   "};\n"                                                                       \
