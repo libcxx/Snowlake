@@ -872,12 +872,22 @@ SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
 void
 SynthesizerImpl::render_error_handling() const
 {
+  const auto type_cls =
+      m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
+
+  // Assign to output error parameter.
   render_indentation_in_cpp_file();
   *(m_context->cpp_file_ofs)
       << CPP_STAR << "err" << CPP_SPACE << CPP_ASSIGN << CPP_SPACE
       << CPP_STD_ERROR_CODE << CPP_OPEN_PAREN << '0' << CPP_COMA << CPP_SPACE
       << SYNTHESIZED_GLOBAL_ERROR_CATEGORY_INSTANCE_NAME << CPP_CLOSE_PAREN
       << CPP_SEMICOLON << std::endl;
+
+  // Return default type class instance.
+  render_indentation_in_cpp_file();
+  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE << type_cls
+                             << CPP_OPEN_PAREN << CPP_CLOSE_PAREN
+                             << CPP_SEMICOLON << std::endl;
 }
 
 // -----------------------------------------------------------------------------
