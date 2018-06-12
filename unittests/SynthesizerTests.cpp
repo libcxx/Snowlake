@@ -49,8 +49,7 @@ protected:
     ASSERT_TRUE(res);
 
     Synthesizer::Options opts{
-      .use_exception = false,
-      .output_path = output_path,
+        .use_exception = false, .output_path = output_path,
     };
     Synthesizer synthesizer(opts);
 
@@ -72,10 +71,12 @@ protected:
                        std::istreambuf_iterator<char>());
   }
 
-  void assert_output_file_content(const char* expected_res, const char* filename) const
+  void assert_output_file_content(const char* expected_res,
+                                  const char* filename) const
   {
     char output_filepath[32] = {0};
-    snprintf(output_filepath, sizeof(output_filepath), "%s%s", output_path, filename);
+    snprintf(output_filepath, sizeof(output_filepath), "%s%s", output_path,
+             filename);
     const auto actual_res = read_from_output_file(output_filepath);
 
     ASSERT_STREQ(expected_res, actual_res.c_str());

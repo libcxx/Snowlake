@@ -124,8 +124,7 @@ private:
   void render_system_header_includes(std::ostream*) const;
 
   void __render_system_header_includes(
-    const std::vector<const char*>& system_headers,
-    std::ostream*) const;
+      const std::vector<const char*>& system_headers, std::ostream*) const;
 
   void indent_header_file();
 
@@ -826,7 +825,7 @@ SynthesizerImpl::render_custom_include(const char* header_name,
 void
 SynthesizerImpl::render_system_header_includes(std::ostream* ofs) const
 {
-  std::vector<const char*> system_headers {"cstdlib", "cstddef", "vector"};
+  std::vector<const char*> system_headers{"cstdlib", "cstddef", "vector"};
   if (m_opts.use_exception) {
     system_headers.push_back("exception");
   } else {
@@ -840,12 +839,10 @@ SynthesizerImpl::render_system_header_includes(std::ostream* ofs) const
 
 void
 SynthesizerImpl::__render_system_header_includes(
-    const std::vector<const char*>& system_headers,
-    std::ostream* ofs) const
+    const std::vector<const char*>& system_headers, std::ostream* ofs) const
 {
   for (const auto& header : system_headers) {
-    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>'
-           << std::endl;
+    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
   }
 }
 
