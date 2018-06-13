@@ -23,27 +23,46 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "ast_fwd.h"
-#include <string>
+/**
+ * Definitions of constants used in Snowlake language format.
+ */
 
-class Synthesizer
-{
-public:
-  struct Options
-  {
-    bool use_exception;
-    std::string output_path;
-  };
+/**
+ * Key name for inference group environment definition "class name" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS "ClassName"
 
-  Synthesizer();
+/**
+ * Key name for inference group environment definition "type class" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS "TypeClass"
 
-  explicit Synthesizer(const Options&);
+/**
+ * Key name for inference group environment definition "proof method" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD "ProofMethod"
 
-  bool run(const ASTModule&);
+/**
+ * Key name for inference group environment definition
+ * "type comparison method" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD "TypeCmpMethod"
 
-  const std::string& msg() const;
+/**
+ * Key name for inference group environment "definition header" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER "Header"
 
-private:
-  Options m_opts;
-  std::string m_msg;
-};
+/**
+ * Key name for inference group environment definition
+ * "type annotation setup method" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD           \
+  "TypeAnnotationSetupMethod"
+
+/**
+ * Key name for inference group environment definition
+ * "type annotation teardown method" field.
+ */
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD        \
+  "TypeAnnotationTeardownMethod"

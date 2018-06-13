@@ -38,6 +38,11 @@ protected:
     // clang-format off
     static const char* INPUT =
       "group MyGroup {"
+        "Header                    : AST;"
+        "ClassName                 : ProgramDriverTestOutput;"
+        "TypeClass                 : TypeCls;"
+        "ProofMethod               : proveType;"
+        "TypeCmpMethod             : cmpType;"
         "EnvironmentClass          : ASTContext;"
         "EnvironmentName           : context;"
         ""
@@ -53,11 +58,27 @@ protected:
           "]"
           ""
           "premises: ["
-            "StaticMethodCallStmt.argument_types : ArgumentsTypes[];"
+            "StaticMethodCallStmt.argument_types            : ArgumentsTypes[];"
+            "StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];"
+            "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];"
             "ArgumentsTypes[0] != SELF_TYPE;"
           "]"
           ""
           "proposition : lub(T1, T2);"
+        "}"
+        ""
+        "inference BinaryExpressionInference {"
+          ""
+          "arguments: ["
+            "expr : Expr"
+          "]"
+          ""
+          "premises: ["
+            "expr.lhs   : Expr;"
+            "expr.rhs   : Expr;"
+          "]"
+          ""
+          "proposition  : Expr;"
         "}"
       "}"
       "";
@@ -112,7 +133,7 @@ private:
   }
 
 protected:
-  const char* m_output_path = "test_output.txt";
+  const char* m_output_path = "./";
   const char* m_input_path = "test_input.txt";
 };
 

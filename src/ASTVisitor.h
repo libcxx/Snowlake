@@ -74,7 +74,7 @@ protected:
   virtual bool previsit(const ASTDeductionTargetComputed&);
   virtual bool postvisit(const ASTDeductionTargetComputed&);
 
-private:
+protected:
   bool visit(const ASTInferenceGroup&);
   bool visit(const ASTEnvironmentDefn&);
   bool visit(const ASTInferenceDefn&);
