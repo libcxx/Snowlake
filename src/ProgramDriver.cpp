@@ -39,6 +39,15 @@ static void print_semantic_analyzer_errors(const std::string&,
 
 // -----------------------------------------------------------------------------
 
+#define PRINT_VERBOSE_MSG(msg)                                                 \
+  do {                                                                         \
+    if (cmdl_opts.verbose) {                                                   \
+      std::cerr << (msg) << std::endl;                                         \
+    }                                                                          \
+  } while (0)
+
+// -----------------------------------------------------------------------------
+
 ProgramDriver::ProgramDriver()
 {
 }
@@ -69,6 +78,7 @@ ProgramDriver::run(int argc, char** argv)
   ParserDriver parser(parser_opts);
   res = parser.parse_from_file(cmdl_opts.input_path);
   if (res != 0) {
+    PRINT_VERBOSE_MSG("Failed: parsing error");
     return EXIT_FAILURE;
   }
 
@@ -97,6 +107,8 @@ ProgramDriver::run(int argc, char** argv)
     std::cerr << synthesizer.msg() << std::endl;
     return EXIT_FAILURE;
   }
+
+  PRINT_VERBOSE_MSG("- SUCCESS -");
 
   // SUCCESS.
   return EXIT_SUCCESS;

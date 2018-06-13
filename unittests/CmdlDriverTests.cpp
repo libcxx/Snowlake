@@ -41,6 +41,7 @@ TEST_F(CmdlDriverTests, TestDefaultInitialization)
   ASSERT_FALSE(driver.options().warningsAsErrors);
   ASSERT_FALSE(driver.options().bailOnFirstError);
   ASSERT_FALSE(driver.options().debugMode);
+  ASSERT_FALSE(driver.options().verbose);
   ASSERT_STREQ("", driver.options().output_path.c_str());
 }
 
@@ -48,8 +49,8 @@ TEST_F(CmdlDriverTests, TestDefaultInitialization)
 
 TEST_F(CmdlDriverTests, TestRun)
 {
-  const std::vector<char*> args{"MyProgram", "--errors", "--bail", "--debug",
-                                "--output",  "/tmp/out", "/tmp/in"};
+  const std::vector<char*> args{"MyProgram", "--errors", "--bail",   "--debug",
+                                "--verbose", "--output", "/tmp/out", "/tmp/in"};
 
   CmdlDriver driver;
   const bool res = driver.run(args.size(), (char**)args.data());
@@ -58,6 +59,7 @@ TEST_F(CmdlDriverTests, TestRun)
   ASSERT_TRUE(driver.options().warningsAsErrors);
   ASSERT_TRUE(driver.options().bailOnFirstError);
   ASSERT_TRUE(driver.options().debugMode);
+  ASSERT_TRUE(driver.options().verbose);
   ASSERT_STREQ("/tmp/out", driver.options().output_path.c_str());
   ASSERT_STREQ("/tmp/in", driver.options().input_path.c_str());
 }
