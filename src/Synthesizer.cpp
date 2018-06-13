@@ -300,6 +300,11 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->header_file_ofs) << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
+
+    // Synthesize `enum InferenceError`.
+    *(m_context->header_file_ofs) << SYNTHESIZED_ERROR_CODE_ENUM_DEFINITION << std::endl;
+
+    *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
     *(m_context->header_file_ofs) << m_context->cls_name;
     *(m_context->header_file_ofs) << std::endl;
