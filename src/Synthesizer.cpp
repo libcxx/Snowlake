@@ -725,8 +725,6 @@ SynthesizerImpl::synthesize_deduction_target(
         break;
       case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
         {
-          // TODO: Consider using std::vector instead of raw pointer.
-          // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
           (*ofs) << CPP_STAR;
           (*ofs) << value.name();
         }
