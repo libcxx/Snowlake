@@ -35,8 +35,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 #define SYNTHESIZER_ASSERT(expr) ASSERT((expr))
-#define SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX "Inference"
-#define SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME "err"
 
 // -----------------------------------------------------------------------------
 
