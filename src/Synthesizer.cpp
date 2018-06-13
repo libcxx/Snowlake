@@ -628,10 +628,9 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
     const auto& while_clause = premise_defn.while_clause();
 
     for (const auto& defn : while_clause.premise_defns()) {
-      // TODO: This const_cast here is not ideal.
+      // FIXME: This const_cast here is not ideal.
       // Also because we have to make the `visit` members in `ASTVisitor`
       // protected instead of private.
-      // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
       (const_cast<SynthesizerImpl*>(this))->visit(defn);
     }
   }
