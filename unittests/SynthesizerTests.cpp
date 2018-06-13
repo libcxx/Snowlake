@@ -247,6 +247,9 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "    InferenceErrorInferredTypeMismatch = 0x01,\n"
       "    InferenceErrorTypeComparisonFailed,\n"
       "};\n"
+      "\n"
+      "class InferenceErrorCategory;\n"
+      "extern const InferenceErrorCategory inference_error_category;\n"
       "";
     // clang-format on
 

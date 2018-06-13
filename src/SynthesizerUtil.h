@@ -80,7 +80,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   "{\n"                                                                        \
   "    InferenceErrorInferredTypeMismatch = 0x01,\n"                           \
   "    InferenceErrorTypeComparisonFailed,\n"                                  \
-  "};"                                                                         \
+  "};\n"                                                                       \
+  "\n"                                                                         \
+  "class InferenceErrorCategory;\n"                                            \
+  "extern const InferenceErrorCategory inference_error_category;"              \
   ""
 
 #define SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION                           \
