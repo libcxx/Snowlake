@@ -107,7 +107,8 @@ private:
   void synthesize_inference_premise_defn_without_while_clause(
       const ASTInferencePremiseDefn&) const;
 
-  void synthesize_argument_list(const ASTInferenceArgumentList&, std::ostream*) const;
+  void synthesize_argument_list(const ASTInferenceArgumentList&,
+                                std::ostream*) const;
 
   void synthesize_deduction_target(const ASTDeductionTarget&,
                                    const DeductionTargetArraySynthesisMode,
@@ -118,7 +119,8 @@ private:
 
   void synthesize_identifiable(const ASTIdentifiable&, std::ostream*) const;
 
-  void synthesize_equality_operator(const EqualityOperator, std::ostream*) const;
+  void synthesize_equality_operator(const EqualityOperator,
+                                    std::ostream*) const;
 
   void render_indentation(const size_t, std::ostream*) const;
 
@@ -609,16 +611,18 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
   {
     *(m_context->cpp_file_ofs) << std::endl;
 
-    const auto& type_annotation_setup_method =
-        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD);
+    const auto& type_annotation_setup_method = m_context->env_defn_map.at(
+        SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD);
 
     // Synthesize type annotation setup comment.
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT << std::endl;
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT
+                               << std::endl;
 
     // Synthesize type annotation setup code.
-    render_type_annotation_setup_teardown_fixture(premise_defn,
-        type_annotation_setup_method, m_context->cpp_file_ofs.get());
+    render_type_annotation_setup_teardown_fixture(
+        premise_defn, type_annotation_setup_method,
+        m_context->cpp_file_ofs.get());
 
     *(m_context->cpp_file_ofs) << std::endl;
   }
@@ -633,21 +637,23 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
       // protected instead of private.
       // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
       (const_cast<SynthesizerImpl*>(this))->visit(defn);
-    } 
+    }
   }
 
   // Type annotation teardown fixture.
   {
-    const auto& type_annotation_teardown_method =
-        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
+    const auto& type_annotation_teardown_method = m_context->env_defn_map.at(
+        SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
 
     // Synthesize type annotation teardown comment.
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT << std::endl;
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT
+                               << std::endl;
 
     // Synthesize type annotation teardown code.
-    render_type_annotation_setup_teardown_fixture(premise_defn,
-        type_annotation_teardown_method, m_context->cpp_file_ofs.get());
+    render_type_annotation_setup_teardown_fixture(
+        premise_defn, type_annotation_teardown_method,
+        m_context->cpp_file_ofs.get());
   }
 
   *(m_context->cpp_file_ofs) << std::endl;
@@ -954,8 +960,7 @@ SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
 
 void
 SynthesizerImpl::render_type_annotation_setup_teardown_fixture(
-    const ASTInferencePremiseDefn& premise_defn,
-    const std::string& method_name,
+    const ASTInferencePremiseDefn& premise_defn, const std::string& method_name,
     std::ostream* ofs) const
 {
   // Synthesize type annotation setup code.

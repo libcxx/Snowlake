@@ -88,8 +88,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SYNTHESIZED_GLOBAL_ERROR_CATEGORY_INSTANCE_NAME                        \
   "inference_error_category"
 
-#define SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT                              \
-  "// Type annotation setup."
+#define SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT "// Type annotation setup."
 
 #define SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT                           \
   "// Type annotation teardown."

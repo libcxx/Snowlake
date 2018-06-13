@@ -57,10 +57,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * Name of the key for inference group environment definition
  * type annotation setup method.
  */
-#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD "TypeAnnotationSetupMethod"
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD           \
+  "TypeAnnotationSetupMethod"
 
 /**
  * Name of the key for inference group environment definition
  * type annotation teardown method.
  */
-#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD "TypeAnnotationTeardownMethod"
+#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD        \
+  "TypeAnnotationTeardownMethod"
