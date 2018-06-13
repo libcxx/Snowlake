@@ -228,11 +228,11 @@ SemanticAnalyzer::check_required_env_defns(const SymbolSet& env_defns)
 {
   INIT_RES;
 
-  static const char* mandatory_env_defns[] {
-    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
-    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
-    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
-    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD,
+  static const char* mandatory_env_defns[]{
+      SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
+      SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
+      SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
+      SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD,
   };
 
   for (size_t i = 0; i < sizeof(mandatory_env_defns) / sizeof(char*); ++i) {

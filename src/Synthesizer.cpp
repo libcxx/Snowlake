@@ -1004,7 +1004,8 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
 {
   // Initialize header file.
   std::string ec_header_filepath(m_opts.output_path);
-  if (!ec_header_filepath.empty() && ec_header_filepath.back() != FORWARD_SLASH) {
+  if (!ec_header_filepath.empty() &&
+      ec_header_filepath.back() != FORWARD_SLASH) {
     ec_header_filepath.push_back(FORWARD_SLASH);
   }
   ec_header_filepath.append(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
@@ -1038,13 +1039,15 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
   // Synthesize .cpp file.
   {
     ec_cpp_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
-    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE, &ec_cpp_file_ofs);
-    __render_system_header_includes(std::vector<const char*>{ "string", "system_error" }, &ec_cpp_file_ofs);
+    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
+                          &ec_cpp_file_ofs);
+    __render_system_header_includes(
+        std::vector<const char*>{"string", "system_error"}, &ec_cpp_file_ofs);
     ec_cpp_file_ofs << std::endl;
-    ec_cpp_file_ofs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << std::endl;
+    ec_cpp_file_ofs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION
+                    << std::endl;
     ec_cpp_file_ofs.close();
   }
-
 
   return true;
 }

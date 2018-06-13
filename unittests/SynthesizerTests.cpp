@@ -251,7 +251,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     // clang-format on
 
     assert_output_file_content(EXPECTED_EC_HEADER_RES,
-        SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
+                               SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
   }
 
   // Check error code definition .cpp file content.
@@ -281,7 +281,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     // clang-format on
 
     assert_output_file_content(EXPECTED_EC_CPP_RES,
-        SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
+                               SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
   }
 }
 
