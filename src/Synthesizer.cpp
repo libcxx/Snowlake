@@ -1039,6 +1039,7 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
   {
     ec_cpp_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
     render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE, &ec_cpp_file_ofs);
+    __render_system_header_includes(std::vector<const char*>{ "string", "system_error" }, &ec_cpp_file_ofs);
     ec_cpp_file_ofs << std::endl;
     ec_cpp_file_ofs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << std::endl;
     ec_cpp_file_ofs.close();
