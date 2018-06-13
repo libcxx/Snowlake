@@ -149,6 +149,8 @@ private:
 
   void dedent_cpp_file();
 
+  bool initialize_and_synthesize_error_code_files() const;
+
   const Synthesizer::Options& m_opts;
   std::string* m_msg;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
@@ -224,6 +226,9 @@ SynthesizerImpl::set_msg(const char* msg)
 bool
 SynthesizerImpl::run(const ASTModule& module)
 {
+  if (!initialize_and_synthesize_error_code_files()) {
+    return false;
+  }
   return visit(module);
 }
 
@@ -300,11 +305,6 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->header_file_ofs) << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
-
-    // Synthesize `enum InferenceError`.
-    *(m_context->header_file_ofs) << SYNTHESIZED_ERROR_CODE_ENUM_DEFINITION << std::endl;
-
-    *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
     *(m_context->header_file_ofs) << m_context->cls_name;
     *(m_context->header_file_ofs) << std::endl;
@@ -320,7 +320,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     *(m_context->cpp_file_ofs) << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
-    render_inference_error_category(m_context->cpp_file_ofs.get());
+    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
+                          m_context->cpp_file_ofs.get());
   }
 
   return true;
@@ -994,6 +995,57 @@ SynthesizerImpl::render_error_handling() const
   *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE << type_cls
                              << CPP_OPEN_PAREN << CPP_CLOSE_PAREN
                              << CPP_SEMICOLON << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+SynthesizerImpl::initialize_and_synthesize_error_code_files() const
+{
+  // Initialize header file.
+  std::string ec_header_filepath(m_opts.output_path);
+  if (!ec_header_filepath.empty() && ec_header_filepath.back() != FORWARD_SLASH) {
+    ec_header_filepath.push_back(FORWARD_SLASH);
+  }
+  ec_header_filepath.append(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
+
+  std::ofstream ec_header_file_ofs(ec_header_filepath, std::ofstream::out);
+  if (!ec_header_file_ofs.good()) {
+    return false;
+  }
+
+  // Initialize .cpp file.
+  std::string ec_cpp_filepath(m_opts.output_path);
+  if (!ec_cpp_filepath.empty() && ec_cpp_filepath.back() != FORWARD_SLASH) {
+    ec_cpp_filepath.push_back(FORWARD_SLASH);
+  }
+  ec_cpp_filepath.append(SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
+
+  std::ofstream ec_cpp_file_ofs(ec_cpp_filepath, std::ofstream::out);
+  if (!ec_cpp_file_ofs.good()) {
+    return false;
+  }
+
+  // Synthesize header file.
+  {
+    ec_header_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
+    ec_header_file_ofs << CPP_PRAGMA_ONCE << std::endl;
+    ec_header_file_ofs << std::endl;
+    ec_header_file_ofs << SYNTHESIZED_ERROR_CODE_ENUM_DEFINITION << std::endl;
+    ec_header_file_ofs.close();
+  }
+
+  // Synthesize .cpp file.
+  {
+    ec_cpp_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
+    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE, &ec_cpp_file_ofs);
+    ec_cpp_file_ofs << std::endl;
+    ec_cpp_file_ofs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << std::endl;
+    ec_cpp_file_ofs.close();
+  }
+
+
+  return true;
 }
 
 // -----------------------------------------------------------------------------
