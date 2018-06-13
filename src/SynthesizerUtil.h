@@ -91,7 +91,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   "    }\n"                                                                    \
   "\n"                                                                         \
   "    virtual std::string message(int condition) const override {\n"          \
-  "        return \"Inference failed\";\n"                                     \
+  "        switch (condition) {\n"                                             \
+  "            case InferenceErrorInferredTypeMismatch:\n"                     \
+  "                return \"Inferred type does not match with expected.\";\n"  \
+  "            case InferenceErrorTypeComparisonFailed:\n"                     \
+  "                return \"Type comparison failed.\";\n"                      \
+  "            default:\n"                                                     \
+  "                return \"Inference failed (unknown error).\";\n"            \
+  "        }\n"                                                                \
   "    }\n"                                                                    \
   "};\n"                                                                       \
   "\n"                                                                         \
