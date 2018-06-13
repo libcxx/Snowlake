@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "SemanticAnalyzer.h"
 #include "ast.h"
 #include "ast_util.h"
+#include "format_defn.h"
 
 // -----------------------------------------------------------------------------
 
@@ -138,6 +139,10 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
         name_set.insert(field);
       }
     }
+
+    if (!check_required_env_defns(name_set)) {
+      return false;
+    }
   }
 
   // Inference definitions.
@@ -210,6 +215,30 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
                                         context.target_tbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
+    }
+  }
+
+  DEFAULT_RETURN;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+SemanticAnalyzer::check_required_env_defns(const SymbolSet& env_defns)
+{
+  INIT_RES;
+
+  static const char* mandatory_env_defns[] {
+    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
+    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
+    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
+    SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD,
+  };
+
+  for (size_t i = 0; i < sizeof(mandatory_env_defns) / sizeof(char*); ++i) {
+    const char* defn = mandatory_env_defns[i];
+    if (env_defns.count(defn) == 0) {
+      ON_ERROR("Missing required environment definition field \"%s\".", defn);
     }
   }
 

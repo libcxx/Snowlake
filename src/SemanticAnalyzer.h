@@ -78,6 +78,8 @@ private:
     TargetTable target_tbl;
   };
 
+  bool check_required_env_defns(const SymbolSet&);
+
   bool recursive_premise_defn_check(const ASTPremiseDefn&,
                                     InferenceDefnContext*);
 
