@@ -293,18 +293,10 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
-    // TODO: maybe this should be optional?
-    // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
-    const auto& header_name =
-        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER);
-
     *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
-    *(m_context->header_file_ofs) << std::endl;
-    render_custom_include(header_name.c_str(),
-                          m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
