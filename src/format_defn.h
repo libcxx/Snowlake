@@ -28,41 +28,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 /**
- * Name of the key for inference group environment definition class name.
+ * Key name for inference group environment definition "class name" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS "ClassName"
 
 /**
- * Name of the key for inference group environment definition type class.
+ * Key name for inference group environment definition "type class" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS "TypeClass"
 
 /**
- * Name of the key for inference group environment definition proof method.
+ * Key name for inference group environment definition "proof method" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD "ProofMethod"
 
 /**
- * Name of the key for inference group environment definition
- * type comparison method.
+ * Key name for inference group environment definition
+ * "type comparison method" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD "TypeCmpMethod"
 
 /**
- * Name of the key for inference group environment definition header.
+ * Key name for inference group environment "definition header" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER "Header"
 
 /**
- * Name of the key for inference group environment definition
- * type annotation setup method.
+ * Key name for inference group environment definition
+ * "type annotation setup method" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD           \
   "TypeAnnotationSetupMethod"
 
 /**
- * Name of the key for inference group environment definition
- * type annotation teardown method.
+ * Key name for inference group environment definition
+ * "type annotation teardown method" field.
  */
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD        \
   "TypeAnnotationTeardownMethod"
