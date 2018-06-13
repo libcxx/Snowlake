@@ -648,7 +648,6 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
     // Synthesize type annotation teardown code.
     render_type_annotation_setup_teardown_fixture(premise_defn,
         type_annotation_teardown_method, m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << std::endl;
   }
 
   *(m_context->cpp_file_ofs) << std::endl;

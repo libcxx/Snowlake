@@ -150,15 +150,7 @@ bool
 ASTVisitor::visit(const ASTInferencePremiseDefn& defn)
 {
   PREVISIT_AND_VERIFY(defn);
-
-  VISIT_AND_VERIFY(defn.deduction_target());
-
-  if (defn.has_while_clause()) {
-    VISIT_AND_VERIFY(defn.while_clause());
-  }
-
   POSTVISIT_AND_VERIFY(defn);
-
   DEFAULT_RETURN();
 }
 
