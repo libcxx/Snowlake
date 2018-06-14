@@ -298,7 +298,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
-    *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->header_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
@@ -316,7 +316,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to .cpp file.
   {
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     *(m_context->cpp_file_ofs) << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
@@ -1026,7 +1026,7 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
 
   // Synthesize header file.
   {
-    ec_header_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
+    ec_header_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << std::endl;
     ec_header_file_ofs << CPP_PRAGMA_ONCE << std::endl;
     ec_header_file_ofs << std::endl;
     ec_header_file_ofs << SYNTHESIZED_ERROR_CODE_ENUM_DEFINITION << std::endl;
@@ -1035,7 +1035,7 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
 
   // Synthesize .cpp file.
   {
-    ec_cpp_file_ofs << SYNTHESIZED_PREFIX_COMMENT << std::endl;
+    ec_cpp_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << std::endl;
     render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
                           &ec_cpp_file_ofs);
     __render_system_header_includes(
