@@ -69,7 +69,7 @@ struct InferenceGroupSynthesisContext
 class SynthesizerImpl : public ASTVisitor
 {
 public:
-  explicit SynthesizerImpl(const Synthesizer::Options&, std::string*);
+  explicit SynthesizerImpl(const Synthesizer::Options&);
 
   bool run(const ASTModule&);
 
@@ -88,8 +88,6 @@ private:
 
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
-
-  void set_msg(const char*);
 
   enum class DeductionTargetArraySynthesisMode : uint32_t
   {
@@ -152,7 +150,6 @@ private:
   bool initialize_and_synthesize_error_code_files() const;
 
   const Synthesizer::Options& m_opts;
-  std::string* m_msg;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
 };
 
@@ -160,7 +157,6 @@ private:
 
 Synthesizer::Synthesizer()
   : m_opts()
-  , m_msg()
 {
 }
 
@@ -168,16 +164,7 @@ Synthesizer::Synthesizer()
 
 Synthesizer::Synthesizer(const Options& opts)
   : m_opts(opts)
-  , m_msg()
 {
-}
-
-// -----------------------------------------------------------------------------
-
-const std::string&
-Synthesizer::msg() const
-{
-  return m_msg;
 }
 
 // -----------------------------------------------------------------------------
@@ -185,7 +172,7 @@ Synthesizer::msg() const
 bool
 Synthesizer::run(const ASTModule& module)
 {
-  SynthesizerImpl impl(m_opts, &m_msg);
+  SynthesizerImpl impl(m_opts);
   return impl.run(module);
 }
 
@@ -205,20 +192,10 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
-                                 std::string* msg)
+SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
   : m_opts(opts)
-  , m_msg(msg)
   , m_context()
 {
-}
-
-// -----------------------------------------------------------------------------
-
-void
-SynthesizerImpl::set_msg(const char* msg)
-{
-  m_msg->assign(msg);
 }
 
 // -----------------------------------------------------------------------------

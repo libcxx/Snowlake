@@ -41,9 +41,6 @@ public:
 
   bool run(const ASTModule&);
 
-  const std::string& msg() const;
-
 private:
   Options m_opts;
-  std::string m_msg;
 };

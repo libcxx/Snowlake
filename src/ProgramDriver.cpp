@@ -113,7 +113,6 @@ ProgramDriver::run(int argc, char** argv)
   if (!res) {
     std::cerr << "Error: Failed to synthesize output to: "
               << cmdl_opts.output_path;
-    std::cerr << synthesizer.msg() << std::endl;
     return EXIT_FAILURE;
   }
 
