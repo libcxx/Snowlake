@@ -68,6 +68,15 @@ ProgramDriver::run(int argc, char** argv)
 
   const auto& cmdl_opts = cmdl_driver.options();
 
+  if (cmdl_opts.verbose) {
+    std::cout << "Input:" << std::endl;
+    std::cout << cmdl_opts.input_path << std::endl;
+    std::cout << std::endl;
+    std::cout << "Output path:" << std::endl;
+    std::cout << cmdl_opts.output_path << std::endl;
+    std::cout << std::endl;
+  }
+
   // Parsing.
   ParserDriver::Options parser_opts{
       .trace_lexer = cmdl_opts.debugMode,
