@@ -109,8 +109,12 @@ ParserDriver::parse_from_file(const std::string& filepath)
 {
   m_input_file.assign(filepath);
   std::ifstream infile(filepath.c_str());
+  if (!infile.good()) {
+    return -1;
+  }
   std::string file_contents((std::istreambuf_iterator<char>(infile)),
                             std::istreambuf_iterator<char>());
+  infile.close();
   return parse_from_string(file_contents.c_str());
 }
 

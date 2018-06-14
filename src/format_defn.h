@@ -49,11 +49,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD "TypeCmpMethod"
 
 /**
- * Key name for inference group environment "definition header" field.
- */
-#define SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER "Header"
-
-/**
  * Key name for inference group environment definition
  * "type annotation setup method" field.
  */

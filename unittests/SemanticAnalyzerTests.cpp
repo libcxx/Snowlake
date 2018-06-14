@@ -112,6 +112,11 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
+      ""
       "inference MyInference {"
         "globals: ["
           "Arg1"
@@ -136,8 +141,10 @@ TEST_F(SemanticAnalyzerTests, TestWithValidInput)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -171,8 +178,10 @@ TEST_F(SemanticAnalyzerTests, TestWithValidPropositionTarget)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -208,8 +217,10 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidRangeClauseTarget)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -248,8 +259,10 @@ TEST_F(SemanticAnalyzerTests, TestWithIncompatibleTargetsInRangeClause)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -288,8 +301,10 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
       ""
@@ -330,8 +345,10 @@ TEST_F(SemanticAnalyzerTests,
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -370,8 +387,10 @@ TEST_F(SemanticAnalyzerTests,
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
         ""
@@ -409,8 +428,10 @@ TEST_F(SemanticAnalyzerTests, TestValidInputWithAllComputedTargetTypes)
   // clang-format off
   const char* INPUT =
     "group MyGroup {"
-      "EnvironmentClass          : ASTContext;"
-      "EnvironmentName           : context;"
+      "ClassName          : MyGroup;"
+      "TypeClass          : TypeCls;"
+      "ProofMethod        : proveType;"
+      "TypeCmpMethod      : cmpType;"
       ""
       "inference MethodStaticDispatch {"
       ""

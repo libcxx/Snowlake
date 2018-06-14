@@ -69,7 +69,7 @@ struct InferenceGroupSynthesisContext
 class SynthesizerImpl : public ASTVisitor
 {
 public:
-  explicit SynthesizerImpl(const Synthesizer::Options&, std::string*);
+  explicit SynthesizerImpl(const Synthesizer::Options&);
 
   bool run(const ASTModule&);
 
@@ -88,8 +88,6 @@ private:
 
   EnvDefnMap get_envn_defn_map_from_inference_group(const ASTInferenceGroup&);
   std::string get_class_name_from_env_defn(const EnvDefnMap&);
-
-  void set_msg(const char*);
 
   enum class DeductionTargetArraySynthesisMode : uint32_t
   {
@@ -149,8 +147,9 @@ private:
 
   void dedent_cpp_file();
 
+  bool initialize_and_synthesize_error_code_files() const;
+
   const Synthesizer::Options& m_opts;
-  std::string* m_msg;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
 };
 
@@ -158,7 +157,6 @@ private:
 
 Synthesizer::Synthesizer()
   : m_opts()
-  , m_msg()
 {
 }
 
@@ -166,16 +164,7 @@ Synthesizer::Synthesizer()
 
 Synthesizer::Synthesizer(const Options& opts)
   : m_opts(opts)
-  , m_msg()
 {
-}
-
-// -----------------------------------------------------------------------------
-
-const std::string&
-Synthesizer::msg() const
-{
-  return m_msg;
 }
 
 // -----------------------------------------------------------------------------
@@ -183,7 +172,7 @@ Synthesizer::msg() const
 bool
 Synthesizer::run(const ASTModule& module)
 {
-  SynthesizerImpl impl(m_opts, &m_msg);
+  SynthesizerImpl impl(m_opts);
   return impl.run(module);
 }
 
@@ -203,20 +192,10 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
-                                 std::string* msg)
+SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
   : m_opts(opts)
-  , m_msg(msg)
   , m_context()
 {
-}
-
-// -----------------------------------------------------------------------------
-
-void
-SynthesizerImpl::set_msg(const char* msg)
-{
-  m_msg->assign(msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -224,6 +203,9 @@ SynthesizerImpl::set_msg(const char* msg)
 bool
 SynthesizerImpl::run(const ASTModule& module)
 {
+  if (!initialize_and_synthesize_error_code_files()) {
+    return false;
+  }
   return visit(module);
 }
 
@@ -293,18 +275,10 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
-    // TODO: maybe this should be optional?
-    // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
-    const auto& header_name =
-        m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_HEADER);
-
-    *(m_context->header_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->header_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << std::endl;
     *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
-    *(m_context->header_file_ofs) << std::endl;
-    render_custom_include(header_name.c_str(),
-                          m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
     *(m_context->header_file_ofs) << std::endl;
@@ -319,11 +293,12 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to .cpp file.
   {
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_PREFIX_COMMENT;
+    *(m_context->cpp_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     *(m_context->cpp_file_ofs) << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
-    render_inference_error_category(m_context->cpp_file_ofs.get());
+    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
+                          m_context->cpp_file_ofs.get());
   }
 
   return true;
@@ -630,10 +605,9 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
     const auto& while_clause = premise_defn.while_clause();
 
     for (const auto& defn : while_clause.premise_defns()) {
-      // TODO: This const_cast here is not ideal.
+      // FIXME: This const_cast here is not ideal.
       // Also because we have to make the `visit` members in `ASTVisitor`
       // protected instead of private.
-      // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
       (const_cast<SynthesizerImpl*>(this))->visit(defn);
     }
   }
@@ -728,8 +702,6 @@ SynthesizerImpl::synthesize_deduction_target(
         break;
       case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
         {
-          // TODO: Consider using std::vector instead of raw pointer.
-          // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
           (*ofs) << CPP_STAR;
           (*ofs) << value.name();
         }
@@ -997,6 +969,61 @@ SynthesizerImpl::render_error_handling() const
   *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE << type_cls
                              << CPP_OPEN_PAREN << CPP_CLOSE_PAREN
                              << CPP_SEMICOLON << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+SynthesizerImpl::initialize_and_synthesize_error_code_files() const
+{
+  // Initialize header file.
+  std::string ec_header_filepath(m_opts.output_path);
+  if (!ec_header_filepath.empty() &&
+      ec_header_filepath.back() != FORWARD_SLASH) {
+    ec_header_filepath.push_back(FORWARD_SLASH);
+  }
+  ec_header_filepath.append(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
+
+  std::ofstream ec_header_file_ofs(ec_header_filepath, std::ofstream::out);
+  if (!ec_header_file_ofs.good()) {
+    return false;
+  }
+
+  // Initialize .cpp file.
+  std::string ec_cpp_filepath(m_opts.output_path);
+  if (!ec_cpp_filepath.empty() && ec_cpp_filepath.back() != FORWARD_SLASH) {
+    ec_cpp_filepath.push_back(FORWARD_SLASH);
+  }
+  ec_cpp_filepath.append(SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
+
+  std::ofstream ec_cpp_file_ofs(ec_cpp_filepath, std::ofstream::out);
+  if (!ec_cpp_file_ofs.good()) {
+    return false;
+  }
+
+  // Synthesize header file.
+  {
+    ec_header_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << std::endl;
+    ec_header_file_ofs << CPP_PRAGMA_ONCE << std::endl;
+    ec_header_file_ofs << std::endl;
+    ec_header_file_ofs << SYNTHESIZED_ERROR_CODE_ENUM_DEFINITION << std::endl;
+    ec_header_file_ofs.close();
+  }
+
+  // Synthesize .cpp file.
+  {
+    ec_cpp_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << std::endl;
+    render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
+                          &ec_cpp_file_ofs);
+    __render_system_header_includes(
+        std::vector<const char*>{"string", "system_error"}, &ec_cpp_file_ofs);
+    ec_cpp_file_ofs << std::endl;
+    ec_cpp_file_ofs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION
+                    << std::endl;
+    ec_cpp_file_ofs.close();
+  }
+
+  return true;
 }
 
 // -----------------------------------------------------------------------------
