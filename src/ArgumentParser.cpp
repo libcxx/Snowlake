@@ -227,6 +227,20 @@ ArgumentParser::__check_parameters() const
     return false;
   }
 
+  // Sanity check.
+  for (const auto& pair : m_shorthand_map) {
+    const char short_hand = pair.first;
+    const auto& option_key = pair.second;
+    const auto iter = m_opts.find(option_key);
+    if (iter == m_opts.end()) {
+      return false;
+    }
+    const auto& option = iter->second;
+    if (option.short_hand != short_hand) {
+      return false;
+    }
+  }
+
   // Check if we meet the required number of positional arguments.
   if (m_positional_args.size() < m_min_positional_args_required) {
     return false;
