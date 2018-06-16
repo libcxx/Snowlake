@@ -411,6 +411,38 @@ TEST_F(ArgumentParserTests, TestParseWithIllFormedShorthandlCmdlOptions)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(ArgumentParserTests, TestParseWithMissingShorthandlCmdlOptions)
+{
+  ArgumentParser argparser("My Program", "1.0.0", "This is a test program.");
+
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+
+  argparser.add_string_parameter("str", 's', "String value", true, &str_dst);
+  argparser.add_uint32_parameter("uint32", 'u', "UInt32 value", true,
+                                 &uint32_dst);
+  argparser.add_uint64_parameter("uint64", 'n', "UInt64 value", true,
+                                 &uint64_dst);
+  argparser.add_boolean_parameter("bool", 'b', "Boolean value", true,
+                                  &bool_dst);
+  argparser.add_float_parameter("float", 'f', "Float value", true, &float_dst);
+  argparser.add_double_parameter("double", 's', "Double value", true,
+                                 &double_dst);
+
+  const std::vector<char*> args{
+      "MyProgram", "-s", "MyStringValue", "-u", "32",     "-n", "64",
+      "-b",        "-f", "3.14",          "2.71828"};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_FALSE(res);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(ArgumentParserTests, TestWithSufficientNumberOfPositionalArguments)
 {
   ArgumentParser argparser;
