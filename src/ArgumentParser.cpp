@@ -50,6 +50,7 @@ ArgumentParser::ArgumentParser()
   , m_long_desc()
   , m_usage()
   , m_opts()
+  , m_shorthand_map()
   , m_positional_args()
   , m_min_positional_args_required(0)
 {
@@ -64,6 +65,7 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_long_desc()
   , m_usage()
   , m_opts()
+  , m_shorthand_map()
   , m_positional_args()
   , m_min_positional_args_required(0)
 {
@@ -78,6 +80,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   , m_long_desc()
   , m_usage()
   , m_opts()
+  , m_shorthand_map()
   , m_positional_args()
   , m_min_positional_args_required(0)
 {
@@ -93,6 +96,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_long_desc()
   , m_usage()
   , m_opts()
+  , m_shorthand_map()
   , m_positional_args()
   , m_min_positional_args_required(0)
 {
@@ -109,6 +113,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_long_desc(long_description)
   , m_usage()
   , m_opts()
+  , m_shorthand_map()
   , m_positional_args()
   , m_min_positional_args_required(0)
 {
@@ -118,74 +123,83 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
 
 template <typename T>
 void
-ArgumentParser::add_parameter(const char* name, const char* description,
-                              bool required, T* res, T default_val)
+ArgumentParser::add_parameter(const char* name, const char short_hand,
+                              const char* description, bool required, T* res,
+                              T default_val)
 {
-  CmdlOption opts{.description = description,
+  CmdlOption opts{.short_hand = short_hand,
+                  .description = description,
                   .required = required,
                   .dst = reinterpret_cast<void*>(res),
                   .default_value = {default_val}};
+  m_shorthand_map[short_hand] = name;
   m_opts[name] = opts;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_string_parameter(const char* name, const char* description,
-                                     bool required, std::string* res,
-                                     const char* default_val)
+ArgumentParser::add_string_parameter(const char* name, const char short_hand,
+                                     const char* description, bool required,
+                                     std::string* res, const char* default_val)
 {
-  add_parameter<std::string>(name, description, required, res, default_val);
+  add_parameter<std::string>(name, short_hand, description, required, res,
+                             default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_uint32_parameter(const char* name, const char* description,
-                                     bool required, uint32_t* res,
-                                     uint32_t default_val)
+ArgumentParser::add_uint32_parameter(const char* name, const char short_hand,
+                                     const char* description, bool required,
+                                     uint32_t* res, uint32_t default_val)
 {
-  add_parameter<uint32_t>(name, description, required, res, default_val);
+  add_parameter<uint32_t>(name, short_hand, description, required, res,
+                          default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_uint64_parameter(const char* name, const char* description,
-                                     bool required, uint64_t* res,
-                                     uint64_t default_val)
+ArgumentParser::add_uint64_parameter(const char* name, const char short_hand,
+                                     const char* description, bool required,
+                                     uint64_t* res, uint64_t default_val)
 {
-  add_parameter<uint64_t>(name, description, required, res, default_val);
+  add_parameter<uint64_t>(name, short_hand, description, required, res,
+                          default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_float_parameter(const char* name, const char* description,
-                                    bool required, float* res,
-                                    float default_val)
+ArgumentParser::add_float_parameter(const char* name, const char short_hand,
+                                    const char* description, bool required,
+                                    float* res, float default_val)
 {
-  add_parameter<float>(name, description, required, res, default_val);
+  add_parameter<float>(name, short_hand, description, required, res,
+                       default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_double_parameter(const char* name, const char* description,
-                                     bool required, double* res,
-                                     double default_val)
+ArgumentParser::add_double_parameter(const char* name, const char short_hand,
+                                     const char* description, bool required,
+                                     double* res, double default_val)
 {
-  add_parameter<double>(name, description, required, res, default_val);
+  add_parameter<double>(name, short_hand, description, required, res,
+                        default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_boolean_parameter(const char* name, const char* description,
-                                      bool required, bool* res,
-                                      bool default_val)
+ArgumentParser::add_boolean_parameter(const char* name, const char short_hand,
+                                      const char* description, bool required,
+                                      bool* res, bool default_val)
 {
-  add_parameter<bool>(name, description, required, res, default_val);
+  add_parameter<bool>(name, short_hand, description, required, res,
+                      default_val);
 }
 
 // -----------------------------------------------------------------------------
@@ -207,6 +221,26 @@ ArgumentParser::option_provided(const char* name) const
 bool
 ArgumentParser::__check_parameters() const
 {
+  // Check if the short-hand map count matches with the number of options.
+  // If not, it means there are short-hands that are duplicate.
+  if (m_shorthand_map.size() != m_opts.size()) {
+    return false;
+  }
+
+  // Sanity check.
+  for (const auto& pair : m_shorthand_map) {
+    const char short_hand = pair.first;
+    const auto& option_key = pair.second;
+    const auto iter = m_opts.find(option_key);
+    if (iter == m_opts.end()) {
+      return false;
+    }
+    const auto& option = iter->second;
+    if (option.short_hand != short_hand) {
+      return false;
+    }
+  }
+
   // Check if we meet the required number of positional arguments.
   if (m_positional_args.size() < m_min_positional_args_required) {
     return false;
@@ -302,7 +336,8 @@ ArgumentParser::__print_help(Stream& stream) const
 
 // Menu.
 
-#define HELP_MENU_DASHDASH "--"
+#define HELP_MENU_DOUBLE_DASH "--"
+#define HELP_MENU_SINGLE_DASH '-'
 #define HELP_MENU_VALUE_PLACEHOLDER " <value>"
 #define HELP_MENU_INDENT "\t\t\t"
 #define HELP_MENU_OPTIONS_LABEL "OPTIONS:"
@@ -316,10 +351,12 @@ ArgumentParser::__print_help(Stream& stream) const
     const auto& option = pair.second;
     const auto& default_value = option.default_value.value;
 
-    stream << HELP_MENU_DASHDASH << name;
+    stream << HELP_MENU_SINGLE_DASH << option.short_hand << ", ";
+    stream << HELP_MENU_DOUBLE_DASH << name;
     if (!default_value.is<bool>()) {
       stream << HELP_MENU_VALUE_PLACEHOLDER;
     }
+
     stream << std::endl;
     stream << HELP_MENU_INDENT << option.description << '.';
     stream << std::endl;
@@ -389,25 +426,52 @@ ArgumentParser::__parse_args(int argc, char** argv)
     std::string s(arg);
     if (s.find("--") == 0) {
       std::string key = s.substr(2);
-      if (key.empty()) {
+      if (!__register_cmdl_option(key, argc, argv)) {
         return false;
       }
-      if (!m_opts.count(key)) {
+    } else if (s.find("-") == 0) {
+      std::string short_hand = s.substr(1);
+      if (short_hand.size() != 1) {
         return false;
       }
-      if (__defined_boolean_option(key)) {
-        m_opts[key].value.value = true;
-      } else {
-        ADVANCE_ARGV;
-        CHECK_ARGV;
-        std::string val(*argv);
-        // Update option value.
-        __update_option_value(key, val);
+      const char c = short_hand[0];
+      const auto iter = m_shorthand_map.find(c);
+      if (iter == m_shorthand_map.end()) {
+        return false;
+      }
+      std::string key = iter->second;
+      if (!__register_cmdl_option(key, argc, argv)) {
+        return false;
       }
     } else {
       __add_positional_parameter(std::move(s));
     }
     ADVANCE_ARGV;
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+ArgumentParser::__register_cmdl_option(const std::string& key, int& argc,
+                                       char**& argv)
+{
+  if (key.empty()) {
+    return false;
+  }
+  if (!m_opts.count(key)) {
+    return false;
+  }
+  if (__defined_boolean_option(key)) {
+    m_opts[key].value.value = true;
+  } else {
+    ADVANCE_ARGV;
+    CHECK_ARGV;
+    std::string val(*argv);
+    // Update option value.
+    __update_option_value(key, val);
   }
 
   return true;
