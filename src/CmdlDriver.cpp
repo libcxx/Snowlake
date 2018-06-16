@@ -50,15 +50,15 @@ CmdlDriver::run(int argc, char** argv)
 
   argparser.set_usage_string(SNOWLAKE_PROG_USAGE);
 
-  argparser.add_string_parameter("output", "Output path", true,
+  argparser.add_string_parameter("output", 'o', "Output path", true,
                                  &m_opts.output_path);
-  argparser.add_boolean_parameter("errors", "Treat warnings as errors", false,
-                                  &m_opts.warningsAsErrors, false);
-  argparser.add_boolean_parameter("bail", "Bail on first error", false,
+  argparser.add_boolean_parameter("errors", 'e', "Treat warnings as errors",
+                                  false, &m_opts.warningsAsErrors, false);
+  argparser.add_boolean_parameter("bail", 'b', "Bail on first error", false,
                                   &m_opts.bailOnFirstError, false);
-  argparser.add_boolean_parameter("debug", "Debug mode", false,
+  argparser.add_boolean_parameter("debug", 'd', "Debug mode", false,
                                   &m_opts.debugMode, false);
-  argparser.add_boolean_parameter("verbose", "Verbose mode", false,
+  argparser.add_boolean_parameter("verbose", 'v', "Verbose mode", false,
                                   &m_opts.verbose, false);
   argparser.set_minimum_positional_args_required(1);
 
