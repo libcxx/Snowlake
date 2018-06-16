@@ -140,8 +140,12 @@ class TestRunner(object):
             self.__log_msg('- FAIL -')
 
     def __run_test_case(self, json_filepath):
-        with open(json_filepath, 'r') as fd:
-            testcase = json.load(fd)
+        try:
+            with open(json_filepath, 'r') as fd:
+                testcase = json.load(fd)
+        except Exception as ex:
+            self.__log_error('Failed to load {}: {}'.format(json_filepath, str(ex)))
+            return self.StatusCode.ERROR
 
         for required_field in REQUIRED_TESTCASE_FIELDS:
             if required_field not in testcase:
