@@ -1,0 +1,5 @@
+{
+  "name": "Test Duplicate Groups",
+  "input_path": "./fixtures/duplicate_groups.sl",
+  "expected_exit": 1
+}
