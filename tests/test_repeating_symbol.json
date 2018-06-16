@@ -1,0 +1,5 @@
+{
+  "name": "Test Repeating Symbol",
+  "input_path": "./fixtures/repeating_symbol.sl",
+  "expected_exit": 1
+}
