@@ -458,7 +458,7 @@ TEST_F(ArgumentParserTests, TestParseWithIllFormedShorthandlCmdlOptions)
                                  &double_dst);
 
   const std::vector<char*> args{
-      "MyProgram", "-s", "MyStringValue", "-u", "32",     "-n", "64",
+      "MyProgram", "-s", "MyStringValue", "-u",      "32",     "-n", "64",
       "-b",        "-f", "3.14",          "-double", "2.71828"};
 
   bool res = argparser.parse_args(args.size(), (char**)args.data());
@@ -490,7 +490,7 @@ TEST_F(ArgumentParserTests, TestParseWithMissingShorthandlCmdlOptions)
                                  &double_dst);
 
   const std::vector<char*> args{
-      "MyProgram", "-s", "MyStringValue", "-u", "32",     "-n", "64",
+      "MyProgram", "-s", "MyStringValue", "-u",     "32", "-n", "64",
       "-b",        "-f", "3.14",          "2.71828"};
 
   bool res = argparser.parse_args(args.size(), (char**)args.data());
