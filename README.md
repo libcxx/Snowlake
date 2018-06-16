@@ -2,6 +2,9 @@
 
 # Snowlake
 
+[![Standard](https://img.shields.io/badge/c%2B%2B-98/11/14/17-green.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ## Overview
 
 *Snowlake* is both a declarative language for defining static type inference
