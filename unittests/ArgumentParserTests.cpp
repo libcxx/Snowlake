@@ -315,6 +315,62 @@ TEST_F(ArgumentParserTests,
 
 // -----------------------------------------------------------------------------
 
+TEST_F(ArgumentParserTests,
+       TestParseWithAllOptionlInBothFormsFormAndPositionalArguments)
+{
+  ArgumentParser argparser;
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+  const char* input_path = "/tmp/hellworld";
+
+  argparser.add_string_parameter("str", 's', "String value", true, &str_dst);
+  argparser.add_uint32_parameter("uint32", 'u', "UInt32 value", true,
+                                 &uint32_dst);
+  argparser.add_uint64_parameter("uint64", 'n', "UInt64 value", true,
+                                 &uint64_dst);
+  argparser.add_boolean_parameter("bool", 'b', "Boolean value", true,
+                                  &bool_dst);
+  argparser.add_float_parameter("float", 'f', "Float value", true, &float_dst);
+  argparser.add_double_parameter("double", 'd', "Double value", true,
+                                 &double_dst);
+
+  const std::vector<char*> args{"MyProgram",
+                                "--str",
+                                "MyStringValue",
+                                "-u",
+                                "32",
+                                "--uint64",
+                                "64",
+                                "-b",
+                                "--float",
+                                "3.14",
+                                "-d",
+                                "2.71828",
+                                const_cast<char*>(input_path)};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ("MyStringValue", str_dst.c_str());
+  ASSERT_EQ(32, uint32_dst);
+  ASSERT_EQ(64, uint64_dst);
+  ASSERT_EQ(true, bool_dst);
+  ASSERT_DOUBLE_EQ(3.14f, float_dst);
+  ASSERT_DOUBLE_EQ(2.71828, double_dst);
+
+  // Check positional argument.
+  const auto& positional_args = argparser.positional_args();
+  ASSERT_FALSE(positional_args.empty());
+  ASSERT_EQ(1, positional_args.size());
+  ASSERT_STREQ(input_path, positional_args.front().c_str());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(ArgumentParserTests, TestWithDuplicateShorthandlCmdlOptions)
 {
   ArgumentParser argparser("My Program", "1.0.0", "This is a test program.");
