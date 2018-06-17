@@ -194,7 +194,7 @@ class TestRunner(object):
 
 def main():
     parser = argparse.ArgumentParser(description='Tester...')
-    parser.add_argument('input', nargs=1, default=os.path.dirname(os.path.realpath(__file__)))
+    parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
 
     args = parser.parse_args()
@@ -203,7 +203,11 @@ def main():
         print 'Arguments:'
         print args
 
-    input_path = args.input[0]
+    input_path = args.input
+
+    if args.verbose:
+        print 'Input path:'
+        print input_path
 
     if not os.path.exists(input_path) or not os.path.isdir(input_path):
         sys.stderr.write('Please specify a valid input directory.\n')
