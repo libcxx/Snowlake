@@ -166,7 +166,7 @@ class TestRunner(object):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
 
-        cmd = 'snowlake --output ./ {input_path}'.format(input_path=testcase_inputpath)
+        cmd = 'snowlake --silent --output ./ {input_path}'.format(input_path=testcase_inputpath)
 
         return_code = subprocess.call(cmd, shell=True)
 
