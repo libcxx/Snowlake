@@ -1,0 +1,5 @@
+{
+  "name": "Test Valid Semantics",
+  "input_path": "./fixtures/invalid_proposition.sl",
+  "expected_exit": 1
+}
