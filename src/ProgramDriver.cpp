@@ -41,7 +41,7 @@ static void print_semantic_analyzer_errors(const std::string&,
 
 #define PRINT_VERBOSE_MSG(msg)                                                 \
   do {                                                                         \
-    if (cmdl_opts.verbose) {                                                   \
+    if (cmdl_opts.verbose && !cmdl_opts.silent) {                              \
       std::cerr << (msg) << std::endl;                                         \
     }                                                                          \
   } while (0)
@@ -86,7 +86,7 @@ ProgramDriver::run(int argc, char** argv)
 
   ParserDriver parser(parser_opts);
   res = parser.parse_from_file(cmdl_opts.input_path);
-  if (res != 0 && !cmdl_opts.silent) {
+  if (res != 0) {
     PRINT_VERBOSE_MSG("Failed: parsing error");
     return EXIT_FAILURE;
   }
@@ -100,9 +100,11 @@ ProgramDriver::run(int argc, char** argv)
       .verbose = cmdl_opts.debugMode};
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
-  if (!res && !cmdl_opts.silent) {
-    print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
-                                   std::cout);
+  if (!res) {
+    if (!cmdl_opts.silent) {
+      print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
+                                     std::cout);
+    }
     return EXIT_FAILURE;
   }
 
@@ -110,15 +112,15 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer::Options synthesis_opts{.output_path = cmdl_opts.output_path};
   Synthesizer synthesizer(synthesis_opts);
   res = synthesizer.run(module);
-  if (!res && !cmdl_opts.silent) {
-    std::cerr << "Error: Failed to synthesize output to: "
-              << cmdl_opts.output_path;
+  if (!res) {
+    if (!cmdl_opts.silent) {
+      std::cerr << "Error: Failed to synthesize output to: "
+                << cmdl_opts.output_path;
+    }
     return EXIT_FAILURE;
   }
 
-  if (!cmdl_opts.silent) {
-    PRINT_VERBOSE_MSG("- SUCCESS -");
-  }
+  PRINT_VERBOSE_MSG("- SUCCESS -");
 
   // SUCCESS.
   return EXIT_SUCCESS;
