@@ -50,8 +50,9 @@ TEST_F(CmdlDriverTests, TestDefaultInitialization)
 
 TEST_F(CmdlDriverTests, TestRun)
 {
-  const std::vector<char*> args{"MyProgram", "--errors", "--bail",   "--debug",
-                                "--verbose", "--silent", "--output", "/tmp/out", "/tmp/in"};
+  const std::vector<char*> args{"MyProgram", "--errors",  "--bail",
+                                "--debug",   "--verbose", "--silent",
+                                "--output",  "/tmp/out",  "/tmp/in"};
 
   CmdlDriver driver;
   const bool res = driver.run(args.size(), (char**)args.data());
