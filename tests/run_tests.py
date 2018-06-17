@@ -60,6 +60,8 @@ REQUIRED_TESTCASE_FIELDS = (
     REQUIRED_TESTCASE_FIELD_EXPECTED_EXIT,
 )
 
+## -----------------------------------------------------------------------------
+
 class Colors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
