@@ -1,0 +1,5 @@
+{
+  "name": "Test valid proposition",
+  "input_path": "./fixtures/valid_proposition.sl",
+  "expected_exit": 0
+}

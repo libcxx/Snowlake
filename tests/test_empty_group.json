@@ -1,0 +1,5 @@
+{
+  "name": "Test empty inference group",
+  "input_path": "./fixtures/empty_group.sl",
+  "expected_exit": 0
+}

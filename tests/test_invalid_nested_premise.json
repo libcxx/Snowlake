@@ -1,0 +1,5 @@
+{
+  "name": "Test invalid premise nested in while clause",
+  "input_path": "./fixtures/invalid_nested_premise.sl",
+  "expected_exit": 1
+}

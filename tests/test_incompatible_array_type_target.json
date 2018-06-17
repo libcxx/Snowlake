@@ -1,0 +1,5 @@
+{
+  "name": "Test repeated incompatible array type target in premise definition",
+  "input_path": "./fixtures/incompatible_array_type_target.sl",
+  "expected_exit": 1
+}

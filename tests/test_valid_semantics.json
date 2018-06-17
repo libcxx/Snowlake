@@ -1,0 +1,5 @@
+{
+  "name": "Test valid semantics",
+  "input_path": "./fixtures/valid_semantics.sl",
+  "expected_exit": 0
+}

@@ -41,7 +41,7 @@ static void print_semantic_analyzer_errors(const std::string&,
 
 #define PRINT_VERBOSE_MSG(msg)                                                 \
   do {                                                                         \
-    if (cmdl_opts.verbose) {                                                   \
+    if (cmdl_opts.verbose && !cmdl_opts.silent) {                              \
       std::cerr << (msg) << std::endl;                                         \
     }                                                                          \
   } while (0)
@@ -68,7 +68,7 @@ ProgramDriver::run(int argc, char** argv)
 
   const auto& cmdl_opts = cmdl_driver.options();
 
-  if (cmdl_opts.verbose) {
+  if (cmdl_opts.verbose && !cmdl_opts.silent) {
     std::cout << "Input:" << std::endl;
     std::cout << cmdl_opts.input_path << std::endl;
     std::cout << std::endl;
@@ -101,8 +101,10 @@ ProgramDriver::run(int argc, char** argv)
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
   if (!res) {
-    print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
-                                   std::cout);
+    if (!cmdl_opts.silent) {
+      print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
+                                     std::cout);
+    }
     return EXIT_FAILURE;
   }
 
@@ -111,8 +113,10 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer synthesizer(synthesis_opts);
   res = synthesizer.run(module);
   if (!res) {
-    std::cerr << "Error: Failed to synthesize output to: "
-              << cmdl_opts.output_path;
+    if (!cmdl_opts.silent) {
+      std::cerr << "Error: Failed to synthesize output to: "
+                << cmdl_opts.output_path;
+    }
     return EXIT_FAILURE;
   }
 

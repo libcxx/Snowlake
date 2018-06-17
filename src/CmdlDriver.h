@@ -35,6 +35,7 @@ public:
     bool bailOnFirstError;
     bool debugMode;
     bool verbose;
+    bool silent;
     std::string input_path;
     std::string output_path;
   };

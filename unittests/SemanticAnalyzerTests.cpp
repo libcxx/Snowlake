@@ -173,7 +173,7 @@ TEST_F(SemanticAnalyzerTests, TestWithValidInput)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(SemanticAnalyzerTests, TestWithValidPropositionTarget)
+TEST_F(SemanticAnalyzerTests, TestWithInvalidPropositionTarget)
 {
   // clang-format off
   const char* INPUT =
