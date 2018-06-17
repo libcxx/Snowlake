@@ -112,6 +112,8 @@ class TestRunner(object):
 
     def __run(self):
         self.__log_msg('Start...')
+        self.__log_msg('\n')
+
         total_count = 0
         success_count = 0
         failure_count = 0
@@ -126,6 +128,7 @@ class TestRunner(object):
             elif err == self.StatusCode.ERROR:
                 error_count += 1
 
+        self.__log_msg('\n')
         self.__log_msg('Finished...')
         self.__log_msg('Total count : {}'.format(total_count))
         self.__log_msg('Passed      : {}'.format(success_count))
