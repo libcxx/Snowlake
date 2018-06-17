@@ -19,7 +19,7 @@ group MyGroup {
       StaticMethodCallStmt.argument_types : ArgumentsTypes;
       StaticMethodCallStmt.parameter_types : ParameterTypes;
       StaticMethodCallStmt.return_type: ReturnType while {
-      ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+        ReturnType <= ParameterTypes[] inrange 0..1..ParameterTypes[];
       };
     ]
 
