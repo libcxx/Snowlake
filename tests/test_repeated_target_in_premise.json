@@ -1,0 +1,5 @@
+{
+  "name": "Test repeated incompatible target in premise definition",
+  "input_path": "./fixtures/repeated_target_in_premise.sl",
+  "expected_exit": 1
+}
