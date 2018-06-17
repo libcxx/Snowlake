@@ -72,7 +72,7 @@ class Colors:
 
 ## -----------------------------------------------------------------------------
 
-class NoOpLogger:
+class ConsoleLogger:
     def __print(self, msg):
         sys.stdout.write('{}\n'.format(msg))
 
@@ -84,6 +84,18 @@ class NoOpLogger:
 
     def debug(self, msg):
         self.__print(msg)
+
+## -----------------------------------------------------------------------------
+
+class NoOpLogger:
+    def info(self, msg):
+        pass
+
+    def error(self, msg):
+        pass
+
+    def debug(self, msg):
+        pass
 
 ## -----------------------------------------------------------------------------
 
@@ -108,11 +120,14 @@ class TestRunner(object):
     def __init__(self, input_path, opts):
         self.input_path = input_path
         self.opts = opts
-        self.__init_logger()
+        self.console_logger = ConsoleLogger()
+        if self.opts.save_logs:
+            self.__init_logger()
+        else:
+            self.logger = NoOpLogger()
 
     def __init_logger(self):
         """Initializer logger."""
-        self.noop_logger = NoOpLogger()
         self.logger = logging.getLogger(type(self).__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -153,7 +168,8 @@ class TestRunner(object):
         self.__log_msg_blue('Failed      : {}'.format(failure_count))
         self.__log_msg_blue('Errorred    : {}'.format(error_count))
 
-        self.noop_logger.info('Log saved to {}'.format(self.log_filepath))
+        if self.opts.save_logs:
+            self.console_logger.info('Log saved to {}'.format(self.log_filepath))
 
         if success_count == total_count:
             self.__log_success('- SUCCESS -')
@@ -208,9 +224,9 @@ class TestRunner(object):
 
     def __log_msg(self, msg, color=None):
         if color:
-            self.noop_logger.info('{}{}{}'.format(color, msg, Colors.ENDC))
+            self.console_logger.info('{}{}{}'.format(color, msg, Colors.ENDC))
         else:
-            self.noop_logger.info(msg)
+            self.console_logger.info(msg)
         self.logger.info(msg)
 
     def __log_success(self, msg):
@@ -233,9 +249,9 @@ class TestRunner(object):
 
     def __log_error(self, msg):
         if self.opts.colors:
-            self.noop_logger.error('{}{}{}'.format(Colors.FAIL, msg, Colors.ENDC))
+            self.console_logger.error('{}{}{}'.format(Colors.FAIL, msg, Colors.ENDC))
         else:
-            self.noop_logger.error(msg)
+            self.console_logger.error(msg)
         self.logger.error(msg)
 
     def __log_verbose(self, msg):
@@ -249,6 +265,7 @@ def main():
     parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
     parser.add_argument('--colors', dest='colors', action='store_true', default=False, help='Colored output')
+    parser.add_argument('--logs', dest='save_logs', action='store_true', default=False, help='Save logs to file')
 
     args = parser.parse_args()
 
