@@ -60,6 +60,16 @@ REQUIRED_TESTCASE_FIELDS = (
     REQUIRED_TESTCASE_FIELD_EXPECTED_EXIT,
 )
 
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 ## -----------------------------------------------------------------------------
 
 class NoOpLogger:
@@ -122,9 +132,7 @@ class TestRunner(object):
         self.__run()
 
     def __run(self):
-        self.__log_msg('Start...')
-        self.__log_msg('\n')
-
+        print
         total_count = 0
         success_count = 0
         failure_count = 0
@@ -139,26 +147,25 @@ class TestRunner(object):
             elif err == self.StatusCode.ERROR:
                 error_count += 1
 
-        self.__log_msg('\n')
-        self.__log_msg('Finished...')
-        self.__log_msg('Total       : {}'.format(total_count))
-        self.__log_msg('Passed      : {}'.format(success_count))
-        self.__log_msg('Failed      : {}'.format(failure_count))
-        self.__log_msg('Errorred    : {}'.format(error_count))
+        print
+        self.__log_msg('Total       : {}'.format(total_count), Colors.OKBLUE)
+        self.__log_msg('Passed      : {}'.format(success_count), Colors.OKBLUE)
+        self.__log_msg('Failed      : {}'.format(failure_count), Colors.OKBLUE)
+        self.__log_msg('Errorred    : {}'.format(error_count), Colors.OKBLUE)
 
         self.noop_logger.info('Log saved to {}'.format(self.log_filepath))
 
         if success_count == total_count:
-            self.__log_msg('- SUCCESS -')
+            self.__log_msg('- SUCCESS -', Colors.OKGREEN)
         else:
-            self.__log_msg('- FAIL -')
+            self.__log_msg('- FAIL -', Colors.FAIL)
 
     def __run_test_case(self, json_filepath):
         try:
             with open(json_filepath, 'r') as fd:
                 testcase = json.load(fd)
         except Exception as ex:
-            self.__log_error('Failed to load {}: {}'.format(json_filepath, str(ex)))
+            self.__log_error('Failed to load {}: {}'.format(json_filepath, str(ex)), colors=self.colors)
             return self.StatusCode.ERROR
 
         for required_field in REQUIRED_TESTCASE_FIELDS:
@@ -185,23 +192,36 @@ class TestRunner(object):
 
         err = self.StatusCode.SUCCESS if return_code == testcase_expected_exit else self.StatusCode.FAILURE
 
-        self.__log_msg('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
+        if err == self.StatusCode.SUCCESS:
+            self.__log_success('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
+        else:
+            self.__log_error('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)), colors=self.opts.colors)
 
         if err == self.StatusCode.FAILURE:
             self.__log_error(
                 'Test case failed with exit code {return_code}. Expected {testcase_expected_exit}. ({testcase_inputpath})'.format(
                     return_code=return_code,
                     testcase_expected_exit=testcase_expected_exit,
-                    testcase_inputpath=testcase_inputpath))
+                    testcase_inputpath=testcase_inputpath),
+                    colors=self.opts.colors)
 
         return err
 
-    def __log_msg(self, msg):
-        self.noop_logger.info(msg)
+    def __log_msg(self, msg, color=None):
+        if color:
+            self.noop_logger.info('{}{}{}'.format(color, msg, Colors.ENDC))
+        else:
+            self.noop_logger.info(msg)
         self.logger.info(msg)
 
-    def __log_error(self, msg):
-        self.noop_logger.error(msg)
+    def __log_success(self, msg):
+        self.__log_msg(msg, Colors.OKGREEN)
+
+    def __log_error(self, msg, colors=False):
+        if colors:
+            self.noop_logger.error('{}{}{}'.format(Colors.FAIL, msg, Colors.ENDC))
+        else:
+            self.noop_logger.error(msg)
         self.logger.error(msg)
 
     def __log_verbose(self, msg):
@@ -214,6 +234,7 @@ def main():
     parser = argparse.ArgumentParser(description='Snowlake integration test suite.')
     parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
+    parser.add_argument('--colors', dest='colors', action='store_true', default=True, help='Colored output')
 
     args = parser.parse_args()
 
