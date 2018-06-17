@@ -1,0 +1,5 @@
+{
+  "name": "Test invalid range clause",
+  "input_path": "./fixtures/invalid_range_clause.sl",
+  "expected_exit": 1
+}
