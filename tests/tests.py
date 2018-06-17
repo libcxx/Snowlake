@@ -130,7 +130,7 @@ class TestRunner(object):
 
         self.__log_msg('\n')
         self.__log_msg('Finished...')
-        self.__log_msg('Total count : {}'.format(total_count))
+        self.__log_msg('Total       : {}'.format(total_count))
         self.__log_msg('Passed      : {}'.format(success_count))
         self.__log_msg('Failed      : {}'.format(failure_count))
         self.__log_msg('Errorred    : {}'.format(error_count))
@@ -196,7 +196,7 @@ class TestRunner(object):
 ## -----------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description='Tester...')
+    parser = argparse.ArgumentParser(description='Snowlake integration test suite.')
     parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
 
