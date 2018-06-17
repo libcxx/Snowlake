@@ -84,6 +84,17 @@ class TestRunner(object):
         FAILURE = 0x02
         ERROR   = 0x04
 
+        @classmethod
+        def tostring(cls, err):
+            if err == cls.SUCCESS:
+                return 'SUCCESS'
+            elif err == cls.FAILURE:
+                return 'FAILURE'
+            elif err == cls.ERROR:
+                return 'ERROR'
+            else:
+                return '(Unknown)'
+
     def __init__(self, input_path, opts):
         self.input_path = input_path
         self.opts = opts
@@ -162,9 +173,8 @@ class TestRunner(object):
         testcase_inputpath = testcase[REQUIRED_TESTCASE_FIELD_INPUT_PATH]
         testcase_expected_exit = testcase[REQUIRED_TESTCASE_FIELD_EXPECTED_EXIT]
 
-        self.__log_msg('[{}] ({})'.format(testcase_name, testcase_inputpath))
-
         testcase_inputpath = os.path.join(self.input_path, testcase_inputpath)
+
         if not os.path.exists(testcase_inputpath) or not os.path.isfile(testcase_inputpath):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
@@ -173,13 +183,18 @@ class TestRunner(object):
 
         return_code = subprocess.call(cmd, shell=True)
 
-        if return_code == testcase_expected_exit:
-            return self.StatusCode.SUCCESS
-        else:
+        err = self.StatusCode.SUCCESS if return_code == testcase_expected_exit else self.StatusCode.FAILURE
+
+        self.__log_msg('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
+
+        if err == self.StatusCode.FAILURE:
             self.__log_error(
-                'Test case failed with exit code {return_code}. Expected {testcase_expected_exit}.'.format(
-                    return_code=return_code,testcase_expected_exit=testcase_expected_exit))
-            return self.StatusCode.FAILURE
+                'Test case failed with exit code {return_code}. Expected {testcase_expected_exit}. ({testcase_inputpath})'.format(
+                    return_code=return_code,
+                    testcase_expected_exit=testcase_expected_exit,
+                    testcase_inputpath=testcase_inputpath))
+
+        return err
 
     def __log_msg(self, msg):
         self.noop_logger.info(msg)
