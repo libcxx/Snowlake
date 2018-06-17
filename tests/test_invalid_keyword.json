@@ -1,5 +1,5 @@
 {
-  "name": "Test Invalid Keyword ",
+  "name": "Test invalid keyword",
   "input_path": "./fixtures/invalid_keyword.sl",
   "expected_exit": 1
 }
