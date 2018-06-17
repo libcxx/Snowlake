@@ -68,7 +68,7 @@ ProgramDriver::run(int argc, char** argv)
 
   const auto& cmdl_opts = cmdl_driver.options();
 
-  if (cmdl_opts.verbose) {
+  if (cmdl_opts.verbose && !cmdl_opts.silent) {
     std::cout << "Input:" << std::endl;
     std::cout << cmdl_opts.input_path << std::endl;
     std::cout << std::endl;
@@ -86,7 +86,7 @@ ProgramDriver::run(int argc, char** argv)
 
   ParserDriver parser(parser_opts);
   res = parser.parse_from_file(cmdl_opts.input_path);
-  if (res != 0) {
+  if (res != 0 && !cmdl_opts.silent) {
     PRINT_VERBOSE_MSG("Failed: parsing error");
     return EXIT_FAILURE;
   }
@@ -100,7 +100,7 @@ ProgramDriver::run(int argc, char** argv)
       .verbose = cmdl_opts.debugMode};
   SemanticAnalyzer sema_analyzer(sema_opts);
   res = sema_analyzer.run(module);
-  if (!res) {
+  if (!res && !cmdl_opts.silent) {
     print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
                                    std::cout);
     return EXIT_FAILURE;
@@ -110,13 +110,15 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer::Options synthesis_opts{.output_path = cmdl_opts.output_path};
   Synthesizer synthesizer(synthesis_opts);
   res = synthesizer.run(module);
-  if (!res) {
+  if (!res && !cmdl_opts.silent) {
     std::cerr << "Error: Failed to synthesize output to: "
               << cmdl_opts.output_path;
     return EXIT_FAILURE;
   }
 
-  PRINT_VERBOSE_MSG("- SUCCESS -");
+  if (!cmdl_opts.silent) {
+    PRINT_VERBOSE_MSG("- SUCCESS -");
+  }
 
   // SUCCESS.
   return EXIT_SUCCESS;
