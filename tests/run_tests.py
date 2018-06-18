@@ -21,6 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+### Snowlake integration test.
+
 import argparse
 import datetime
 import json
@@ -33,6 +35,9 @@ import sys
 ## -----------------------------------------------------------------------------
 
 JSON_EXT = '.json'
+PROG_TITLE = 'Snowlake integration test.'
+
+## -----------------------------------------------------------------------------
 
 def immediate_files(a_dir):
     for name in os.listdir(a_dir):
@@ -263,7 +268,7 @@ class TestRunner(object):
 ## -----------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description='Snowlake integration test suite.')
+    parser = argparse.ArgumentParser(description=PROG_TITLE)
     parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
     parser.add_argument('--colors', dest='colors', action='store_true', default=False, help='Colored output')
@@ -272,6 +277,8 @@ def main():
     args = parser.parse_args()
 
     if args.verbose:
+        print PROG_TITLE
+        print
         print 'Arguments:'
         print args
 
