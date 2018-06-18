@@ -36,6 +36,7 @@ import sys
 
 JSON_EXT = '.json'
 PROG_TITLE = 'Snowlake integration test.'
+SNOWLAKE_COMPILER_EXECUTABLE = 'snowlake'
 
 ## -----------------------------------------------------------------------------
 
@@ -52,6 +53,15 @@ def immediate_json_files(a_dir):
     for path in immediate_files(a_dir):
         if is_file_with_ext(path, JSON_EXT):
             yield path
+
+def program_exists(name):
+    p = subprocess.Popen(['/usr/bin/which', name],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
+    return p.returncode == 0
+
+def file_exists(path):
+    return os.path.exists(path) and os.path.isfile(path)
 
 ## -----------------------------------------------------------------------------
 
@@ -124,8 +134,9 @@ class TestRunner(object):
             else:
                 return '(Unknown)'
 
-    def __init__(self, input_path, opts):
+    def __init__(self, input_path, executable_invoke_name, opts):
         self.input_path = input_path
+        self.executable_invoke_name = executable_invoke_name
         self.opts = opts
         self.console_logger = ConsoleLogger()
         if self.opts.save_logs:
@@ -209,7 +220,9 @@ class TestRunner(object):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
 
-        cmd = 'snowlake --silent --output ./ {input_path}'.format(input_path=testcase_inputpath)
+        cmd = '{executable} --silent --output ./ {input_path}'.format(
+            executable=self.executable_invoke_name,
+            input_path=testcase_inputpath)
 
         return_code = subprocess.call(cmd, shell=True)
 
@@ -270,6 +283,7 @@ class TestRunner(object):
 def main():
     parser = argparse.ArgumentParser(description=PROG_TITLE)
     parser.add_argument('input', nargs='?', default=os.path.dirname(os.path.realpath(__file__)))
+    parser.add_argument('--executable-path', dest='executable_path', type=str, default=None, help='Path to Snowlake compiler executable')
     parser.add_argument('--verbose', dest='verbose', action='store_true', default=False, help='Verbose mode')
     parser.add_argument('--colors', dest='colors', action='store_true', default=False, help='Colored output')
     parser.add_argument('--logs', dest='save_logs', action='store_true', default=False, help='Save logs to file')
@@ -292,7 +306,30 @@ def main():
         sys.stderr.write('Please specify a valid input directory.\n')
         sys.exit(-1)
 
-    runner = TestRunner(input_path, args)
+    # Check and figure out executable path.
+    executable_invoke_name = None
+    if args.executable_path:
+        if file_exists(args.executable_path):
+            executable_invoke_name = str(args.executable_path)
+        else:
+            sys.stderr.write('Please specify a valid path for executable.\n')
+            sys.exit(-1)
+    else:
+        if program_exists(SNOWLAKE_COMPILER_EXECUTABLE):
+            executable_invoke_name = str(SNOWLAKE_COMPILER_EXECUTABLE)
+        else:
+            sys.stderr.write('Cannot locate Snowlake compiler executable.\n')
+            sys.exit(-1)
+
+    if not executable_invoke_name:
+        sys.stderr.write('Cannot locate Snowlake compiler executable.\n')
+        sys.exit(-1)
+
+    if args.verbose:
+        print 'Executable:'
+        print executable_invoke_name
+
+    runner = TestRunner(input_path, executable_invoke_name, args)
     runner.run()
 
 
