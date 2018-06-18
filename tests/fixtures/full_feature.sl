@@ -5,18 +5,18 @@ group MyGroup {
   TypeCmpMethod                  : cmpType;
   TypeAnnotationSetupMethod      : typeAnnotationSetup;
   TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
-  
+
   inference MethodStaticDispatch {
-  
+
     globals: [
       SELF_TYPE,
       CLS_TYPE
     ]
-    
+
     arguments: [
       StaticMethodCallStmt : ASTExpr
     ]
-    
+
     premises: [
       StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
       StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
@@ -24,23 +24,26 @@ group MyGroup {
       ArgumentsTypes[0] != SELF_TYPE;
       StaticMethodCallStmt.caller_type : CLS_TYPE while {
         ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+        StaticMethodCallStmt.return_caller_type      : getBaseType();
       };
+      StaticMethodCallStmt.caller_type               : getBaseType();
+      StaticMethodCallStmt.return_type               : returnType;
     ]
-    
-    proposition : lub(T1, T2);
+
+    proposition : baseType(returnType);
   }
-  
+
   inference BinaryExpressionInference {
-    
+
     arguments: [
       expr : Expr
     ]
-    
+
     premises: [
       expr.lhs   : Expr;
       expr.rhs   : Expr;
     ]
-    
+
     proposition  : Expr;
   }
 }
