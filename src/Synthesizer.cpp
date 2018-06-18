@@ -60,7 +60,9 @@ struct InferenceGroupSynthesisContext
   std::unique_ptr<std::ofstream> cpp_file_ofs;
   size_t header_file_indent_lvl;
   size_t cpp_file_indent_lvl;
+  uint32_t name_id;
 
+  InferenceGroupSynthesisContext();
   ~InferenceGroupSynthesisContext();
 };
 
@@ -139,15 +141,17 @@ private:
 
   void render_error_handling() const;
 
-  void indent_header_file();
+  void indent_header_file() const;
 
-  void dedent_header_file();
+  void dedent_header_file() const;
 
-  void indent_cpp_file();
+  void indent_cpp_file() const;
 
-  void dedent_cpp_file();
+  void dedent_cpp_file() const;
 
   bool initialize_and_synthesize_error_code_files() const;
+
+  std::string __get_next_var_name() const;
 
   const Synthesizer::Options& m_opts;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
@@ -174,6 +178,20 @@ Synthesizer::run(const ASTModule& module)
 {
   SynthesizerImpl impl(m_opts);
   return impl.run(module);
+}
+
+// -----------------------------------------------------------------------------
+
+InferenceGroupSynthesisContext::InferenceGroupSynthesisContext()
+  : cls_name()
+  , type_cls()
+  , env_defn_map()
+  , header_file_ofs()
+  , cpp_file_ofs()
+  , header_file_indent_lvl(0)
+  , cpp_file_indent_lvl(0)
+  , name_id(0)
+{
 }
 
 // -----------------------------------------------------------------------------
@@ -640,8 +658,53 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
   const auto& proof_method_name =
       m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
 
+  const auto& deduction_target = premise_defn.deduction_target();
+
   // Synthesize deduction.
-  {
+  if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
+    const auto& type_cls = m_context->type_cls;
+
+    const auto& type_cmp_method_name = m_context->env_defn_map.at(
+        SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
+
+    const auto name1 = __get_next_var_name();
+
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE << name1 << CPP_SPACE
+                               << CPP_ASSIGN << CPP_SPACE;
+    synthesize_deduction_target(deduction_target,
+                                DeductionTargetArraySynthesisMode::AS_SINGULAR,
+                                m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
+
+    const auto name2 = __get_next_var_name();
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE << name2 << CPP_SPACE
+                               << CPP_ASSIGN << CPP_SPACE;
+    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
+    synthesize_identifiable(premise_defn.source(),
+                            m_context->cpp_file_ofs.get());
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON << std::endl;
+
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
+    *(m_context->cpp_file_ofs) << CPP_NEGATION;
+    *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
+    *(m_context->cpp_file_ofs) << name1 << CPP_COMA << CPP_SPACE << name2;
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_CLOSE_PAREN
+                               << CPP_SPACE << CPP_OPEN_BRACE << std::endl;
+
+    // Body of if-statement.
+    {
+      indent_cpp_file();
+      render_error_handling();
+      dedent_cpp_file();
+    }
+
+    render_indentation_in_cpp_file();
+    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
+    *(m_context->cpp_file_ofs) << std::endl;
+  } else {
     render_indentation_in_cpp_file();
     synthesize_deduction_target_for_declaration(premise_defn.deduction_target(),
                                                 m_context->cpp_file_ofs.get());
@@ -851,7 +914,7 @@ SynthesizerImpl::render_indentation_in_cpp_file() const
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::indent_header_file()
+SynthesizerImpl::indent_header_file() const
 {
   ++m_context->header_file_indent_lvl;
 }
@@ -859,7 +922,7 @@ SynthesizerImpl::indent_header_file()
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::dedent_header_file()
+SynthesizerImpl::dedent_header_file() const
 {
   --m_context->header_file_indent_lvl;
 }
@@ -867,7 +930,7 @@ SynthesizerImpl::dedent_header_file()
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::indent_cpp_file()
+SynthesizerImpl::indent_cpp_file() const
 {
   ++m_context->cpp_file_indent_lvl;
 }
@@ -875,7 +938,7 @@ SynthesizerImpl::indent_cpp_file()
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::dedent_cpp_file()
+SynthesizerImpl::dedent_cpp_file() const
 {
   --m_context->cpp_file_indent_lvl;
 }
@@ -1024,6 +1087,15 @@ SynthesizerImpl::initialize_and_synthesize_error_code_files() const
   }
 
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+std::string
+SynthesizerImpl::__get_next_var_name() const
+{
+  static const std::string default_prefix("var");
+  return default_prefix + std::to_string(m_context->name_id++);
 }
 
 // -----------------------------------------------------------------------------
