@@ -221,7 +221,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "\n"
       "    TypeCls var0 = getBaseType();\n"
       "    TypeCls var1 = proveType(StaticMethodCallStmt.caller_type);\n"
-      "    if (!cmpType(var0, var1)) {\n"
+      "    if (!cmpType(var0, var1, std::equal_to<>())) {\n"
       "        *err = std::error_code(0, inference_error_category);\n"
       "        return TypeCls();\n"
       "    }\n"
