@@ -662,6 +662,12 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
 
   // Synthesize deduction.
   if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
+    /**
+     * Computed deduction targets get special treatment.
+     * Here we deduce the types of the lhs and rhs of the
+     * premise defintition respectively, and check
+     * to see if they are evaluated equivalently.
+     */
     const auto& type_cls = m_context->type_cls;
 
     const auto& type_cmp_method_name = m_context->env_defn_map.at(
