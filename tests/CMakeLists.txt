@@ -22,14 +22,17 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+## Integration test run.
+
+
 set(RUN_TESTS_PY ${PROJECT_SOURCE_DIR}/tests/run_tests.py)
-set(RUN_TESTS_INPUT_PATH ${PROJECT_SOURCE_DIR}/tests/)
+set(RUN_TESTS_PY_INPUT_PATH ${PROJECT_SOURCE_DIR}/tests/)
 set(RUN_TESTS_PY_OPTIONS --verbose --colors --logs)
 set(RUN_TESTS_COMMAND
-    python ${RUN_TESTS_PY} ${RUN_TESTS_INPUT_PATH} ${RUN_TESTS_PY_OPTIONS})
+    python ${RUN_TESTS_PY} ${RUN_TESTS_PY_INPUT_PATH} ${RUN_TESTS_PY_OPTIONS})
 
 
-## Integration test run command.
+# Integration test run command.
 add_custom_command(OUTPUT integration_tests_run
     COMMAND ${RUN_TESTS_COMMAND}
     )
