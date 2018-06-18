@@ -665,8 +665,8 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
     /**
      * Computed deduction targets get special treatment.
      * Here we deduce the types of the lhs and rhs of the
-     * premise defintition respectively, and check
-     * to see if they are evaluated equivalently.
+     * premise definition respectively, and check
+     * to see if they are evaluated to be equivalent.
      */
     const auto& type_cls = m_context->type_cls;
 
