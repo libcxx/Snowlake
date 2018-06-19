@@ -5,8 +5,6 @@
 [![Build Status](https://travis-ci.org/libcxx/Snowlake.svg?branch=master)](https://travis-ci.org/libcxx/Snowlake)
 [![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Standard](https://img.shields.io/badge/c%2B%2B-11%2F14%2F17-green.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
-[![Compiler-compiler](https://img.shields.io/badge/language-compiler--compiler-yellow.svg)](https://en.wikipedia.org/wiki/Compiler-compiler)
 
 ## Overview
 
@@ -29,6 +27,12 @@ The goals of *Snowlake* are to:
 
 Please refer to the [Development Environment and Dependencies](https://github.com/libcxx/Snowlake/wiki/Development-Environment-and-Dependencies) wiki page for detailed up-to-date
 information.
+
+
+## Tutorial
+
+Please refer to the [Snowlake Documentation](https://snowlake.readthedocs.io/en/latest/)
+to learn more about the language.
 
 
 ## License
