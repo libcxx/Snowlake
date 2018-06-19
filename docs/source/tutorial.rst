@@ -162,3 +162,45 @@ colon (i.e. `:`), and followed by its type in the final C++ code.
 Note that just like in C++, parameters for each inference rule definition
 must not contain duplicate names.
 
+
+Premises
+########
+
+**Premises** are the building block of inference rule definitions that
+capture the logic of the inference, and are synthesized to actual C++
+code within the body of the corresponding synthesized C++ function.
+Premises are categorized into two types: **inference premises**
+and **equality premises**.
+
+
+Inference premise
+*****************
+
+**Inference premises** are logical rules that establishes the assumption
+that an identifiable entity can be proven to be a specified type.
+This type of premise is essential and are used in the majority of inference
+rules. Inference premises following the following syntax:
+
+*<identifiable> : <deduced target>*
+
+
+Equality premise
+****************
+
+Equality premises are logical rules that establish the expected equality
+relations between inferred types. They are binary expressions that evaluate
+on two deduced types, along with an equality operator that represents the
+equality relation. There are four types of equality relations:
+
++-------------------+----------+------------------------------------+
+| Equality relation | Operator | Synthesized C++ comparison functor |
++===================+==========+====================================+
+|   Equal           |    =     |           std::equal_to<>          |
++-------------------+----------+------------------------------------+
+|   Not equal       |    !=    |           std::not_equal_to<>      |
++-------------------+----------+------------------------------------+
+|   Less than       |    <     |           std::less<>              |
++-------------------+----------+------------------------------------+
+|   Less or equal   |    <=    |           std::less_equal<>        |
++-------------------+----------+------------------------------------+
+
