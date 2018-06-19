@@ -279,9 +279,10 @@ or attributes of entities in the synthesized C++ code. Identifiables can be
 chained with the dot (i.e. `'.'`) character to represent members on
 existing identifiables.
 
-For example, we can have an identifiable named `"binaryExpr"` that refer
-to a variable named `"binaryExpr"` in C++, and `"binaryExpr.type"` that refer
-to the type of the binary expression.
+For example, we can have an identifiable named `StaticMethodCallStmt`
+that refer to a variable named `StaticMethodCallStmt` in C++,
+and `StaticMethodCallStmt.return_type` that refer to the return type of
+the expression.
 
 
 Deduced targets
