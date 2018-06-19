@@ -6,6 +6,16 @@ os:
 compiler:
   - clang
 
+before_install:
+  - brew update
+  - brew install pyenv
+  - eval "$(pyenv init -)"
+  - pyenv install 2.7.6
+  - pyenv global 2.7.6
+  - pyenv rehash
+  - pip install cpp-coveralls
+  - pyenv rehash
+
 script:
   - uname -a
   - cmake --version
@@ -13,5 +23,8 @@ script:
   - g++ --version
   - python --version
   - make -C libs
-  - mkdir build && cd build && cmake -DUSE_PRECOMPILED_PARSER=ON .. && make
+  - mkdir build && cd build && cmake -DUSE_PRECOMPILED_PARSER=ON -DSTATIC_COVERAGE_ENABLED=ON .. && make
   - echo "DONE"
+
+after_success:
+  - coveralls --repo-token $COVERALLS_REPO_TOKEN --include ./src/
