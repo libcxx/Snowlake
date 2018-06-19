@@ -399,6 +399,30 @@ to denote the type inference for a static method dispatch's return type::
   StaticMethodCallStmt.return_type : returnType;
 
 
+While-clause
+^^^^^^^^^^^^
+
+For the semantics of many programming languages, it is necessary to make
+temporary assumptions on the types of certain entities as part of other
+inferences. While-clauses are extensions to inference premise definitions
+that make expressing such assumptions possible. All premises specified
+under the body of a while-clause are executed as usual, and the premise
+definition that starts the while-clause becomes the assumption that gets
+temporarily set up and teared-down before and after the inferences
+in the while-clause body.
+
+To specify a while-clause, use the `while { ... }` following an inference
+premise definition.
+
+For example, we can specify the following while-clause to operate under the
+assumption that the type of `StaticMethodCallStmt.caller_type` will infer to
+the global definition `CLS_TYPE`::
+
+  StaticMethodCallStmt.caller_type : CLS_TYPE while {
+      ...
+  };
+
+
 Equality premise
 ****************
 
@@ -626,7 +650,7 @@ SampleProjectTypeChecker.cpp::
           }
       }
 
-      // Type annotation teardown.\n"
+      // Type annotation teardown."
       typeAnnotationTeardown(StaticMethodCallStmt.caller_type, CLS_TYPE);
 
       TypeCls var0 = getBaseType();
