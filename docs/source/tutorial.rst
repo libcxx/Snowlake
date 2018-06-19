@@ -1,7 +1,8 @@
 .. Copyright William Li. All rights reserved.
 
+********
 Tutorial
-========
+********
 
 Snowlake joins Flex and Bison (formerly known as Lex and Yacc) as a new
 member in the family of compiler-compilers in empowering programming language
@@ -25,3 +26,41 @@ is irrelevant in this context. The various features of the Snowlake language
 are illustrated in detail as we progress in defining and expressing the
 inference rules of our example language.
 
+
+Inference Groups
+################
+
+The top-level abstraction in the Snowlake language is **inference group**,
+which enables grouping of inference rules into logical hierarchical groups.
+Inference group definitions start with the keyword `group` followed by the
+name of the group. Each file can contain multiple inference group definitions,
+but their names must be unique.
+
+Let us define one inference group to encapsulate all inference rules used
+for this exercise, and name it `SampleProject`. The definition will
+look like::
+
+  group SampleProject {
+  ...
+  }
+
+Each inference group definition also translates directly into a corresponding
+C++ class with the same name. With this group definition above, the
+synthesized C++ class definition will resemble the following form::
+
+  class SampleProject {
+  ...
+  };
+
+
+Environment definitions
+***********************
+
+Each inference group definition contains a set of attributes that affect
+all the inference rules within the group. These attributes are denoted as
+key-value pairs and are specified within the group definition.
+Some keys are required, while others are optional.
+Below are descriptions of all supported environment definitions.
+
+ClassName
+^^^^^^^^^
