@@ -29,10 +29,10 @@ Please refer to the [Development Environment and Dependencies](https://github.co
 information.
 
 
-## Tutorial
+## Documentation
 
 Please refer to the [Snowlake Documentation](https://snowlake.readthedocs.io/en/latest/)
-to learn more about the language.
+to learn more.
 
 
 ## License
