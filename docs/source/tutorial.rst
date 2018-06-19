@@ -253,6 +253,23 @@ Global definitions are simply declared names that tell the Snowlake compiler
 that such definitions can be used throughout the inference rules in a
 semantically correct manner.
 
+Global definitions are specified with the key `globals` and are a list of
+named constants, separated by comma.
+
+Let's assume that in our reference language, there exists a constant that
+is used to represent the *self* class type at any given context, and this
+constant is called `SELF_TYPE`. In order for us to interact and make use
+of this constant in our inference rules later on, we have to declare it
+as a global constant inside our inference rule definition::
+
+  inference StaticMethodStaticDispatch {
+
+    globals: [
+      SELF_TYPE
+    ]
+
+  }
+
 
 Identifiables
 #############
