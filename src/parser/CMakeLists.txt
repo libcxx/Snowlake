@@ -22,51 +22,81 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+## Pre-compiled parser source dir.
+set(PARSER_PRECOMPILED_SRC_DIR ${PARSER_SRC_DIR}/precompiled)
+
+
 ## Lexer
 
-set(lexer_source
-    ${PARSER_SRC_DIR}/lexer.ll
-    )
+if(NOT USE_PRECOMPILED_PARSER)
+    set(lexer_source
+        ${PARSER_SRC_DIR}/lexer.ll
+        )
 
-add_custom_command(OUTPUT lex.yy.hh lex.yy.cc
-    COMMAND flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
+    add_custom_command(OUTPUT lex.yy.hh lex.yy.cc
+        COMMAND flex -o lex.yy.cc --header-file=lex.yy.hh ${lexer_source})
+endif()
 
 
 ## Parser
 
-set(parser_source
-    ${PARSER_SRC_DIR}/parser.yy
-    )
+if(NOT USE_PRECOMPILED_PARSER)
+    set(parser_source
+        ${PARSER_SRC_DIR}/parser.yy
+        )
 
-add_custom_command(
-    OUTPUT
-        parser.tab.hh
-        parser.tab.cc
-        location.hh
-        position.hh
-        stack.hh
-    COMMAND
-        bison --language=c++ --verbose --warnings=error ${parser_source})
+    add_custom_command(
+        OUTPUT
+            parser.tab.hh
+            parser.tab.cc
+            location.hh
+            position.hh
+            stack.hh
+        COMMAND
+            bison --language=c++ --verbose --warnings=error ${parser_source})
+endif()
 
 
-add_custom_command(
-    OUTPUT
-        fake_output DEPENDS lex.yy.hh parser.tab.hh
-    COMMAND
-        echo "Copying generated .hh files ..." &&
-        cp ${CMAKE_CURRENT_BINARY_DIR}/*.hh ${PARSER_SRC_DIR}/)
+## Copy compiled parser files.
+
+if(USE_PRECOMPILED_PARSER)
+    add_custom_command(
+        OUTPUT
+            copy_precompiled_parser
+        COMMAND
+            echo "Copying precompiled .hh files ..." &&
+            cp ${PARSER_PRECOMPILED_SRC_DIR}/*.hh ${PARSER_SRC_DIR}/)
+else()
+    add_custom_command(
+        OUTPUT
+            copy_freshly_compiled_parser DEPENDS lex.yy.hh parser.tab.hh
+        COMMAND
+            echo "Copying generated .hh files ..." &&
+            cp ${CMAKE_CURRENT_BINARY_DIR}/*.hh ${PARSER_SRC_DIR}/)
+endif()
 
 
 ## Composite parser static library.
 
-set(parser_sources
-    lex.yy.cc
-    parser.tab.cc
-    ParserDriver.cpp
-    fake_output
-    )
+if(USE_PRECOMPILED_PARSER)
+    set(parser_sources
+        ${PARSER_PRECOMPILED_SRC_DIR}/lex.yy.cc
+        ${PARSER_PRECOMPILED_SRC_DIR}/parser.tab.cc
+        ParserDriver.cpp
+        copy_precompiled_parser
+        )
+else()
+    set(parser_sources
+        lex.yy.cc
+        parser.tab.cc
+        ParserDriver.cpp
+        copy_freshly_compiled_parser
+        )
+endif()
+
 
 add_library(Parser ${parser_sources})
+
 
 # Auto-generated code from Flex and Bison have a lot of warnings.
 # Silence them for now.
