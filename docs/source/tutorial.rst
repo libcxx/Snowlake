@@ -303,6 +303,13 @@ Singular form
 Deduced targets in singular form represent individual named types
 deduced in the inference rule.
 
+Deduced targets in singular form are represented as individual names.
+
+For example, we can use the following premise definition to denote
+the type inference for a static method dispatch's return type::
+
+  StaticMethodCallStmt.return_type : returnType;
+
 
 Array form
 **********
@@ -310,6 +317,11 @@ Array form
 Deduced targets in array form represent a collection of types deduced
 in the inference rule, and are synthesized into array/vector types in
 C++ depending on if a fixed size literal is used.
+
+For example, we can use the following premise definition to denote
+the type inference for a static method dispatch's argument list::
+
+  StaticMethodCallStmt.argument_types : ArgumentsTypes[];
 
 
 Computed form
@@ -319,6 +331,11 @@ Deduced targets in computed form represent types deduced through calling
 a function. This form of deduced targets are used when the type deduction
 result is not bound at compile time, but rather at run time. This is
 important for many language constructs, such as class inheritance.
+
+For example, we can use the following premise definition to denote
+the type inference for a static method dispatch's caller type::
+
+  StaticMethodCallStmt.caller_type : getBaseType();
 
 
 Parameters
@@ -376,6 +393,11 @@ rules. Inference premises following the following syntax:
 
 *<identifiable> : <deduced target>*
 
+Back in our example earlier, we can use the following inference premise
+to denote the type inference for a static method dispatch's return type::
+
+  StaticMethodCallStmt.return_type : returnType;
+
 
 Equality premise
 ****************
@@ -396,6 +418,50 @@ equality relation. There are four types of equality relations:
 +-------------------+----------+------------------------------------+
 |   Less or equal   |    <=    |           std::less_equal<>        |
 +-------------------+----------+------------------------------------+
+
+Equality premise definitions have the following syntax:
+
+*<deduced target> <operator> <deduced target>;*
+
+For example, we can check that the static method dispatch's first argument
+is not equal to the self type of the method definition, with the following
+premise definition::
+
+  ArgumentsTypes[0] != SELF_TYPE;
+
+
+------
+
+We can now incorporate all the necessary premise definitions into our
+inference rule definition to build up the inference rule logic required
+for type checking static method dispatch::
+
+  inference StaticMethodStaticDispatch {
+
+    globals: [
+      SELF_TYPE
+    ]
+
+    arguments: [
+      StaticMethodCallStmt : ASTExpr
+    ]
+
+    premises: [
+      StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
+      StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
+
+      ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+      ArgumentsTypes[0] != SELF_TYPE;
+
+      StaticMethodCallStmt.caller_type : CLS_TYPE while {
+        ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+      };
+
+      StaticMethodCallStmt.caller_type               : getBaseType();
+      StaticMethodCallStmt.return_type               : returnType;
+    ]
+
+  }
 
 
 Proposition
