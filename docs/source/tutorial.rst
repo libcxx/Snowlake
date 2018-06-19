@@ -35,7 +35,7 @@ we progress in defining and expressing the inference rules of our reference
 language.
 
 
-Inference Groups
+Inference groups
 ################
 
 The top-level abstraction in the Snowlake language is **inference group**,
@@ -527,7 +527,7 @@ the inferred type of a static method dispatch's return type::
   proposition : baseType(returnType);
 
 
-Error Handling
+Error handling
 ##############
 
 The synthesized C++ code makes use of `std::error_code` and
