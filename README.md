@@ -3,7 +3,8 @@
 # Snowlake
 
 [![Build Status](https://travis-ci.org/libcxx/Snowlake.svg?branch=master)](https://travis-ci.org/libcxx/Snowlake)
-[![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
+[![Documentation Status](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
+[![Coverage Status](https://coveralls.io/repos/github/libcxx/Snowlake/badge.svg?branch=master)](https://coveralls.io/github/libcxx/Snowlake?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
