@@ -223,13 +223,25 @@ corresponding parent inference group.
 
 Each inference rule definition is made up of four parts:
 **global definitions**, **parameters**, **premises**, and **proposition**,
-as well as two entities that are make up premises and propositions:
+as well as two entities that make up premise and proposition definitions:
 **identifiables** and **deduced targets**.
-Global definitions and arguments are input that the inference rule uses
+Global definitions and parameters are input that the inference rule uses
 for deriving its inferences. Premises are the logical rules that make up
 the assumptions of a particular inference. Finally, each inference
 definition consists one proposition definition that makes up the final
 inferred type of the rule.
+
+Inference rule definitions start with the keyword `inference` followed
+by the name of the inference rule. For the purpose of this exercise,
+let us define a single inference rule used for our reference language
+for inferring the return type of a static function call.
+
+Let us call the inference rule `StaticMethodStaticDispatch`. Our
+inference rule definition will then look like the following::
+
+  inference StaticMethodStaticDispatch {
+  ...
+  }
 
 
 Global definitions
