@@ -40,7 +40,7 @@ Inference Groups
 ################
 
 The top-level abstraction in the Snowlake language is **inference group**,
-which enables grouping of inference rules into logical hierarchical groups.
+which enables logical grouping of inference rules.
 Inference group definitions start with the keyword `group` followed by the
 name of the group. Each file can contain multiple inference group definitions,
 but their names must be unique.
@@ -53,7 +53,7 @@ look like::
   ...
   }
 
-Each inference group definition also translates directly into a corresponding
+Each inference group definition translates directly into a corresponding
 C++ class with the same name. With this group definition above, the
 synthesized C++ class definition will resemble the following form::
 
