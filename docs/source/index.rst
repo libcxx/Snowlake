@@ -21,13 +21,13 @@ The goals of Snowlake are to:
   checking logic that are usually extremely complex, tedious and error-prone.
 
 
-
 Contents:
 ---------
 
 .. toctree::
    :maxdepth: 2
 
+   tutorial.rst
 
 
 Indices and tables
