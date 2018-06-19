@@ -13,11 +13,10 @@ and
 and
 `Yacc <https://en.wikipedia.org/wiki/Yacc>`_)
 as a new member in the family of compiler-compilers in empowering
-programming language designers, authors, and engineers to be more
-efficient and innovative. As Flex and Bison focuses on enabling the
-authoring of language lexers and parsers, Snowlake focuses on the
-next major step in language compiler construction:
-*static type checking as part of semantic analysis*.
+programming language designers, authors, and engineers.
+As Flex and Bison focus on enabling the authoring of language lexers
+and parsers, Snowlake focuses on the next major step in language
+compiler construction: *static type checking as part of semantic analysis*.
 
 Snowlake is a declarative language for expressing the static type inference
 rules expressed in programming language semantics. The Snowlake declarative
@@ -32,7 +31,7 @@ We chose to intentionally omit the introduction of the syntax of this
 reference language, and solely focus on its semantics and static type
 inference rules, because the language syntax is irrelevant in this context.
 The various features of the Snowlake language are illustrated in detail as
-we progress in defining and expressing the inference rules of our example
+we progress in defining and expressing the inference rules of our reference
 language.
 
 
@@ -54,7 +53,7 @@ look like::
   }
 
 Each inference group definition translates directly into a corresponding
-C++ class with the same name. With this group definition above, the
+C++ class with the same name. With the group definition above, the
 synthesized C++ class definition will resemble the following form::
 
   class SampleProject {
@@ -74,9 +73,9 @@ Below are descriptions of all supported environment definitions.
 ClassName
 ^^^^^^^^^
 
-The **ClassName** field is a field that specifies the name of
-the synthesized C++ class, if it needs to be different from the name
-of the encapsulating inference group definition.
+The **ClassName** field specifies the name of the synthesized C++ class,
+if it needs to be different from the name of the encapsulating inference
+group definition.
 
 The syntax for this field is:
 
@@ -86,10 +85,10 @@ The syntax for this field is:
 TypeClass
 ^^^^^^^^^
 
-The **TypeClass** field is a required field that specifies the  class type
+The **TypeClass** field is a required attribute that specifies the class type
 in the synthesized C++ code for representing types in the target language.
 
-It is critical to understand that in Snowlake language, all types in the
+It is critical to be aware that in Snowlake, all types in the
 target language are universally represented by a single type class in C++.
 One additional requirement for this type class is that it needs to be
 `default constructible <http://www.cplusplus.com/reference/type_traits/is_default_constructible/>`_.
@@ -102,10 +101,10 @@ The syntax for this field is:
 ProofMethod
 ^^^^^^^^^^^
 
-The **ProofMethod** field is a required field that specifies the name of the
-C++ member function that can be used to infer types on identifiable entities.
+The **ProofMethod** field specifies the name of the C++ member function
+that can be used to infer types on identifiable entities.
 This is a user supplied function that needs to be a member of the synthesized
-C++ class in order for all the C++ to compile successfully.
+C++ class.
 
 The requirement on the signature of such function is that the return value
 is of type specified by the `TypeClass <#typeclass>`_ field, and the parameters
@@ -119,9 +118,9 @@ The syntax for this field is:
 TypeCmpMethod
 ^^^^^^^^^^^^^
 
-Similar to the "ProofMethod" field described above, the **TypeCmpMethod**
-field is a required field that specifies the name of the C++ member function
-that can be used compare and evaluate equality among type instances.
+Similar to the `ProofMethod <#proofmethod>`_ field described above,
+the **TypeCmpMethod** field specifies the name of the C++ member function
+that can be used to compare and evaluate equality among type instances.
 This is also a user supplied function that needs to be a member of the
 synthesized C++ class.
 
@@ -139,17 +138,20 @@ The syntax for this field is:
 TypeAnnotationSetupMethod
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The **TypeAnnotationSetupMethod** field is an optional field that specifies
+The **TypeAnnotationSetupMethod** field is an optional attribute that specifies
 the name of the C++ member function that can be used to perform temporary
 type registration setup.
 
-The signature of such function is that the return type be `void`, and takes
+The signature of such function is that the return type be `void`, with
 a single parameter of type class specified by the `TypeClass <#typeclass>`_
 field above.
 
 This field is used in conjunction with the
 `TypeAnnotationTeardownMethod <#typeannotationteardownmethod>`_ field to
 perform setup and teardown.
+
+For more details on type registration setup and teardown, refer to
+`While-clause <#while-clause>`_ section below.
 
 The syntax for this field is:
 
@@ -159,17 +161,20 @@ The syntax for this field is:
 TypeAnnotationTeardownMethod
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The **TypeAnnotationTeardownMethod** field is an optional field that specifies
-the name of the C++ member function that can be used to perform temporary
-type registration teardown.
+The **TypeAnnotationTeardownMethod** field is an optional attribute that
+specifies the name of the C++ member function that can be used to perform
+temporary type registration teardown.
 
-The signature of such function is that the return type be `void`, and takes
+The signature of such function is that the return type be `void`, with
 a single parameter of type class specified by the `TypeClass <#typeclass>`_
 field above.
 
 This field is used in conjunction with the
 `TypeAnnotationSetupMethod <#typeannotationsetupmethod>`_ field to
-perform setup and teardown.
+perform type registration setup and teardown.
+
+For more details on type registration setup and teardown, refer to
+`While-clause <#while-clause>`_ section below.
 
 The syntax for this field is:
 
@@ -177,7 +182,7 @@ The syntax for this field is:
 
 ------
 
-With the environment definition fields described, let us specify the required
+With the environment definitions described, let us specify the required
 field for our inference group definition.
 
 Since we want to have the synthesized C++ class be named
@@ -204,10 +209,10 @@ following two key-value pairs::
 With that, our inference group definition now will look like the following::
 
   group SampleProject {
-    ClassName     : SampleProjectTypeChecker;
-    TypeClass     : TypeCls;
-    ProofMethod   : proveType;
-    TypeCmpMethod : cmpType;
+      ClassName     : SampleProjectTypeChecker;
+      TypeClass     : TypeCls;
+      ProofMethod   : proveType;
+      TypeCmpMethod : cmpType;
   }
 
 
@@ -217,30 +222,30 @@ Inference rule definitions
 **Inference rule definitions** are at the heart of the Snowlake language.
 Each inference rule definition uniquely captures the static type inference
 logic associated with one language construct. The Snowlake compiler
-synthesizes each inference definition into a corresponding C++ member
+synthesizes each inference definition into a corresponding C++
 function, which is a member of the C++ class that is synthesized from the
 corresponding parent inference group.
 
-Each inference rule definition is made up of four parts:
+Each inference rule definition is made up of four components:
 **global definitions**, **parameters**, **premises**, and **proposition**,
 as well as two entities that make up premise and proposition definitions:
 **identifiables** and **deduced targets**.
-Global definitions and parameters are input that the inference rule uses
-for deriving its inferences. Premises are the logical rules that make up
+Global definitions and parameters are input that the inference rules use
+for deriving type inferences. Premises are the logical rules that make up
 the assumptions of a particular inference. Finally, each inference
 definition consists one proposition definition that makes up the final
 inferred type of the rule.
 
 Inference rule definitions start with the keyword `inference` followed
 by the name of the inference rule. For the purpose of this exercise,
-let us define a single inference rule used for our reference language
-for inferring the return type of a static method dispatch.
+let us define a single inference rule used for inferring the return type
+of a static method dispatch in our reference language.
 
 Let us call the inference rule `StaticMethodStaticDispatch`. Our
 inference rule definition will then look like the following::
 
   inference StaticMethodStaticDispatch {
-  ...
+    ...
   }
 
 
@@ -254,10 +259,10 @@ that such definitions can be used throughout the inference rules in a
 semantically correct manner.
 
 Global definitions are specified with the key `globals` and are a list of
-named constants, separated by comma.
+named constants, separated by commas.
 
 Let's assume that in our reference language, there exists a constant that
-is used to represent the *self* class type at any given context, and this
+is used to represent the *self* class type in any given context, and this
 constant is called `SELF_TYPE`. In order for us to interact and make use
 of this constant in our inference rules later on, we have to declare it
 as a global constant inside our inference rule definition::
@@ -265,7 +270,7 @@ as a global constant inside our inference rule definition::
   inference StaticMethodStaticDispatch {
 
     globals: [
-      SELF_TYPE
+        SELF_TYPE
     ]
 
   }
@@ -319,7 +324,7 @@ in the inference rule, and are synthesized into array/vector types in
 C++ depending on if a fixed size literal is used.
 
 For example, we can use the following premise definition to denote
-the type inference for a static method dispatch's argument list::
+the inferred types of a static method dispatch's argument list::
 
   StaticMethodCallStmt.argument_types : ArgumentsTypes[];
 
@@ -351,23 +356,23 @@ in the syntax for expressing parameters in Snowlake.
 Parameters are defined under the `arguments` key within an inference
 rule definition. Each parameter is defined with its name, followed by
 colon (i.e. `:`), and followed by its type in the final C++ code.
-Note that just like in C++, parameters for each inference rule definition
+Note that just like in C++, parameters in each inference rule definition
 must not contain duplicate names.
 
 Back to the implemantation of our inference rule definition for static
 method dispatch. The synthesized C++ code needs to take an instance of
 an object type that represents the static method dispatch at a code level
-(i.e. an `ASTExpr` class). We can incorporate the parameter list inside the
-inference rule definition::
+(i.e. an `ASTExpr` class). We can then incorporate the parameter list inside
+the inference rule definition as follows::
 
   inference StaticMethodStaticDispatch {
 
     globals: [
-      SELF_TYPE
+        SELF_TYPE
     ]
 
     arguments: [
-      StaticMethodCallStmt : ASTExpr
+        StaticMethodCallStmt : ASTExpr
     ]
 
   }
