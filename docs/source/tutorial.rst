@@ -74,6 +74,142 @@ Below are descriptions of all supported environment definitions.
 ClassName
 ^^^^^^^^^
 
+The **ClassName** field is a field that specifies the name of
+the synthesized C++ class, if it needs to be different from the name
+of the encapsulating inference group definition.
+
+The syntax for this field is:
+
+`ClassName : <value>;`
+
+
+TypeClass
+^^^^^^^^^
+
+The **TypeClass** field is a required field that specifies the  class type
+in the synthesized C++ code for representing types in the target language.
+
+It is critical to understand that in Snowlake language, all types in the
+target language are universally represented by a single type class in C++.
+One additional requirement for this type class is that it needs to be
+`default constructible <http://www.cplusplus.com/reference/type_traits/is_default_constructible/>`_.
+
+The syntax for this field is:
+
+`TypeClass : <value>;`
+
+
+ProofMethod
+^^^^^^^^^^^
+
+The **ProofMethod** field is a required field that specifies the name of the
+C++ member function that can be used to infer types on identifiable entities.
+This is a user supplied function that needs to be a member of the synthesized
+C++ class in order for all the C++ to compile successfully.
+
+The requirement on the signature of such function is that the return value
+is of type specified by the `TypeClass <#typeclass>`_ field, and the parameters
+can be a single arbitrary type that fits of the context of the synthesized code.
+
+The syntax for this field is:
+
+`ProofMethod : <value>;`
+
+
+TypeCmpMethod
+^^^^^^^^^^^^^
+
+Similar to the "ProofMethod" field described above, the **TypeCmpMethod**
+field is a required field that specifies the name of the C++ member function
+that can be used compare and evaluate equality among type instances.
+This is also a user supplied function that needs to be a member of the
+synthesized C++ class.
+
+The requirement on the signature of such function is that the return value
+is of type `bool`, and the parameters are two instances of the type specified
+by the `TypeClass <#typeclass>`_ field above, and an overloaded comparator
+functor in the `std` namespace. See `Equality premise <#equality-premise>`_
+below for the supported comparison functor types.
+
+The syntax for this field is:
+
+`TypeCmpMethod : <value>;`
+
+
+TypeAnnotationSetupMethod
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The **TypeAnnotationSetupMethod** field is an optional field that specifies
+the name of the C++ member function that can be used to perform temporary
+type registration setup.
+
+The signature of such function is that the return type be `void`, and takes
+a single parameter of type class specified by the `TypeClass <#typeclass>`_
+field above.
+
+This field is used in conjunction with the
+`TypeAnnotationTeardownMethod <#typeannotationteardownmethod>`_ field to
+perform setup and teardown.
+
+The syntax for this field is:
+
+`TypeAnnotationSetupMethod : <value>;`
+
+
+TypeAnnotationTeardownMethod
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The **TypeAnnotationTeardownMethod** field is an optional field that specifies
+the name of the C++ member function that can be used to perform temporary
+type registration teardown.
+
+The signature of such function is that the return type be `void`, and takes
+a single parameter of type class specified by the `TypeClass <#typeclass>`_
+field above.
+
+This field is used in conjunction with the
+`TypeAnnotationSetupMethod <#typeannotationsetupmethod>`_ field to
+perform setup and teardown.
+
+The syntax for this field is:
+
+`TypeAnnotationTeardownMethod : <value>;`
+
+------
+
+With the environment definition fields described, let us specify the required
+field for our inference group definition.
+
+Since we want to have the synthesized C++ class be named
+`SampleProjectTypeChecker`, and have the code live under
+`SampleProjectTypeChecker.h` and `SampleProjectTypeChecker.cpp`,
+let us define the following::
+
+  ClassName : SampleProjectTypeChecker;
+
+We also know that we are going to be using a C++ type class called `TypeCls`
+for working with all type instances through our type inference logic,
+so we can define the following::
+
+  TypeClass : TypeCls;
+
+Let's further assume that we are going to supply our own implementation
+of the type proof and type comparison member functions, and they are
+named `proveType` and `cmpType` respectively, we can then specify the
+following two key-value pairs::
+
+  ProofMethod   : proveType;
+  TypeCmpMethod : cmpType;
+
+With that, our inference group definition now will look like the following::
+
+  group SampleProject {
+    ClassName     : SampleProjectTypeChecker;
+    TypeClass     : TypeCls;
+    ProofMethod   : proveType;
+    TypeCmpMethod : cmpType;
+  }
+
 
 Inference rule definitions
 ##########################
