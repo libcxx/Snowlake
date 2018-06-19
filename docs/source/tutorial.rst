@@ -8,7 +8,10 @@ Snowlake joins
 `Flex <https://en.wikipedia.org/wiki/Flex_(lexical_analyser_generator)>`_
 and
 `Bison <https://en.wikipedia.org/wiki/GNU_bison>`_
-(formerly known as Lex and Yacc)
+(as well as their siblings
+`Lex <https://en.wikipedia.org/wiki/Lex_(software)>`_
+and
+`Yacc <https://en.wikipedia.org/wiki/Yacc>`_)
 as a new member in the family of compiler-compilers in empowering
 programming language designers, authors, and engineers to be more
 efficient and innovative. As Flex and Bison focuses on enabling the
