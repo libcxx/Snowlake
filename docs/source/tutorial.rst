@@ -77,12 +77,14 @@ function, which is a member of the C++ class that is synthesized from the
 corresponding parent inference group.
 
 Each inference rule definition is made up of four parts:
-**global definitions**, **arguments**, **premises**, and **proposition**.
-Global definitions and arguments are input that the inference rule uses for
-deriving its inferences. Premises are the logical rules that make up the
-assumptions of a particular inference. Finally, each inference definition
-consists one proposition definition that makes up the final inferred type
-of the rule.
+**global definitions**, **arguments**, **premises**, and **proposition**,
+as well as two entities that are make up premises and propositions:
+**identifiables** and **deduced targets**.
+Global definitions and arguments are input that the inference rule uses
+for deriving its inferences. Premises are the logical rules that make up
+the assumptions of a particular inference. Finally, each inference
+definition consists one proposition definition that makes up the final
+inferred type of the rule.
 
 
 Global definitions
@@ -93,4 +95,17 @@ that reference objects or other constructs at the global level.
 Global definitions are simply declared names that tell the Snowlake compiler
 that such definitions can be used throughout the inference rules in a
 semantically correct manner.
+
+
+Identifiables
+#############
+
+**Identifiables** in Snowlake are identifiers that simply refer to entities
+or attributes of entities in the synthesized C++ code. Identifiables can be
+chained with the dot (i.e. `'.'`) character to represent members on
+existing identifiables.
+
+For example, we can have an identifiable named `"binaryExpr"` that refer
+to a variable named `"binaryExpr"` in C++, and `"binaryExpr.type"` that refer
+to the type of the binary expression.
 
