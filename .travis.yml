@@ -1,0 +1,16 @@
+language: cpp
+
+os:
+  - osx
+
+compiler:
+  - clang
+
+script:
+  - uname -a
+  - cmake --version
+  - clang++ --version
+  - g++ --version
+  - python --version
+  - mkdir build && cd build && cmake -DUSE_PRECOMPILED_PARSER=ON .. && make
+  - echo "DONE"
