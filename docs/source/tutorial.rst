@@ -382,7 +382,7 @@ Premises
 ########
 
 **Premises** are the building block of inference rule definitions that
-capture the logic of the inference, and are synthesized to actual C++
+capture the logic of the inference, and are translated to actual C++
 code within the body of the corresponding synthesized C++ function.
 Premises are categorized into two types: **inference premises**
 and **equality premises**.
@@ -391,15 +391,15 @@ and **equality premises**.
 Inference premise
 *****************
 
-**Inference premises** are logical rules that establishes the assumption
-that an identifiable entity can be proven to be a specified type.
+**Inference premises** are logical rules that establish the assumption
+that an identifiable entity can be proven to be a particular type.
 This type of premise is essential and are used in the majority of inference
-rules. Inference premises following the following syntax:
+rules. Inference premises have the following syntax:
 
 *<identifiable> : <deduced target>*
 
-Back in our example earlier, we can use the following inference premise
-to denote the type inference for a static method dispatch's return type::
+Back to our example, we can use the following inference premise
+to denote the inferred type of a static method dispatch's return type::
 
   StaticMethodCallStmt.return_type : returnType;
 
@@ -407,13 +407,13 @@ to denote the type inference for a static method dispatch's return type::
 While-clause
 ^^^^^^^^^^^^
 
-For the semantics of many programming languages, it is necessary to make
+Within the semantics of many programming languages, it is necessary to make
 temporary assumptions on the types of certain entities as part of other
 inferences. While-clauses are extensions to inference premise definitions
 that make expressing such assumptions possible. All premises specified
-under the body of a while-clause are executed as usual, and the premise
+under the body of a while-clause are translated as usual, and the premise
 definition that starts the while-clause becomes the assumption that gets
-temporarily set up and teared-down before and after the inferences
+temporarily set up and teared down before and after the inferences
 in the while-clause body.
 
 To specify a while-clause, use the `while { ... }` following an inference
@@ -433,7 +433,7 @@ Equality premise
 
 Equality premises are logical rules that establish the expected equality
 relations between inferred types. They are binary expressions that evaluate
-on two deduced types, along with an equality operator that represents the
+on two deduced types, along with an equality operator that denotes the
 equality relation. There are four types of equality relations:
 
 +-------------------+----------+------------------------------------+
@@ -454,7 +454,7 @@ Equality premise definitions have the following syntax:
 
 For example, we can check that the static method dispatch's first argument
 is not equal to the self type of the method definition, with the following
-premise definition::
+equality premise definition::
 
   ArgumentsTypes[0] != SELF_TYPE;
 
@@ -482,32 +482,32 @@ definition::
 ------
 
 We can now incorporate all the necessary premise definitions into our
-inference rule definition to build up the inference rule logic required
-for type checking static method dispatch::
+inference rule definition to build up the inference logic required
+for static method dispatch type checking::
 
   inference StaticMethodStaticDispatch {
 
     globals: [
-      SELF_TYPE
+        SELF_TYPE
     ]
 
     arguments: [
-      StaticMethodCallStmt : ASTExpr
+        StaticMethodCallStmt : ASTExpr
     ]
 
     premises: [
-      StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
-      StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
+        StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
+        StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
 
-      ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
-      ArgumentsTypes[0] != SELF_TYPE;
+        ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+        ArgumentsTypes[0] != SELF_TYPE;
 
-      StaticMethodCallStmt.caller_type : CLS_TYPE while {
-        ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
-      };
+        StaticMethodCallStmt.caller_type : CLS_TYPE while {
+            ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+        };
 
-      StaticMethodCallStmt.caller_type               : getBaseType();
-      StaticMethodCallStmt.return_type               : returnType;
+        StaticMethodCallStmt.caller_type               : getBaseType();
+        StaticMethodCallStmt.return_type               : returnType;
     ]
 
   }
@@ -520,6 +520,11 @@ Each inference rule definition ends with a proposition definition that
 declares the inferred type of the inference. The syntax of propositions is as:
 
 `proposition: <deduced target>;`
+
+For example, we can specify the following proposition definition to denote
+the inferred type of a static method dispatch's return type::
+
+  proposition : baseType(returnType);
 
 
 Error Handling
@@ -581,7 +586,7 @@ the error definitions.
 Put it all together
 ###################
 
-We can now finally put all the pieces together to form the entire
+We can now put all the pieces together to form the entire
 inference definition under our inference group::
 
   group SampleProject {
