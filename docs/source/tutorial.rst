@@ -234,7 +234,7 @@ inferred type of the rule.
 Inference rule definitions start with the keyword `inference` followed
 by the name of the inference rule. For the purpose of this exercise,
 let us define a single inference rule used for our reference language
-for inferring the return type of a static function call.
+for inferring the return type of a static method dispatch.
 
 Let us call the inference rule `StaticMethodStaticDispatch`. Our
 inference rule definition will then look like the following::
@@ -331,11 +331,29 @@ the missing part of the function signature. Each parameter is made up
 of a name and its type, much like in C++. However, the difference lie
 in the syntax for expressing parameters in Snowlake.
 
-Parameters are defined under the `parameters` key within an inference
+Parameters are defined under the `arguments` key within an inference
 rule definition. Each parameter is defined with its name, followed by
 colon (i.e. `:`), and followed by its type in the final C++ code.
 Note that just like in C++, parameters for each inference rule definition
 must not contain duplicate names.
+
+Back to the implemantation of our inference rule definition for static
+method dispatch. The synthesized C++ code needs to take an instance of
+an object type that represents the static method dispatch at a code level
+(i.e. an `ASTExpr` class). We can incorporate the parameter list inside the
+inference rule definition::
+
+  inference StaticMethodStaticDispatch {
+
+    globals: [
+      SELF_TYPE
+    ]
+
+    arguments: [
+      StaticMethodCallStmt : ASTExpr
+    ]
+
+  }
 
 
 Premises
