@@ -204,3 +204,11 @@ equality relation. There are four types of equality relations:
 |   Less or equal   |    <=    |           std::less_equal<>        |
 +-------------------+----------+------------------------------------+
 
+
+Proposition
+###########
+
+Each inference rule definition ends with a proposition definition that
+declares the inferred type of the inference. The syntax of propositions is as:
+
+`proposition: <deduced target>;`
