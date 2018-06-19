@@ -77,7 +77,7 @@ function, which is a member of the C++ class that is synthesized from the
 corresponding parent inference group.
 
 Each inference rule definition is made up of four parts:
-**global definitions**, **arguments**, **premises**, and **proposition**,
+**global definitions**, **parameters**, **premises**, and **proposition**,
 as well as two entities that are make up premises and propositions:
 **identifiables** and **deduced targets**.
 Global definitions and arguments are input that the inference rule uses
@@ -144,4 +144,21 @@ Deduced targets in computed form represent types deduced through calling
 a function. This form of deduced targets are used when the type deduction
 result is not bound at compile time, but rather at run time. This is
 important for many language constructs, such as class inheritance.
+
+
+Parameters
+##########
+
+As mentioned above, each inference rule definition is synthesized into
+a corresponding C++ member function, thus it is a required step to define
+the parameters that get passed to the function, which in turn make up
+the missing part of the function signature. Each parameter is made up
+of a name and its type, much like in C++. However, the difference lie
+in the syntax for expressing parameters in Snowlake.
+
+Parameters are defined under the `parameters` key within an inference
+rule definition. Each parameter is defined with its name, followed by
+colon (i.e. `:`), and followed by its type in the final C++ code.
+Note that just like in C++, parameters for each inference rule definition
+must not contain duplicate names.
 
