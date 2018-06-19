@@ -40,6 +40,12 @@ add_executable(run_tests
 set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
 
+# Linker flags for supporting static coverage.
+if (STATIC_COVERAGE_ENABLED)
+    set_target_properties(run_tests PROPERTIES LINK_FLAGS "--coverage")
+endif()
+
+
 # Link against the necessary libraries.
 target_link_libraries(run_tests
     snowlake

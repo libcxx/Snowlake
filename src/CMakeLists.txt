@@ -53,6 +53,12 @@ set_target_properties(snowlake
     )
 
 
+# Compiler flags for supporting debug coverage.
+if (STATIC_COVERAGE_ENABLED)
+    set_target_properties(snowlake PROPERTIES COMPILE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+endif()
+
+
 # Link with dependency "Parser".
 add_dependencies(snowlake Parser)
 

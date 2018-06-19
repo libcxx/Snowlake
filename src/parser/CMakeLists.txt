@@ -103,4 +103,10 @@ add_library(Parser ${parser_sources})
 set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
 
+# Compiler flags for supporting static coverage.
+if (STATIC_COVERAGE_ENABLED)
+    set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+endif()
+
+
 ### THE END ###
