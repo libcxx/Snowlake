@@ -64,3 +64,23 @@ Below are descriptions of all supported environment definitions.
 
 ClassName
 ^^^^^^^^^
+
+
+Inference rule definitions
+##########################
+
+**Inference rule definitions** are at the heart of the Snowlake language.
+Each inference rule definition uniquely captures the static type inference
+logic associated with one language construct. The Snowlake compiler
+synthesizes each inference definition into a corresponding C++ member
+function, which is a member of the C++ class that is synthesized from the
+corresponding parent inference group.
+
+Each inference rule definition is made up of four parts:
+**global definitions**, **arguments**, **premises**, and **proposition**.
+Global definitions and arguments are input that the inference rule uses for
+deriving its inferences. Premises are the logical rules that make up the
+assumptions of a particular inference. Finally, each inference definition
+consists one proposition definition that makes up the final inferred type
+of the rule.
+
