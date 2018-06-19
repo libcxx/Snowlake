@@ -109,3 +109,39 @@ For example, we can have an identifiable named `"binaryExpr"` that refer
 to a variable named `"binaryExpr"` in C++, and `"binaryExpr.type"` that refer
 to the type of the binary expression.
 
+
+Deduced targets
+###############
+
+**Deduced targets** are declarations of the deduced types within an
+inference rule. Deduced targets are synthesized into C++ variable
+declarations and definitions, and thus can be used in subsequent
+premise definitions.
+
+There are three form of deduced targets: **singular form**,
+**array form** (with and without size literal), and **computed form**.
+
+
+Singular form
+*************
+
+Deduced targets in singular form represent individual named types
+deduced in the inference rule.
+
+
+Array form
+**********
+
+Deduced targets in array form represent a collection of types deduced
+in the inference rule, and are synthesized into array/vector types in
+C++ depending on if a fixed size literal is used.
+
+
+Computed form
+*************
+
+Deduced targets in computed form represent types deduced through calling
+a function. This form of deduced targets are used when the type deduction
+result is not bound at compile time, but rather at run time. This is
+important for many language constructs, such as class inheritance.
+
