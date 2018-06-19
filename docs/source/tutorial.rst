@@ -84,3 +84,13 @@ assumptions of a particular inference. Finally, each inference definition
 consists one proposition definition that makes up the final inferred type
 of the rule.
 
+
+Global definitions
+##################
+
+**Global definitions** refer to named entities in the synthesized C++ code
+that reference objects or other constructs at the global level.
+Global definitions are simply declared names that tell the Snowlake compiler
+that such definitions can be used throughout the inference rules in a
+semantically correct manner.
+
