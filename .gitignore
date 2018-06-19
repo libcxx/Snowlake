@@ -37,6 +37,9 @@ build/
 # Auto-generated headers copied to src/parser during builds
 src/parser/*.hh
 
+# Dependency build idr.
+libs/build
+
 # Misc.
 *.DS_Store
 

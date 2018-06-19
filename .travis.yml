@@ -12,5 +12,6 @@ script:
   - clang++ --version
   - g++ --version
   - python --version
+  - make -C libs
   - mkdir build && cd build && cmake -DUSE_PRECOMPILED_PARSER=ON .. && make
   - echo "DONE"
