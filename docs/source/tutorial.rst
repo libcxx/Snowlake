@@ -454,6 +454,26 @@ premise definition::
   ArgumentsTypes[0] != SELF_TYPE;
 
 
+Range-clause
+^^^^^^^^^^^^
+
+Range-clause is an extension to equality premise definitions which enables
+comparison of set of type instances between deduced targets in array form.
+
+To specify range-clause, use the `inrange` keyword after an equality
+premise definition, followed by the starting index used for the array
+form deduced targets on the left-hand-side and right-hand-side of the
+equality check respectively, and ends with the deduced target instance that
+forms the upper bound of the array check. All three values are separated by
+`...`.
+
+For example, we can apply range-clause to check and make sure that the
+static method dispatch's argument types match the parameters of the function
+definition::
+
+  ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+
+
 ------
 
 We can now incorporate all the necessary premise definitions into our
