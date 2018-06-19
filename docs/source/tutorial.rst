@@ -50,7 +50,7 @@ for this exercise, and name it `SampleProject`. The definition will
 look like::
 
   group SampleProject {
-  ...
+    ...
   }
 
 Each inference group definition translates directly into a corresponding
@@ -58,7 +58,7 @@ C++ class with the same name. With this group definition above, the
 synthesized C++ class definition will resemble the following form::
 
   class SampleProject {
-  ...
+    ...
   };
 
 
