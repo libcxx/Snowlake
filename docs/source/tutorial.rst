@@ -19,10 +19,13 @@ and parsers, Snowlake focuses on the next major step in language
 compiler construction: *static type checking as part of semantic analysis*.
 
 Snowlake is a declarative language for expressing the static type inference
-rules expressed in programming language semantics. The Snowlake declarative
-language is designed to be language agnostic, and is based on syntax and
-semantics derived from existing languages in order to reduce the learning
-curve in mastering it.
+rules expressed in programming language semantics. It is designed to be
+language agnostic, and its semantics and language constructs express rules of
+inference in propositional calculus, such as
+`hypothetical syllogism <https://en.wikipedia.org/wiki/Hypothetical_syllogism>`_.
+Therefore, prerequisite understanding of propositional logic is needed
+in mastering the Snowlake language, but prior experience in other
+imperative programming languages is not required.
 
 Here we'd like to demonstrate the features, syntax and semantics of the
 Snowlake language by going through a brief example of defining the
