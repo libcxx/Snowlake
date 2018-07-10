@@ -47,13 +47,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Default program long description.
 #define SNOWLAKE_PROG_DESC_LONG                                                \
-  "Snowlake is both a declarative language "                                   \
-  "for defining static type inference rules\n"                                 \
-  "of programming languages, as well as a "                                    \
-  "compiler-compiler that can synthesize\n"                                    \
-  "such inference rule definitions into "                                      \
-  "code used for static type checking,\n"                                      \
-  "typically used for semantic analysis "                                      \
+  "Snowlake is both a declarative language of regular rules of inference\n"    \
+  "and propositional logic for defining static type inference rules of\n"      \
+  "programming languages, as well as a compiler-compiler that can\n"           \
+  "synthesize such inference rule definitions into code used for\n"            \
+  "static type checking, typically used for semantic analysis\n"               \
   "in language compilers."
 
 // Default program usage string.
