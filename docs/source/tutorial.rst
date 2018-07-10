@@ -622,8 +622,17 @@ inference definition under our inference group::
       }
   }
 
-And for the curious bunch, below is the synthesized C++ code in
-`SampleProjectTypeChecker.h` and `SampleProjectTypeChecker.cpp`.
+Assume we save the entire inference definition group in a file called
+`SampleProject.sl`, we can compile the definition by invoking the following
+command on the Snowlake compiler:
+
+::
+
+    snowlake --errors --verbose --output ./ SampleProject.sl
+
+This will synthesize the C++ output into `SampleProjectTypeChecker.h` and
+`SampleProjectTypeChecker.cpp`. For the curious bunch, below is the
+synthesized C++ output.
 
 **SampleProjectTypeChecker.h**::
 
