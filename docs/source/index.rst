@@ -6,8 +6,9 @@
 Snowlake Documentation
 ======================
 
-Snowlake is both a declarative language for defining static type inference
-rules of programming languages, as well as a compiler-compiler that can
+Snowlake is both a declarative language of regular rules of inference
+and propositional logic for defining static type inference rules of
+programming languages, as well as a compiler-compiler that can
 synthesize such inference rule definitions into code used for static type
 checking, typically used for semantic analysis in language compilers.
 

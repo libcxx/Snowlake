@@ -19,10 +19,13 @@ and parsers, Snowlake focuses on the next major step in language
 compiler construction: *static type checking as part of semantic analysis*.
 
 Snowlake is a declarative language for expressing the static type inference
-rules expressed in programming language semantics. The Snowlake declarative
-language is designed to be language agnostic, and is based on syntax and
-semantics derived from existing languages in order to reduce the learning
-curve in mastering it.
+rules expressed in programming language semantics. It is designed to be
+language agnostic, and its semantics and language constructs express rules of
+inference in propositional calculus, such as
+`hypothetical syllogism <https://en.wikipedia.org/wiki/Hypothetical_syllogism>`_.
+Therefore, prerequisite understanding of propositional logic is needed
+in mastering the Snowlake language, but prior experience in other
+imperative programming languages is not required.
 
 Here we'd like to demonstrate the features, syntax and semantics of the
 Snowlake language by going through a brief example of defining the
@@ -619,8 +622,17 @@ inference definition under our inference group::
       }
   }
 
-And for the curious bunch, below is the synthesized C++ code in
-`SampleProjectTypeChecker.h` and `SampleProjectTypeChecker.cpp`.
+Assume we save the entire inference definition group in a file called
+`SampleProject.sl`, we can compile the definition by invoking the following
+command on the Snowlake compiler:
+
+::
+
+    snowlake --errors --verbose --output ./ SampleProject.sl
+
+This will synthesize the C++ output into `SampleProjectTypeChecker.h` and
+`SampleProjectTypeChecker.cpp`. For the curious bunch, below is the
+synthesized C++ output.
 
 **SampleProjectTypeChecker.h**::
 
@@ -677,7 +689,7 @@ And for the curious bunch, below is the synthesized C++ code in
           }
       }
 
-      // Type annotation teardown."
+      // Type annotation teardown.
       typeAnnotationTeardown(StaticMethodCallStmt.caller_type, CLS_TYPE);
 
       TypeCls var0 = getBaseType();
@@ -691,3 +703,48 @@ And for the curious bunch, below is the synthesized C++ code in
       return baseType(returnType);
   }
 
+
+Invoking Snowlake compiler
+##########################
+
+Once the Snowlake project is built, invoking the Snowlake compiler, namely
+`snowlake`, is fairly trivial. Below is the command-line interface:
+
+::
+
+  snowlake (version 0.0.1)
+
+  Snowlake compiler.
+
+  Snowlake is both a declarative language of regular rules of inference
+  and propositional logic for defining static type inference rules of
+  programming languages, as well as a compiler-compiler that can
+  synthesize such inference rule definitions into code used for
+  static type checking, typically used for semantic analysis
+  in language compilers.
+
+  Usage: snowlake [OPTION]... INPUT
+
+
+  OPTIONS:
+
+  -v, --verbose
+        Verbose mode.
+        Optional. Default value: 0
+  -d, --debug
+        Debug mode.
+        Optional. Default value: 0
+  -s, --silent
+        Silent mode.
+        Optional. Default value: 0
+  -b, --bail
+        Bail on first error.
+        Optional. Default value: 0
+  -e, --errors
+        Treat warnings as errors.
+        Optional. Default value: 0
+  -o, --output <value>
+        Output path.
+
+All options are fairly self-explanatory. The argument to `--output` needs to be
+a directory path in which multiple .h and .cpp files can be saved at.
