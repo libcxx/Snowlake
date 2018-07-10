@@ -703,3 +703,48 @@ synthesized C++ output.
       return baseType(returnType);
   }
 
+
+Invoking Snowlake compiler
+##########################
+
+Once the Snowlake project is built, invoking the Snowlake compiler, namely
+`snowlake`, is fairly trivial. Below is the command-line interface:
+
+::
+
+  snowlake (version 0.0.1)
+
+  Snowlake compiler.
+
+  Snowlake is both a declarative language of regular rules of inference
+  and propositional logic for defining static type inference rules of
+  programming languages, as well as a compiler-compiler that can
+  synthesize such inference rule definitions into code used for
+  static type checking, typically used for semantic analysis
+  in language compilers.
+
+  Usage: snowlake [OPTION]... INPUT
+
+
+  OPTIONS:
+
+  -v, --verbose
+        Verbose mode.
+        Optional. Default value: 0
+  -d, --debug
+        Debug mode.
+        Optional. Default value: 0
+  -s, --silent
+        Silent mode.
+        Optional. Default value: 0
+  -b, --bail
+        Bail on first error.
+        Optional. Default value: 0
+  -e, --errors
+        Treat warnings as errors.
+        Optional. Default value: 0
+  -o, --output <value>
+        Output path.
+
+All options are fairly self-explanatory. The argument to `--output` needs to be
+a directory path in which multiple .h and .cpp files can be saved at.
