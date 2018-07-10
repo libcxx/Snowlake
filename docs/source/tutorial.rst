@@ -680,7 +680,7 @@ And for the curious bunch, below is the synthesized C++ code in
           }
       }
 
-      // Type annotation teardown."
+      // Type annotation teardown.
       typeAnnotationTeardown(StaticMethodCallStmt.caller_type, CLS_TYPE);
 
       TypeCls var0 = getBaseType();
