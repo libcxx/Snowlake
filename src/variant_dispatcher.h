@@ -72,12 +72,12 @@ struct dispatcher<F, V, R>
 
   static result_type apply_const(V const&, F)
   {
-    THROW(std::runtime_error("unary dispatch failed in sl::variant::dispatcher::apply_const"));
+    THROW(std::runtime_error("unary dispatch failed"));
   }
 
   static result_type apply(V&, F)
   {
-    THROW(std::runtime_error("unary dispatch failed sl::variant::dispatcher::apply"));
+    THROW(std::runtime_error("unary dispatch failed"));
   }
 };
 
