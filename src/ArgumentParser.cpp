@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ArgumentParser.h"
+#include "variant_static_visitor.h"
 #include "version.h"
 #include <sstream>
 #include <string>
@@ -492,32 +493,38 @@ ArgumentParser::__defined_boolean_option(const std::string& name) const
 
 // -----------------------------------------------------------------------------
 
-template <typename T>
-void
-ArgumentParser::CmdlOption::__update_value(const std::string& new_value)
+struct CmdlOptionValueCast : public sl::variant::static_visitor<ArgumentParser::value_type>
 {
-  T val;
-  std::stringstream ss(new_value);
-  ss >> val;
-  value.value = val;
-}
+  explicit CmdlOptionValueCast(const std::string& raw_value) :
+    m_raw_value(raw_value)
+  {
+  }
+
+  ~CmdlOptionValueCast() {}
+
+  template <typename T>
+  T operator()(T&) {
+    T val;
+    std::stringstream ss(m_raw_value);
+    ss >> val;
+    return val;
+  }
+
+  std::string operator()(std::string&) {
+    return m_raw_value;
+  }
+
+  private:
+    const std::string& m_raw_value;
+};
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::CmdlOption::update_value(const std::string& new_value)
 {
-  if (default_value.value.is<std::string>()) {
-    value.value = new_value;
-  } else if (default_value.value.is<uint32_t>()) {
-    __update_value<uint32_t>(new_value);
-  } else if (default_value.value.is<uint64_t>()) {
-    __update_value<uint64_t>(new_value);
-  } else if (default_value.value.is<float>()) {
-    __update_value<float>(new_value);
-  } else if (default_value.value.is<double>()) {
-    __update_value<double>(new_value);
-  }
+  CmdlOptionValueCast cast(new_value);
+  value.value = sl::variant::apply_visitor(cast, default_value.value); 
 }
 
 // -----------------------------------------------------------------------------

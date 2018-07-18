@@ -84,6 +84,9 @@ public:
 
   void print_help() const;
 
+public:
+  using value_type = sl::variant::variant<std::string, uint32_t, uint64_t,
+                                            bool, float, double>;
 private:
   bool __defined_boolean_option(const std::string&) const;
 
@@ -109,8 +112,7 @@ private:
 
   struct CmdlOptionValue
   {
-    using value_type = sl::variant::variant<std::string, uint32_t, uint64_t,
-                                            bool, float, double>;
+    using value_type = ArgumentParser::value_type;
     value_type value;
   };
 
@@ -130,9 +132,6 @@ private:
   private:
     template <typename T>
     void __assign_value_to_dst();
-
-    template <typename T>
-    void __update_value(const std::string&);
   };
 
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
