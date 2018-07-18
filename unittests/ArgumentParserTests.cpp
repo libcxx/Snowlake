@@ -204,7 +204,7 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionTypesAndDefaultValues)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
+TEST_F(ArgumentParserTests, TestParseWithAllOptionalAndPositionalArguments)
 {
   ArgumentParser argparser;
   std::string str_dst;
@@ -260,7 +260,7 @@ TEST_F(ArgumentParserTests, TestParseWithAllOptionlAndPositionalArguments)
 // -----------------------------------------------------------------------------
 
 TEST_F(ArgumentParserTests,
-       TestParseWithAllOptionlInShorthandFormAndPositionalArguments)
+       TestParseWithAllOptionsInShorthandFormAndPositionalArguments)
 {
   ArgumentParser argparser;
   std::string str_dst;
@@ -316,7 +316,7 @@ TEST_F(ArgumentParserTests,
 // -----------------------------------------------------------------------------
 
 TEST_F(ArgumentParserTests,
-       TestParseWithAllOptionlInBothFormsFormAndPositionalArguments)
+       TestParseWithAllOptionsInBothFormsAndPositionalArguments)
 {
   ArgumentParser argparser;
   std::string str_dst;
@@ -372,7 +372,7 @@ TEST_F(ArgumentParserTests,
 // -----------------------------------------------------------------------------
 
 TEST_F(ArgumentParserTests,
-       TestParseWithSelectOptionsInBothFormsFormAndPositionalArguments)
+       TestParseWithSelectOptionsInBothFormsAndPositionalArguments)
 {
   ArgumentParser argparser;
   std::string str_dst;
