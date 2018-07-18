@@ -312,8 +312,9 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to .cpp file.
   {
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
-    *(m_context->cpp_file_ofs) << std::endl;
+    auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+    cpp_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
+    cpp_file_ofs << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
     render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
@@ -393,24 +394,25 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
 
   // Synthesize member function definition.
   {
-    *(m_context->cpp_file_ofs) << std::endl;
-    *(m_context->cpp_file_ofs) << m_context->type_cls << std::endl;
-    *(m_context->cpp_file_ofs) << m_context->cls_name;
-    *(m_context->cpp_file_ofs) << CPP_COLON << CPP_COLON;
-    *(m_context->cpp_file_ofs) << inference_defn.name();
-    *(m_context->cpp_file_ofs) << CPP_OPEN_PAREN;
+    auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+    cpp_file_ofs << std::endl;
+    cpp_file_ofs << m_context->type_cls << std::endl;
+    cpp_file_ofs << m_context->cls_name;
+    cpp_file_ofs << CPP_COLON << CPP_COLON;
+    cpp_file_ofs << inference_defn.name();
+    cpp_file_ofs << CPP_OPEN_PAREN;
     synthesize_argument_list(inference_defn.arguments(),
                              m_context->cpp_file_ofs.get());
     if (!m_opts.use_exception) {
-      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
-      *(m_context->cpp_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
-      *(m_context->cpp_file_ofs)
-          << CPP_SPACE << SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME;
+      cpp_file_ofs << CPP_COMA << CPP_SPACE;
+      cpp_file_ofs << CPP_STD_ERROR_CODE << CPP_STAR;
+      cpp_file_ofs
+            << CPP_SPACE << SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME;
     }
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
-    *(m_context->cpp_file_ofs) << std::endl;
-    *(m_context->cpp_file_ofs) << CPP_OPEN_BRACE;
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << CPP_CLOSE_PAREN;
+    cpp_file_ofs << std::endl;
+    cpp_file_ofs << CPP_OPEN_BRACE;
+    cpp_file_ofs << std::endl;
 
     indent_cpp_file();
   }
@@ -428,8 +430,10 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
   dedent_cpp_file();
-  *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
-  *(m_context->cpp_file_ofs) << std::endl;
+
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+  cpp_file_ofs << CPP_CLOSE_BRACE;
+  cpp_file_ofs << std::endl;
 
   return true;
 }
@@ -465,47 +469,49 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
   static const char var1 = 'i';
   static const char var2 = 'j';
 
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+
   if (has_range_clause) {
     const auto& range_clause = premise_defn.range_clause();
 
     render_indentation_in_cpp_file();
 
-    *(m_context->cpp_file_ofs) << CPP_FOR_KEYWORD << CPP_SPACE
+    cpp_file_ofs << CPP_FOR_KEYWORD << CPP_SPACE
                                << CPP_OPEN_PAREN;
 
     // For-loop initializers.
     {
-      *(m_context->cpp_file_ofs) << CPP_SIZE_T << CPP_SPACE << var1 << CPP_SPACE
+      cpp_file_ofs << CPP_SIZE_T << CPP_SPACE << var1 << CPP_SPACE
                                  << CPP_ASSIGN << CPP_SPACE
                                  << range_clause.lhs_idx();
-      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
-      *(m_context->cpp_file_ofs) << CPP_SIZE_T << CPP_SPACE << var2 << CPP_SPACE
+      cpp_file_ofs << CPP_COMA << CPP_SPACE;
+      cpp_file_ofs << CPP_SIZE_T << CPP_SPACE << var2 << CPP_SPACE
                                  << CPP_ASSIGN << CPP_SPACE
                                  << range_clause.rhs_idx();
-      *(m_context->cpp_file_ofs) << CPP_SEMICOLON << CPP_SPACE;
+      cpp_file_ofs << CPP_SEMICOLON << CPP_SPACE;
     }
 
     // For-loop termination predicates.
     {
-      *(m_context->cpp_file_ofs) << var1 << CPP_SPACE << CPP_LESS_THAN
+      cpp_file_ofs << var1 << CPP_SPACE << CPP_LESS_THAN
                                  << CPP_SPACE;
       synthesize_deduction_target(
           range_clause.deduction_target(),
           DeductionTargetArraySynthesisMode::AS_SINGULAR,
           m_context->cpp_file_ofs.get());
-      *(m_context->cpp_file_ofs) << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
+      cpp_file_ofs << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
     }
 
     // For-loop increments.
     {
-      *(m_context->cpp_file_ofs) << CPP_INCREMENT_OPERATOR << var1;
-      *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
-      *(m_context->cpp_file_ofs) << CPP_INCREMENT_OPERATOR << var2;
+      cpp_file_ofs << CPP_INCREMENT_OPERATOR << var1;
+      cpp_file_ofs << CPP_COMA << CPP_SPACE;
+      cpp_file_ofs << CPP_INCREMENT_OPERATOR << var2;
     }
 
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
+    cpp_file_ofs << CPP_CLOSE_PAREN << CPP_SPACE
                                << CPP_OPEN_BRACE;
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << std::endl;
   }
 
   // Synthesize premise body.
@@ -515,9 +521,9 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     }
 
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
-    *(m_context->cpp_file_ofs) << CPP_NEGATION;
-    *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
+    cpp_file_ofs << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
+    cpp_file_ofs << CPP_NEGATION;
+    cpp_file_ofs << type_cmp_method_name << CPP_OPEN_PAREN;
     synthesize_deduction_target(premise_defn.lhs(),
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                 m_context->cpp_file_ofs.get());
@@ -525,7 +531,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
       *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var1
                                  << CPP_CLOSE_BRACKET;
     }
-    *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+    cpp_file_ofs << CPP_COMA << CPP_SPACE;
     synthesize_deduction_target(premise_defn.rhs(),
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                 m_context->cpp_file_ofs.get());
@@ -533,13 +539,13 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
       *(m_context->cpp_file_ofs) << CPP_OPEN_BRACKET << var2
                                  << CPP_CLOSE_BRACKET;
     }
-    *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+    cpp_file_ofs << CPP_COMA << CPP_SPACE;
     synthesize_equality_operator(premise_defn.oprt(),
                                  m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN;
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SPACE
+    cpp_file_ofs << CPP_CLOSE_PAREN;
+    cpp_file_ofs << CPP_CLOSE_PAREN << CPP_SPACE
                                << CPP_OPEN_BRACE;
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << std::endl;
 
     // Body of if statement
     {
@@ -549,8 +555,8 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
     }
 
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << CPP_CLOSE_BRACE;
+    cpp_file_ofs << std::endl;
 
     if (has_range_clause) {
       dedent_cpp_file();
@@ -559,7 +565,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premise_defn)
 
   if (has_range_clause) {
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE << std::endl << std::endl;
+    cpp_file_ofs << CPP_CLOSE_BRACE << std::endl << std::endl;
   }
 
   return true;
@@ -603,16 +609,18 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
 {
   SYNTHESIZER_ASSERT(premise_defn.has_while_clause());
 
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+
   // Type annotation setup fixture.
   {
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << std::endl;
 
     const auto& type_annotation_setup_method = m_context->env_defn_map.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD);
 
     // Synthesize type annotation setup comment.
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT
+    cpp_file_ofs << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT
                                << std::endl;
 
     // Synthesize type annotation setup code.
@@ -620,7 +628,7 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
         premise_defn, type_annotation_setup_method,
         m_context->cpp_file_ofs.get());
 
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << std::endl;
   }
 
   // Synthesize body of while-clause.
@@ -642,7 +650,7 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
 
     // Synthesize type annotation teardown comment.
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT
+    cpp_file_ofs << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT
                                << std::endl;
 
     // Synthesize type annotation teardown code.
@@ -651,7 +659,7 @@ SynthesizerImpl::synthesize_inference_premise_defn_with_while_clause(
         m_context->cpp_file_ofs.get());
   }
 
-  *(m_context->cpp_file_ofs) << std::endl;
+  cpp_file_ofs << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -662,6 +670,8 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
 {
   const auto& proof_method_name =
       m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
+
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
 
   const auto& deduction_target = premise_defn.deduction_target();
 
@@ -681,29 +691,29 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
     const auto name1 = __get_next_var_name();
 
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE << name1 << CPP_SPACE
+    cpp_file_ofs << type_cls << CPP_SPACE << name1 << CPP_SPACE
                                << CPP_ASSIGN << CPP_SPACE;
     synthesize_deduction_target(deduction_target,
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
                                 m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
+    cpp_file_ofs << CPP_SEMICOLON << std::endl;
 
     const auto name2 = __get_next_var_name();
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << type_cls << CPP_SPACE << name2 << CPP_SPACE
+    cpp_file_ofs << type_cls << CPP_SPACE << name2 << CPP_SPACE
                                << CPP_ASSIGN << CPP_SPACE;
-    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
+    cpp_file_ofs << proof_method_name << CPP_OPEN_PAREN;
     synthesize_identifiable(premise_defn.source(),
                             m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON << std::endl;
+    cpp_file_ofs << CPP_CLOSE_PAREN << CPP_SEMICOLON << std::endl;
 
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
-    *(m_context->cpp_file_ofs) << CPP_NEGATION;
-    *(m_context->cpp_file_ofs) << type_cmp_method_name << CPP_OPEN_PAREN;
-    *(m_context->cpp_file_ofs) << name1 << CPP_COMA << CPP_SPACE << name2
+    cpp_file_ofs << CPP_IF << CPP_SPACE << CPP_OPEN_PAREN;
+    cpp_file_ofs << CPP_NEGATION;
+    cpp_file_ofs << type_cmp_method_name << CPP_OPEN_PAREN;
+    cpp_file_ofs << name1 << CPP_COMA << CPP_SPACE << name2
                                << CPP_COMA << CPP_SPACE << "std::equal_to<>()";
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_CLOSE_PAREN
+    cpp_file_ofs << CPP_CLOSE_PAREN << CPP_CLOSE_PAREN
                                << CPP_SPACE << CPP_OPEN_BRACE << std::endl;
 
     // Body of if-statement.
@@ -714,20 +724,20 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
     }
 
     render_indentation_in_cpp_file();
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_BRACE;
-    *(m_context->cpp_file_ofs) << std::endl;
+    cpp_file_ofs << CPP_CLOSE_BRACE;
+    cpp_file_ofs << std::endl;
   } else {
     render_indentation_in_cpp_file();
     synthesize_deduction_target_for_declaration(premise_defn.deduction_target(),
                                                 m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
-    *(m_context->cpp_file_ofs) << proof_method_name << CPP_OPEN_PAREN;
+    cpp_file_ofs << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
+    cpp_file_ofs << proof_method_name << CPP_OPEN_PAREN;
     synthesize_identifiable(premise_defn.source(),
                             m_context->cpp_file_ofs.get());
-    *(m_context->cpp_file_ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+    cpp_file_ofs << CPP_CLOSE_PAREN << CPP_SEMICOLON;
   }
 
-  *(m_context->cpp_file_ofs) << std::endl;
+  cpp_file_ofs << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -885,11 +895,12 @@ bool
 SynthesizerImpl::previsit(const ASTPropositionDefn& proposition_defn)
 {
   render_indentation_in_cpp_file();
-  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE;
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+  cpp_file_ofs << CPP_RETURN_KEYWORD << CPP_SPACE;
   synthesize_deduction_target(proposition_defn.target(),
                               DeductionTargetArraySynthesisMode::AS_ARRAY,
                               m_context->cpp_file_ofs.get());
-  *(m_context->cpp_file_ofs) << CPP_SEMICOLON << std::endl;
+  cpp_file_ofs << CPP_SEMICOLON << std::endl;
 
   return true;
 }
@@ -1030,9 +1041,11 @@ SynthesizerImpl::render_error_handling() const
   const auto type_cls =
       m_context->env_defn_map.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
 
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+
   // Assign to output error parameter.
   render_indentation_in_cpp_file();
-  *(m_context->cpp_file_ofs)
+  cpp_file_ofs
       << CPP_STAR << SYNTHESIZER_DEFAULT_ERROR_OUTPUT_PARAMETER_NAME
       << CPP_SPACE << CPP_ASSIGN << CPP_SPACE << CPP_STD_ERROR_CODE
       << CPP_OPEN_PAREN << '0' << CPP_COMA << CPP_SPACE
@@ -1041,7 +1054,7 @@ SynthesizerImpl::render_error_handling() const
 
   // Return default type class instance.
   render_indentation_in_cpp_file();
-  *(m_context->cpp_file_ofs) << CPP_RETURN_KEYWORD << CPP_SPACE << type_cls
+  cpp_file_ofs << CPP_RETURN_KEYWORD << CPP_SPACE << type_cls
                              << CPP_OPEN_PAREN << CPP_CLOSE_PAREN
                              << CPP_SEMICOLON << std::endl;
 }
