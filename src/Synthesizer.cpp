@@ -704,7 +704,7 @@ SynthesizerImpl::synthesize_inference_premise_defn_without_while_clause(
     cpp_file_ofs << CPP_NEGATION;
     cpp_file_ofs << type_cmp_method_name << CPP_OPEN_PAREN;
     cpp_file_ofs << name1 << CPP_COMA << CPP_SPACE << name2 << CPP_COMA
-                 << CPP_SPACE << "std::equal_to<>()";
+                 << CPP_SPACE << CPP_STD_EQUAL_TO_DEFAULT_INSTANTIATION;
     cpp_file_ofs << CPP_CLOSE_PAREN << CPP_CLOSE_PAREN << CPP_SPACE
                  << CPP_OPEN_BRACE << std::endl;
 
