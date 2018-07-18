@@ -371,6 +371,60 @@ TEST_F(ArgumentParserTests,
 
 // -----------------------------------------------------------------------------
 
+TEST_F(ArgumentParserTests,
+       TestParseWithSelectOptionsInBothFormsFormAndPositionalArguments)
+{
+  ArgumentParser argparser;
+  std::string str_dst;
+  uint32_t uint32_dst = 0;
+  uint64_t uint64_dst = 0;
+  bool bool_dst = false;
+  float float_dst = 0.0f;
+  double double_dst = 0.0;
+  const const char* str_default_value = "Hello";
+  const uint64_t uint64_default_value = 64;
+  const bool boolean_default_value = true;
+  const double double_default_value = 2.71828;
+  const char* input_path = "/tmp/hellworld";
+
+  argparser.add_string_parameter("str", 's', "String value", false, &str_dst,
+                                /* default_val */ str_default_value);
+  argparser.add_uint32_parameter("uint32", 'u', "UInt32 value", true,
+                                 &uint32_dst);
+  argparser.add_uint64_parameter("uint64", 'n', "UInt64 value", false,
+                                 &uint64_dst, /* default_val */ uint64_default_value);
+  argparser.add_boolean_parameter("bool", 'b', "Boolean value", false,
+                                  &bool_dst, /* default_val */ boolean_default_value);
+  argparser.add_float_parameter("float", 'f', "Float value", true, &float_dst);
+  argparser.add_double_parameter("double", 'd', "Double value", false,
+                                 &double_dst, /* default_val */ double_default_value);
+
+  const std::vector<char*> args{"MyProgram",
+                                "-u",
+                                "32",
+                                "--float",
+                                "3.14",
+                                const_cast<char*>(input_path)};
+
+  bool res = argparser.parse_args(args.size(), (char**)args.data());
+  ASSERT_TRUE(res);
+
+  ASSERT_STREQ(str_default_value, str_dst.c_str());
+  ASSERT_EQ(32, uint32_dst);
+  ASSERT_EQ(uint64_default_value, uint64_dst);
+  ASSERT_EQ(boolean_default_value, bool_dst);
+  ASSERT_DOUBLE_EQ(3.14f, float_dst);
+  ASSERT_DOUBLE_EQ(double_default_value, double_dst);
+
+  // Check positional argument.
+  const auto& positional_args = argparser.positional_args();
+  ASSERT_FALSE(positional_args.empty());
+  ASSERT_EQ(1, positional_args.size());
+  ASSERT_STREQ(input_path, positional_args.front().c_str());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(ArgumentParserTests, TestWithDuplicateShorthandlCmdlOptions)
 {
   ArgumentParser argparser("My Program", "1.0.0", "This is a test program.");
