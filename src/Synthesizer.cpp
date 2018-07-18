@@ -293,20 +293,21 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
-    *(m_context->header_file_ofs) << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
-    *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_PRAGMA_ONCE << std::endl;
-    *(m_context->header_file_ofs) << std::endl;
+    auto& header_file_ofs = *(m_context->header_file_ofs);
+    header_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
+    header_file_ofs << std::endl;
+    header_file_ofs << std::endl;
+    header_file_ofs << CPP_PRAGMA_ONCE << std::endl;
+    header_file_ofs << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
-    *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_CLASS_KEYWORD << ' ';
-    *(m_context->header_file_ofs) << m_context->cls_name;
-    *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_OPEN_BRACE;
-    *(m_context->header_file_ofs) << std::endl;
-    *(m_context->header_file_ofs) << CPP_PUBLIC_KEYWORD << CPP_COLON;
-    *(m_context->header_file_ofs) << std::endl;
+    header_file_ofs << std::endl;
+    header_file_ofs << CPP_CLASS_KEYWORD << ' ';
+    header_file_ofs << m_context->cls_name;
+    header_file_ofs << std::endl;
+    header_file_ofs << CPP_OPEN_BRACE;
+    header_file_ofs << std::endl;
+    header_file_ofs << CPP_PUBLIC_KEYWORD << CPP_COLON;
+    header_file_ofs << std::endl;
   }
 
   // Write to .cpp file.
@@ -332,9 +333,13 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
   SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
-  *(m_context->header_file_ofs) << CPP_CLOSE_BRACE;
-  *(m_context->header_file_ofs) << CPP_SEMICOLON;
-  *(m_context->header_file_ofs) << std::endl;
+  // Write closing };
+  {
+    auto& header_file_ofs = *(m_context->header_file_ofs);
+    header_file_ofs << CPP_CLOSE_BRACE;
+    header_file_ofs << CPP_SEMICOLON;
+    header_file_ofs << std::endl;
+  }
 
   // Close and release header file stream.
   {
@@ -370,18 +375,19 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inference_defn)
   {
     indent_header_file();
     render_indentation_in_header_file();
-    *(m_context->header_file_ofs) << m_context->type_cls << CPP_SPACE;
-    *(m_context->header_file_ofs) << inference_defn.name();
-    *(m_context->header_file_ofs) << CPP_OPEN_PAREN;
+    auto& header_file_ofs = *(m_context->header_file_ofs);
+    header_file_ofs << m_context->type_cls << CPP_SPACE;
+    header_file_ofs << inference_defn.name();
+    header_file_ofs << CPP_OPEN_PAREN;
     synthesize_argument_list(inference_defn.arguments(),
                              m_context->header_file_ofs.get());
     if (!m_opts.use_exception) {
-      *(m_context->header_file_ofs) << CPP_COMA << CPP_SPACE;
-      *(m_context->header_file_ofs) << CPP_STD_ERROR_CODE << CPP_STAR;
+      header_file_ofs << CPP_COMA << CPP_SPACE;
+      header_file_ofs << CPP_STD_ERROR_CODE << CPP_STAR;
     }
-    *(m_context->header_file_ofs) << CPP_CLOSE_PAREN;
-    *(m_context->header_file_ofs) << CPP_SEMICOLON;
-    *(m_context->header_file_ofs) << std::endl;
+    header_file_ofs << CPP_CLOSE_PAREN;
+    header_file_ofs << CPP_SEMICOLON;
+    header_file_ofs << std::endl;
     dedent_header_file();
   }
 
@@ -419,7 +425,6 @@ bool
 SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 {
   SYNTHESIZER_ASSERT(m_context);
-  SYNTHESIZER_ASSERT(m_context->header_file_ofs);
   SYNTHESIZER_ASSERT(m_context->cpp_file_ofs);
 
   dedent_cpp_file();
