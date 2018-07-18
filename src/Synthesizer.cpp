@@ -816,7 +816,7 @@ SynthesizerImpl::synthesize_deduction_target(
     }
     ofs_ref << CPP_CLOSE_PAREN;
   } else {
-    SYNTHESIZER_ASSERT(0);
+    SYNTHESIZER_ASSERT(0 && "Unknown type of deduction target.");
   }
 }
 
@@ -840,7 +840,7 @@ SynthesizerImpl::synthesize_deduction_target_for_declaration(
         deduction_target, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
         ofs);
   } else {
-    SYNTHESIZER_ASSERT(0);
+    SYNTHESIZER_ASSERT(0 && "Unsupported deduction target.");
   }
 }
 
@@ -882,7 +882,7 @@ SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
       ofs_ref << "std::less_equal";
       break;
     default:
-      SYNTHESIZER_ASSERT(0);
+      SYNTHESIZER_ASSERT(0 && "Unsupported EqualityOperator value.");
       break;
   }
   ofs_ref << '<' << type_cls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
