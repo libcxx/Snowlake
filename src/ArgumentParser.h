@@ -85,8 +85,9 @@ public:
   void print_help() const;
 
 public:
-  using value_type = sl::variant::variant<std::string, uint32_t, uint64_t,
-                                            bool, float, double>;
+  using value_type = sl::variant::variant<std::string, uint32_t, uint64_t, bool,
+                                          float, double>;
+
 private:
   bool __defined_boolean_option(const std::string&) const;
 

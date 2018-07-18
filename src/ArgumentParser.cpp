@@ -493,29 +493,34 @@ ArgumentParser::__defined_boolean_option(const std::string& name) const
 
 // -----------------------------------------------------------------------------
 
-struct CmdlOptionValueCast : public sl::variant::static_visitor<ArgumentParser::value_type>
+struct CmdlOptionValueCast
+    : public sl::variant::static_visitor<ArgumentParser::value_type>
 {
-  explicit CmdlOptionValueCast(const std::string& raw_value) :
-    m_raw_value(raw_value)
+  explicit CmdlOptionValueCast(const std::string& raw_value)
+    : m_raw_value(raw_value)
   {
   }
 
-  ~CmdlOptionValueCast() {}
+  ~CmdlOptionValueCast()
+  {
+  }
 
   template <typename T>
-  T operator()(T&) {
+  T operator()(T&)
+  {
     T val;
     std::stringstream ss(m_raw_value);
     ss >> val;
     return val;
   }
 
-  std::string operator()(std::string&) {
+  std::string operator()(std::string&)
+  {
     return m_raw_value;
   }
 
-  private:
-    const std::string& m_raw_value;
+private:
+  const std::string& m_raw_value;
 };
 
 // -----------------------------------------------------------------------------
@@ -524,7 +529,7 @@ void
 ArgumentParser::CmdlOption::update_value(const std::string& new_value)
 {
   CmdlOptionValueCast cast(new_value);
-  value.value = sl::variant::apply_visitor(cast, default_value.value); 
+  value.value = sl::variant::apply_visitor(cast, default_value.value);
 }
 
 // -----------------------------------------------------------------------------
@@ -550,20 +555,23 @@ ArgumentParser::__assign_values()
 
 // -----------------------------------------------------------------------------
 
-struct CmdlOptionDestinationValueUpdate : public sl::variant::static_visitor<ArgumentParser::value_type>
+struct CmdlOptionDestinationValueUpdate
+    : public sl::variant::static_visitor<ArgumentParser::value_type>
 {
-  CmdlOptionDestinationValueUpdate(
-    const ArgumentParser::value_type& value,
-    void* dst) :
-    m_value(value),
-    m_dst(dst)
+  CmdlOptionDestinationValueUpdate(const ArgumentParser::value_type& value,
+                                   void* dst)
+    : m_value(value)
+    , m_dst(dst)
   {
   }
 
-  ~CmdlOptionDestinationValueUpdate() {}
+  ~CmdlOptionDestinationValueUpdate()
+  {
+  }
 
   template <typename T>
-  T operator()(T& default_value) {
+  T operator()(T& default_value)
+  {
     T* dst_ = reinterpret_cast<T*>(m_dst);
     if (dst_) {
       *dst_ = m_value.valid() ? m_value.get<T>() : default_value;
