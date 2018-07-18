@@ -893,7 +893,7 @@ SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
       SYNTHESIZER_ASSERT(0);
       break;
   }
-  (*ofs) << '<' << type_cls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
+  ofs_ref << '<' << type_cls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
 }
 
 // -----------------------------------------------------------------------------
@@ -919,8 +919,9 @@ void
 SynthesizerImpl::render_indentation(const size_t indent_lvl,
                                     std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
   for (size_t i = 0; i < indent_lvl; ++i) {
-    (*ofs) << CPP_INDENTATION;
+    ofs_ref << CPP_INDENTATION;
   }
 }
 
@@ -980,7 +981,8 @@ void
 SynthesizerImpl::render_custom_include(const char* header_name,
                                        std::ostream* ofs) const
 {
-  (*ofs) << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
+  auto& ofs_ref = *ofs;
+  ofs_ref << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
          << header_name << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << std::endl;
 }
 
@@ -1031,16 +1033,18 @@ SynthesizerImpl::render_type_annotation_setup_teardown_fixture(
 {
   // Synthesize type annotation setup code.
   render_indentation_in_cpp_file();
-  *(ofs) << method_name << CPP_OPEN_PAREN;
+  auto& ofs_ref = *ofs;
+  ofs_ref << method_name << CPP_OPEN_PAREN;
   synthesize_identifiable(premise_defn.source(), ofs);
-  *(m_context->cpp_file_ofs) << CPP_COMA << CPP_SPACE;
+  auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
+  cpp_file_ofs << CPP_COMA << CPP_SPACE;
   // Should assert that this deduction target here is singular form only.
   // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
   synthesize_deduction_target(premise_defn.deduction_target(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
                               ofs);
-  *(ofs) << CPP_CLOSE_PAREN << CPP_SEMICOLON;
-  *(ofs) << std::endl;
+  ofs_ref << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  ofs_ref << std::endl;
 }
 
 // -----------------------------------------------------------------------------
