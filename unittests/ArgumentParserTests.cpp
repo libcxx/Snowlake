@@ -388,23 +388,23 @@ TEST_F(ArgumentParserTests,
   const char* input_path = "/tmp/hellworld";
 
   argparser.add_string_parameter("str", 's', "String value", false, &str_dst,
-                                /* default_val */ str_default_value);
+                                 /* default_val */ str_default_value);
   argparser.add_uint32_parameter("uint32", 'u', "UInt32 value", true,
                                  &uint32_dst);
   argparser.add_uint64_parameter("uint64", 'n', "UInt64 value", false,
-                                 &uint64_dst, /* default_val */ uint64_default_value);
+                                 &uint64_dst,
+                                 /* default_val */ uint64_default_value);
   argparser.add_boolean_parameter("bool", 'b', "Boolean value", false,
-                                  &bool_dst, /* default_val */ boolean_default_value);
+                                  &bool_dst,
+                                  /* default_val */ boolean_default_value);
   argparser.add_float_parameter("float", 'f', "Float value", true, &float_dst);
   argparser.add_double_parameter("double", 'd', "Double value", false,
-                                 &double_dst, /* default_val */ double_default_value);
+                                 &double_dst,
+                                 /* default_val */ double_default_value);
 
-  const std::vector<char*> args{"MyProgram",
-                                "-u",
-                                "32",
-                                "--float",
-                                "3.14",
-                                const_cast<char*>(input_path)};
+  const std::vector<char*> args{"MyProgram", "-u",
+                                "32",        "--float",
+                                "3.14",      const_cast<char*>(input_path)};
 
   bool res = argparser.parse_args(args.size(), (char**)args.data());
   ASSERT_TRUE(res);
