@@ -293,28 +293,28 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to header file.
   {
-    auto& header_file_ofs = *(m_context->header_file_ofs);
-    header_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
-    header_file_ofs << std::endl;
-    header_file_ofs << std::endl;
-    header_file_ofs << CPP_PRAGMA_ONCE << std::endl;
-    header_file_ofs << std::endl;
+    auto& header_file_ofs_ref = *(m_context->header_file_ofs);
+    header_file_ofs_ref << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
+    header_file_ofs_ref << std::endl;
+    header_file_ofs_ref << std::endl;
+    header_file_ofs_ref << CPP_PRAGMA_ONCE << std::endl;
+    header_file_ofs_ref << std::endl;
     render_system_header_includes(m_context->header_file_ofs.get());
-    header_file_ofs << std::endl;
-    header_file_ofs << CPP_CLASS_KEYWORD << ' ';
-    header_file_ofs << m_context->cls_name;
-    header_file_ofs << std::endl;
-    header_file_ofs << CPP_OPEN_BRACE;
-    header_file_ofs << std::endl;
-    header_file_ofs << CPP_PUBLIC_KEYWORD << CPP_COLON;
-    header_file_ofs << std::endl;
+    header_file_ofs_ref << std::endl;
+    header_file_ofs_ref << CPP_CLASS_KEYWORD << ' ';
+    header_file_ofs_ref << m_context->cls_name;
+    header_file_ofs_ref << std::endl;
+    header_file_ofs_ref << CPP_OPEN_BRACE;
+    header_file_ofs_ref << std::endl;
+    header_file_ofs_ref << CPP_PUBLIC_KEYWORD << CPP_COLON;
+    header_file_ofs_ref << std::endl;
   }
 
   // Write to .cpp file.
   {
-    auto& cpp_file_ofs = *(m_context->cpp_file_ofs);
-    cpp_file_ofs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
-    cpp_file_ofs << std::endl;
+    auto& cpp_file_ofs_ref = *(m_context->cpp_file_ofs);
+    cpp_file_ofs_ref << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
+    cpp_file_ofs_ref << std::endl;
     render_custom_include(m_context->cls_name.c_str(),
                           m_context->cpp_file_ofs.get());
     render_custom_include(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
@@ -746,12 +746,14 @@ void
 SynthesizerImpl::synthesize_argument_list(const ASTInferenceArgumentList& args,
                                           std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
+
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
-    (*ofs) << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name() << CPP_AMPERSAND
+    ofs_ref << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name() << CPP_AMPERSAND
            << CPP_SPACE << arg.name();
     if (i + 1 < args.size()) {
-      (*ofs) << CPP_COMA << CPP_SPACE;
+      ofs_ref << CPP_COMA << CPP_SPACE;
     }
   }
 }
@@ -763,9 +765,11 @@ SynthesizerImpl::synthesize_deduction_target(
     const ASTDeductionTarget& deduction_target,
     const DeductionTargetArraySynthesisMode array_mode, std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
+
   if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetSingular>();
-    (*ofs) << value.name();
+    ofs_ref << value.name();
   } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetArray>();
     // clang-format off
@@ -773,33 +777,33 @@ SynthesizerImpl::synthesize_deduction_target(
       case DeductionTargetArraySynthesisMode::AS_ARRAY:
         {
           if (value.has_size_literal()) {
-            (*ofs) << value.name();
-            (*ofs) << CPP_OPEN_BRACKET;
-            (*ofs) << value.size_literal();
-            (*ofs) << CPP_CLOSE_BRACKET;
+            ofs_ref << value.name();
+            ofs_ref << CPP_OPEN_BRACKET;
+            ofs_ref << value.size_literal();
+            ofs_ref << CPP_CLOSE_BRACKET;
           } else {
             // If the target does not have a size literal,
             // then just render it as a raw pointer star.
-            (*ofs) << CPP_STAR;
-            (*ofs) << value.name();
+            ofs_ref << CPP_STAR;
+            ofs_ref << value.name();
           }
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
         {
-          (*ofs) << CPP_STAR;
-          (*ofs) << value.name();
+          ofs_ref << CPP_STAR;
+          ofs_ref << value.name();
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_SINGULAR:
         {
-          (*ofs) << value.name();
+          ofs_ref << value.name();
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_STD_VECTOR:
         {
           const auto& type_cls = m_context->type_cls;
-          (*ofs) << "std::vector<" << type_cls << '>' << CPP_SPACE << value.name();
+          ofs_ref << "std::vector<" << type_cls << '>' << CPP_SPACE << value.name();
         }
         break;
       default:
@@ -808,17 +812,17 @@ SynthesizerImpl::synthesize_deduction_target(
     // clang-format on
   } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
     const auto& value = deduction_target.value<ASTDeductionTargetComputed>();
-    (*ofs) << value.name();
-    (*ofs) << CPP_OPEN_PAREN;
+    ofs_ref << value.name();
+    ofs_ref << CPP_OPEN_PAREN;
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
       synthesize_deduction_target(
           arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
       if (i + 1 < arguments.size()) {
-        (*ofs) << CPP_COMA << CPP_SPACE;
+        ofs_ref << CPP_COMA << CPP_SPACE;
       }
     }
-    (*ofs) << CPP_CLOSE_PAREN;
+    ofs_ref << CPP_CLOSE_PAREN;
   } else {
     SYNTHESIZER_ASSERT(0);
   }
@@ -832,8 +836,10 @@ SynthesizerImpl::synthesize_deduction_target_for_declaration(
 {
   const auto& type_cls = m_context->type_cls;
 
+  auto& ofs_ref = *ofs;
+
   if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
-    (*ofs) << type_cls << CPP_SPACE;
+    ofs_ref << type_cls << CPP_SPACE;
     synthesize_deduction_target(
         deduction_target, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
         ofs);
@@ -852,11 +858,12 @@ void
 SynthesizerImpl::synthesize_identifiable(const ASTIdentifiable& identifiable,
                                          std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
   const auto& identifiers = identifiable.identifiers();
   for (size_t i = 0; i < identifiers.size(); ++i) {
-    (*ofs) << identifiers[i].value();
+    ofs_ref << identifiers[i].value();
     if (i + 1 < identifiers.size()) {
-      (*ofs) << CPP_DOT;
+      ofs_ref << CPP_DOT;
     }
   }
 }
@@ -867,19 +874,20 @@ void
 SynthesizerImpl::synthesize_equality_operator(const EqualityOperator oprt,
                                               std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
   const auto& type_cls = m_context->type_cls;
   switch (oprt) {
     case EqualityOperator::OPERATOR_EQ:
-      (*ofs) << "std::equal_to";
+      ofs_ref << "std::equal_to";
       break;
     case EqualityOperator::OPERATOR_NEQ:
-      (*ofs) << "std::not_equal_to";
+      ofs_ref << "std::not_equal_to";
       break;
     case EqualityOperator::OPERATOR_LT:
-      (*ofs) << "std::less";
+      ofs_ref << "std::less";
       break;
     case EqualityOperator::OPERATOR_LTE:
-      (*ofs) << "std::less_equal";
+      ofs_ref << "std::less_equal";
       break;
     default:
       SYNTHESIZER_ASSERT(0);
@@ -997,8 +1005,9 @@ void
 SynthesizerImpl::__render_system_header_includes(
     const std::vector<const char*>& system_headers, std::ostream* ofs) const
 {
+  auto& ofs_ref = *ofs;
   for (const auto& header : system_headers) {
-    (*ofs) << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
+    ofs_ref << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
   }
 }
 
@@ -1007,9 +1016,10 @@ SynthesizerImpl::__render_system_header_includes(
 void
 SynthesizerImpl::render_inference_error_category(std::ostream* ofs) const
 {
-  (*ofs) << std::endl;
-  (*ofs) << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
-  (*ofs) << std::endl;
+  auto& ofs_ref = *ofs;
+  ofs_ref << std::endl;
+  ofs_ref << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
+  ofs_ref << std::endl;
 }
 
 // -----------------------------------------------------------------------------
