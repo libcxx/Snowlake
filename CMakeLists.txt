@@ -54,9 +54,9 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # General compiler flags.
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++11 -w")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-format-nonliteral -Wno-c99-extensions")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-format-nonliteral -Wno-c99-extensions")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 
