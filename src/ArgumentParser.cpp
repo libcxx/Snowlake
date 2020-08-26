@@ -52,8 +52,8 @@ ArgumentParser::ArgumentParser()
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positionalArgs()
-  , m_min_positionalArgs_required(0)
+  , m_positional_args()
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -67,8 +67,8 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positionalArgs()
-  , m_min_positionalArgs_required(0)
+  , m_positional_args()
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -82,8 +82,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positionalArgs()
-  , m_min_positionalArgs_required(0)
+  , m_positional_args()
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -98,8 +98,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positionalArgs()
-  , m_min_positionalArgs_required(0)
+  , m_positional_args()
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -115,8 +115,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positionalArgs()
-  , m_min_positionalArgs_required(0)
+  , m_positional_args()
+  , m_min_positional_args_required(0)
 {
 }
 
@@ -243,7 +243,7 @@ ArgumentParser::__checkParameters() const
   }
 
   // Check if we meet the required number of positional arguments.
-  if (m_positionalArgs.size() < m_min_positionalArgs_required) {
+  if (m_positional_args.size() < m_min_positional_args_required) {
     return false;
   }
 
@@ -261,7 +261,7 @@ ArgumentParser::__checkParameters() const
 void
 ArgumentParser::setMinimumPositionalArgsRequired(size_t n)
 {
-  m_min_positionalArgs_required = n;
+  m_min_positional_args_required = n;
 }
 
 // -----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ ArgumentParser::parseArgs(int argc, char** argv)
 const ArgumentParser::PositionalArgumentList&
 ArgumentParser::positionalArgs() const
 {
-  return m_positionalArgs;
+  return m_positional_args;
 }
 
 // -----------------------------------------------------------------------------
@@ -406,7 +406,7 @@ ArgumentParser::printHelp() const
 void
 ArgumentParser::__addPositionalParameter(std::string&& arg)
 {
-  m_positionalArgs.emplace_back(arg);
+  m_positional_args.emplace_back(arg);
 }
 
 // -----------------------------------------------------------------------------

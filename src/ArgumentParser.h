@@ -141,6 +141,6 @@ private:
   std::string m_usage;
   CmdlOptionMap m_opts;
   ShortHandMap m_shorthand_map;
-  PositionalArgumentList m_positionalArgs;
-  size_t m_min_positionalArgs_required;
+  PositionalArgumentList m_positional_args;
+  size_t m_min_positional_args_required;
 };
