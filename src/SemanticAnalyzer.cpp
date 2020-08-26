@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define ON_WARNING(msg, ...)                                                   \
   do {                                                                         \
-    add_warning((msg), __VA_ARGS__);                                           \
+    addWarning((msg), __VA_ARGS__);                                           \
     if (m_opts.warningsAsErrors) {                                             \
       res = false;                                                             \
       if (m_opts.bailOnFirstError) {                                           \
@@ -140,7 +140,7 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
       }
     }
 
-    if (!check_required_env_defns(name_set)) {
+    if (!checkRequiredEnvDefns(name_set)) {
       return false;
     }
   }
@@ -202,7 +202,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
   // Premise definitions.
   {
     for (const auto& premise_defn : inference_defn.premise_defns()) {
-      if (!recursive_premise_defn_check(premise_defn, &context)) {
+      if (!recursivePremiseDefnCheck(premise_defn, &context)) {
         return false;
       }
     }
@@ -224,7 +224,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 // -----------------------------------------------------------------------------
 
 bool
-SemanticAnalyzer::check_required_env_defns(const SymbolSet& env_defns)
+SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& env_defns)
 {
   INIT_RES;
 
@@ -249,7 +249,7 @@ SemanticAnalyzer::check_required_env_defns(const SymbolSet& env_defns)
 
 template <>
 bool
-SemanticAnalyzer::recursive_premise_defn_check(
+SemanticAnalyzer::recursivePremiseDefnCheck(
     const ASTInferencePremiseDefn& defn, InferenceDefnContext* context)
 {
   INIT_RES;
@@ -279,7 +279,7 @@ SemanticAnalyzer::recursive_premise_defn_check(
     if (defn.has_while_clause()) {
       const auto& while_clause = defn.while_clause();
       for (const auto& nested_defn : while_clause.premise_defns()) {
-        RETURN_ON_FAILURE(recursive_premise_defn_check(nested_defn, context));
+        RETURN_ON_FAILURE(recursivePremiseDefnCheck(nested_defn, context));
       }
     }
   }
@@ -291,7 +291,7 @@ SemanticAnalyzer::recursive_premise_defn_check(
 
 template <>
 bool
-SemanticAnalyzer::recursive_premise_defn_check(
+SemanticAnalyzer::recursivePremiseDefnCheck(
     const ASTInferenceEqualityDefn& defn, InferenceDefnContext* context)
 {
   INIT_RES;
@@ -326,7 +326,7 @@ SemanticAnalyzer::recursive_premise_defn_check(
 // -----------------------------------------------------------------------------
 
 bool
-SemanticAnalyzer::recursive_premise_defn_check(
+SemanticAnalyzer::recursivePremiseDefnCheck(
     const ASTPremiseDefn& premise_defn, InferenceDefnContext* context)
 {
   INIT_RES;
@@ -335,10 +335,10 @@ SemanticAnalyzer::recursive_premise_defn_check(
 
   if (premise_defn.is_type<ASTInferencePremiseDefn>()) {
     const auto& defn_value = premise_defn.value<ASTInferencePremiseDefn>();
-    RETURN_ON_FAILURE(recursive_premise_defn_check(defn_value, context));
+    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defn_value, context));
   } else if (premise_defn.is_type<ASTInferenceEqualityDefn>()) {
     const auto& defn_value = premise_defn.value<ASTInferenceEqualityDefn>();
-    RETURN_ON_FAILURE(recursive_premise_defn_check(defn_value, context));
+    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defn_value, context));
   } else {
     ON_ERROR("Found unknown type of premise definition in inference \"%s\".",
              inference_defn_name);
