@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 William Li
+# Copyright (c) 2020 Tomiko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -44,7 +44,7 @@ set(sources
 
 
 # Library `snowlake`.
-add_library(snowlake ${sources})
+add_library(snowlake SHARED ${sources})
 
 
 # Additional compiler flags.
@@ -85,8 +85,8 @@ add_dependencies(snowlake_exec snowlake)
 
 # Link with the necessary libraries.
 target_link_libraries(snowlake_exec
-    Parser
-    snowlake
+    PRIVATE Parser
+    PRIVATE snowlake
     )
 
 

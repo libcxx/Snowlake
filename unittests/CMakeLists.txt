@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 William Li
+# Copyright (c) 2020 Tomiko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -45,6 +45,7 @@ target_link_libraries(run_tests
     snowlake
     Parser
     ${LIBGTEST_LIBRARY}
+    "-pthread"
     )
 
 

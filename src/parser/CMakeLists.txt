@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 William Li
+# Copyright (c) 2020 Tomiko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -24,6 +24,8 @@
 
 ## Pre-compiled parser source dir.
 set(PARSER_PRECOMPILED_SRC_DIR ${PARSER_SRC_DIR}/precompiled)
+
+set(USE_PRECOMPILED_PARSER true)
 
 
 ## Lexer
@@ -95,7 +97,7 @@ else()
 endif()
 
 
-add_library(Parser ${parser_sources})
+add_library(Parser SHARED ${parser_sources})
 
 
 # Auto-generated code from Flex and Bison have a lot of warnings.

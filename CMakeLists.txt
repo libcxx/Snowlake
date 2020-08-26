@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 William Li
+# Copyright (c) 2020 Tomiko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -23,7 +23,7 @@
 
 
 # Set minimum CMake version.
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.10)
 
 
 # Project.
@@ -35,7 +35,18 @@ set(CMAKE_BUILD_TYPE Release ... FORCE)
 
 
 # Compiler.
-set(CMAKE_CXX_COMPILER "clang++" CACHE string "")
+set(CMAKE_CXX_COMPILER "clang++" CACHE STRING "")
+
+
+# Linker.
+set(CMAKE_LINKER "/usr/bin/lld-10")
+set(CMAKE_EXE_LINKER_FLAGS "-Xlinker -v")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=/usr/bin/lld")
+
+
+message(STATUS "C Compiler executable: ${CMAKE_C_COMPILER}")
+message(STATUS "CXX Compiler executable: ${CMAKE_CXX_COMPILER}")
+message(STATUS "Linker executable: ${CMAKE_LINKER}")
 
 
 set(CMAKE_MACOSX_RPATH 1)
@@ -62,6 +73,7 @@ endif ()
 
 # Find googletest static library.
 find_library(LIBGTEST_LIBRARY NAMES "gtest"
+    PATHS "/usr/local/lib/gtest/"
     PATH_SUFFIXES "lib" "lib32" "lib64")
 
 message("gtest library path found: " ${LIBGTEST_LIBRARY})
