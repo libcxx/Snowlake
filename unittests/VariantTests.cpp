@@ -285,6 +285,53 @@ TEST_F(VariantTests, TestFullSwap)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(VariantTests, TestPartialSwap)
+{
+  std::vector<int> nums = {1, 2, 3};
+
+  VariantType v0(nums);
+
+  const auto checkIsVector = [&](const auto& v) {
+    ASSERT_EQ(true, v.valid());
+    ASSERT_EQ(3, v.which());
+    ASSERT_EQ(true, v.template is<std::vector<int>>());
+    ASSERT_EQ(nums.size(), v.template get<std::vector<int>>().size());
+    ASSERT_EQ(nums.front(), v.template get<std::vector<int>>().front());
+    ASSERT_EQ(nums.back(), v.template get<std::vector<int>>().back());
+  };
+
+  const auto checkInvalid = [](const auto& v) {
+    ASSERT_EQ(false, v.valid());
+    ASSERT_EQ(sl::variant::impl::invalid_type_index, v.type_index());
+  };
+
+  checkIsVector(v0);
+
+  VariantType v1; // v1 is incomplete
+
+  checkInvalid(v1);
+
+  const auto swap = [&]() {
+    auto tmp = v1;
+    v1 = v0;
+    v0 = tmp;
+  };
+
+  // Now we swap
+  swap();
+
+  // Now v0 and v1 should have been swapped entirely.
+  checkInvalid(v0);
+  checkIsVector(v1);
+
+  // Now swap back.
+  swap();
+  checkIsVector(v0);
+  checkInvalid(v1);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(VariantTests, TestEqualityOperatorOnDifferentTypes)
 {
   typedef sl::variant::variant<int, double> VariantType1;
