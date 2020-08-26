@@ -52,8 +52,8 @@ ArgumentParser::ArgumentParser()
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_positionalArgs()
+  , m_min_positionalArgs_required(0)
 {
 }
 
@@ -67,8 +67,8 @@ ArgumentParser::ArgumentParser(const char* name)
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_positionalArgs()
+  , m_min_positionalArgs_required(0)
 {
 }
 
@@ -82,8 +82,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_positionalArgs()
+  , m_min_positionalArgs_required(0)
 {
 }
 
@@ -98,8 +98,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_positionalArgs()
+  , m_min_positionalArgs_required(0)
 {
 }
 
@@ -115,8 +115,8 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   , m_usage()
   , m_opts()
   , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_positionalArgs()
+  , m_min_positionalArgs_required(0)
 {
 }
 
@@ -124,7 +124,7 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
 
 template <typename T>
 void
-ArgumentParser::add_parameter(const char* name, const char short_hand,
+ArgumentParser::addParameter(const char* name, const char short_hand,
                               const char* description, bool required, T* res,
                               T default_val)
 {
@@ -140,73 +140,73 @@ ArgumentParser::add_parameter(const char* name, const char short_hand,
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_string_parameter(const char* name, const char short_hand,
+ArgumentParser::addStringParameter(const char* name, const char short_hand,
                                      const char* description, bool required,
                                      std::string* res, const char* default_val)
 {
-  add_parameter<std::string>(name, short_hand, description, required, res,
+  addParameter<std::string>(name, short_hand, description, required, res,
                              default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_uint32_parameter(const char* name, const char short_hand,
+ArgumentParser::addUint32Parameter(const char* name, const char short_hand,
                                      const char* description, bool required,
                                      uint32_t* res, uint32_t default_val)
 {
-  add_parameter<uint32_t>(name, short_hand, description, required, res,
+  addParameter<uint32_t>(name, short_hand, description, required, res,
                           default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_uint64_parameter(const char* name, const char short_hand,
+ArgumentParser::addUint64Parameter(const char* name, const char short_hand,
                                      const char* description, bool required,
                                      uint64_t* res, uint64_t default_val)
 {
-  add_parameter<uint64_t>(name, short_hand, description, required, res,
+  addParameter<uint64_t>(name, short_hand, description, required, res,
                           default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_float_parameter(const char* name, const char short_hand,
+ArgumentParser::addFloatParameter(const char* name, const char short_hand,
                                     const char* description, bool required,
                                     float* res, float default_val)
 {
-  add_parameter<float>(name, short_hand, description, required, res,
+  addParameter<float>(name, short_hand, description, required, res,
                        default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_double_parameter(const char* name, const char short_hand,
+ArgumentParser::addDoubleParameter(const char* name, const char short_hand,
                                      const char* description, bool required,
                                      double* res, double default_val)
 {
-  add_parameter<double>(name, short_hand, description, required, res,
+  addParameter<double>(name, short_hand, description, required, res,
                         default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::add_boolean_parameter(const char* name, const char short_hand,
+ArgumentParser::addBooleanParameter(const char* name, const char short_hand,
                                       const char* description, bool required,
                                       bool* res, bool default_val)
 {
-  add_parameter<bool>(name, short_hand, description, required, res,
+  addParameter<bool>(name, short_hand, description, required, res,
                       default_val);
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::option_provided(const char* name) const
+ArgumentParser::optionProvided(const char* name) const
 {
   auto itr = m_opts.find(name);
   if (itr == m_opts.end()) {
@@ -220,7 +220,7 @@ ArgumentParser::option_provided(const char* name) const
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::__check_parameters() const
+ArgumentParser::__checkParameters() const
 {
   // Check if the short-hand map count matches with the number of options.
   // If not, it means there are short-hands that are duplicate.
@@ -243,7 +243,7 @@ ArgumentParser::__check_parameters() const
   }
 
   // Check if we meet the required number of positional arguments.
-  if (m_positional_args.size() < m_min_positional_args_required) {
+  if (m_positionalArgs.size() < m_min_positionalArgs_required) {
     return false;
   }
 
@@ -259,15 +259,15 @@ ArgumentParser::__check_parameters() const
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::set_minimum_positional_args_required(size_t n)
+ArgumentParser::setMinimumPositionalArgsRequired(size_t n)
 {
-  m_min_positional_args_required = n;
+  m_min_positionalArgs_required = n;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::set_usage_string(const char* usage)
+ArgumentParser::setUsageString(const char* usage)
 {
   m_usage.assign(usage);
 }
@@ -275,17 +275,17 @@ ArgumentParser::set_usage_string(const char* usage)
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::parse_args(int argc, char** argv)
+ArgumentParser::parseArgs(int argc, char** argv)
 {
-  if (!__parse_args(argc, argv)) {
+  if (!__parseArgs(argc, argv)) {
     return false;
   }
 
-  if (!__check_parameters()) {
+  if (!__checkParameters()) {
     return false;
   }
 
-  __assign_values();
+  __assignValues();
 
   return true;
 }
@@ -293,16 +293,16 @@ ArgumentParser::parse_args(int argc, char** argv)
 // -----------------------------------------------------------------------------
 
 const ArgumentParser::PositionalArgumentList&
-ArgumentParser::positional_args() const
+ArgumentParser::positionalArgs() const
 {
-  return m_positional_args;
+  return m_positionalArgs;
 }
 
 // -----------------------------------------------------------------------------
 
 template <typename Stream>
 void
-ArgumentParser::__print_help(Stream& stream) const
+ArgumentParser::__printHelp(Stream& stream) const
 {
   // Name and version.
   stream << (m_name.empty() ? "PROGRAM" : m_name);
@@ -389,30 +389,30 @@ std::string
 ArgumentParser::help() const
 {
   std::stringstream ss;
-  __print_help(ss);
+  __printHelp(ss);
   return ss.str();
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::print_help() const
+ArgumentParser::printHelp() const
 {
-  __print_help(std::cout);
+  __printHelp(std::cout);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::__add_positional_parameter(std::string&& arg)
+ArgumentParser::__addPositionalParameter(std::string&& arg)
 {
-  m_positional_args.emplace_back(arg);
+  m_positionalArgs.emplace_back(arg);
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::__parse_args(int argc, char** argv)
+ArgumentParser::__parseArgs(int argc, char** argv)
 {
   CHECK_ARGV;
 
@@ -427,7 +427,7 @@ ArgumentParser::__parse_args(int argc, char** argv)
     std::string s(arg);
     if (s.find("--") == 0) {
       std::string key = s.substr(2);
-      if (!__register_cmdl_option(key, argc, argv)) {
+      if (!__registerCmdlOption(key, argc, argv)) {
         return false;
       }
     } else if (s.find("-") == 0) {
@@ -441,11 +441,11 @@ ArgumentParser::__parse_args(int argc, char** argv)
         return false;
       }
       std::string key = iter->second;
-      if (!__register_cmdl_option(key, argc, argv)) {
+      if (!__registerCmdlOption(key, argc, argv)) {
         return false;
       }
     } else {
-      __add_positional_parameter(std::move(s));
+      __addPositionalParameter(std::move(s));
     }
     ADVANCE_ARGV;
   }
@@ -456,7 +456,7 @@ ArgumentParser::__parse_args(int argc, char** argv)
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::__register_cmdl_option(const std::string& key, int& argc,
+ArgumentParser::__registerCmdlOption(const std::string& key, int& argc,
                                        char**& argv)
 {
   if (key.empty()) {
@@ -465,14 +465,14 @@ ArgumentParser::__register_cmdl_option(const std::string& key, int& argc,
   if (!m_opts.count(key)) {
     return false;
   }
-  if (__defined_boolean_option(key)) {
+  if (__definedBooleanOption(key)) {
     m_opts[key].value.value = true;
   } else {
     ADVANCE_ARGV;
     CHECK_ARGV;
     std::string val(*argv);
     // Update option value.
-    __update_option_value(key, val);
+    __updateOptionValue(key, val);
   }
 
   return true;
@@ -481,7 +481,7 @@ ArgumentParser::__register_cmdl_option(const std::string& key, int& argc,
 // -----------------------------------------------------------------------------
 
 bool
-ArgumentParser::__defined_boolean_option(const std::string& name) const
+ArgumentParser::__definedBooleanOption(const std::string& name) const
 {
   auto itr = m_opts.find(name);
   if (itr == m_opts.end()) {
@@ -526,7 +526,7 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::CmdlOption::update_value(const std::string& new_value)
+ArgumentParser::CmdlOption::updateValue(const std::string& new_value)
 {
   CmdlOptionValueCast cast(new_value);
   value.value = sl::variant::apply_visitor(cast, default_value.value);
@@ -535,21 +535,21 @@ ArgumentParser::CmdlOption::update_value(const std::string& new_value)
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::__update_option_value(const std::string& key,
+ArgumentParser::__updateOptionValue(const std::string& key,
                                       const std::string& value)
 {
   auto& option = m_opts.at(key);
-  option.update_value(value);
+  option.updateValue(value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::__assign_values()
+ArgumentParser::__assignValues()
 {
   for (auto& pair : m_opts) {
     auto& option = pair.second;
-    option.assign_value_to_dst();
+    option.assignValueToDst();
   }
 }
 
@@ -587,7 +587,7 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::CmdlOption::assign_value_to_dst()
+ArgumentParser::CmdlOption::assignValueToDst()
 {
   CmdlOptionDestinationValueUpdate update(value.value, dst);
   sl::variant::apply_visitor(update, default_value.value);

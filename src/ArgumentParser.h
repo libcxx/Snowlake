@@ -44,70 +44,70 @@ public:
   ArgumentParser(const char* name, const char* version, const char* description,
                  const char* long_description);
 
-  void add_string_parameter(const char* name, const char short_hand,
-                            const char* description, bool required,
-                            std::string* res, const char* default_val = "");
+  void addStringParameter(const char* name, const char short_hand,
+                          const char* description, bool required,
+                          std::string* res, const char* default_val = "");
 
-  void add_uint32_parameter(const char* name, const char short_hand,
-                            const char* description, bool required,
-                            uint32_t* res, uint32_t default_val = 0);
+  void addUint32Parameter(const char* name, const char short_hand,
+                          const char* description, bool required,
+                          uint32_t* res, uint32_t default_val = 0);
 
-  void add_uint64_parameter(const char* name, const char short_hand,
+  void addUint64Parameter(const char* name, const char short_hand,
                             const char* description, bool required,
                             uint64_t* res, uint64_t default_val = 0);
 
-  void add_float_parameter(const char* name, const char short_hand,
+  void addFloatParameter(const char* name, const char short_hand,
                            const char* description, bool required, float* res,
                            float default_val = 0.0f);
 
-  void add_double_parameter(const char* name, const char short_hand,
+  void addDoubleParameter(const char* name, const char short_hand,
                             const char* description, bool required, double* res,
                             double default_val = 0.0);
 
-  void add_boolean_parameter(const char* name, const char short_hand,
+  void addBooleanParameter(const char* name, const char short_hand,
                              const char* description, bool required, bool* res,
                              bool default_val = false);
 
-  void set_minimum_positional_args_required(size_t n);
+  void setMinimumPositionalArgsRequired(size_t n);
 
-  bool option_provided(const char* name) const;
+  bool optionProvided(const char* name) const;
 
-  bool parse_args(int argc, char** argv);
+  bool parseArgs(int argc, char** argv);
 
   using PositionalArgumentList = std::vector<std::string>;
 
-  const PositionalArgumentList& positional_args() const;
+  const PositionalArgumentList& positionalArgs() const;
 
-  void set_usage_string(const char*);
+  void setUsageString(const char*);
 
   std::string help() const;
 
-  void print_help() const;
+  void printHelp() const;
 
 public:
   using value_type = sl::variant::variant<std::string, uint32_t, uint64_t, bool,
                                           float, double>;
 
 private:
-  bool __defined_boolean_option(const std::string&) const;
+  bool __definedBooleanOption(const std::string&) const;
 
-  void __update_option_value(const std::string&, const std::string&);
+  void __updateOptionValue(const std::string&, const std::string&);
 
-  bool __parse_args(int argc, char** argv);
+  bool __parseArgs(int argc, char** argv);
 
-  bool __register_cmdl_option(const std::string& key, int& argc, char**& argv);
+  bool __registerCmdlOption(const std::string& key, int& argc, char**& argv);
 
-  bool __check_parameters() const;
+  bool __checkParameters() const;
 
-  void __assign_values();
+  void __assignValues();
 
-  void __add_positional_parameter(std::string&& arg);
+  void __addPositionalParameter(std::string&& arg);
 
   template <typename Stream>
-  void __print_help(Stream&) const;
+  void __printHelp(Stream&) const;
 
   template <typename T>
-  void add_parameter(const char* name, const char short_hand,
+  void addParameter(const char* name, const char short_hand,
                      const char* description, bool required, T* res,
                      T default_val);
 
@@ -126,9 +126,9 @@ private:
     CmdlOptionValue value;
     void* dst;
 
-    void assign_value_to_dst();
+    void assignValueToDst();
 
-    void update_value(const std::string&);
+    void updateValue(const std::string&);
   };
 
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
@@ -141,6 +141,6 @@ private:
   std::string m_usage;
   CmdlOptionMap m_opts;
   ShortHandMap m_shorthand_map;
-  PositionalArgumentList m_positional_args;
-  size_t m_min_positional_args_required;
+  PositionalArgumentList m_positionalArgs;
+  size_t m_min_positionalArgs_required;
 };
