@@ -45,6 +45,7 @@ target_link_libraries(run_tests
     snowlake
     Parser
     ${LIBGTEST_LIBRARY}
+    "-pthread"
     )
 
 
