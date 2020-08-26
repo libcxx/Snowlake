@@ -78,13 +78,13 @@ private:
     TargetTable target_tbl;
   };
 
-  bool check_required_env_defns(const SymbolSet&);
+  bool checkRequiredEnvDefns(const SymbolSet&);
 
-  bool recursive_premise_defn_check(const ASTPremiseDefn&,
+  bool recursivePremiseDefnCheck(const ASTPremiseDefn&,
                                     InferenceDefnContext*);
 
   template <typename T>
-  bool recursive_premise_defn_check(const T&, InferenceDefnContext*);
+  bool recursivePremiseDefnCheck(const T&, InferenceDefnContext*);
 
 private:
   enum
@@ -93,7 +93,7 @@ private:
   };
 
   template <typename U, typename... Args>
-  void add_warning(const U& msg, Args... args)
+  void addWarning(const U& msg, Args... args)
   {
     if (m_opts.warningsAsErrors) {
       add_error(msg, args...);
