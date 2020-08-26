@@ -24,6 +24,15 @@ The goals of *Snowlake* are to:
      checking logic that are usually extremely complex, tedious and error-prone.
 
 
+## Build and Test
+
+To build all targets (i.e. static libraries and executables), plus the unit test suite and run it,
+do the following:
+
+```
+mkdir build && cd build && cmake .. && make
+```
+
 ## Development Environment and Dependencies
 
 Please refer to the [Development Environment and Dependencies](https://github.com/libcxx/Snowlake/wiki/Development-Environment-and-Dependencies) wiki page for detailed up-to-date
