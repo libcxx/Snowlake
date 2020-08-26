@@ -332,6 +332,42 @@ TEST_F(VariantTests, TestPartialSwap)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(VariantTests, TestIncompleteSwap)
+{
+  const auto checkInvalid = [](const auto& v) {
+    ASSERT_EQ(false, v.valid());
+    ASSERT_EQ(sl::variant::impl::invalid_type_index, v.type_index());
+  };
+
+  VariantType v0;   // v0 is incomplete
+
+  checkInvalid(v0);
+
+  VariantType v1;   // v1 is incomplete
+
+  checkInvalid(v1);
+
+  const auto swap = [&]() {
+    auto tmp = v1;
+    v1 = v0;
+    v0 = tmp;
+  };
+
+  // Now we swap
+  swap();
+
+  // Now v0 and v1 should have been swapped entirely.
+  checkInvalid(v0);
+  checkInvalid(v1);
+
+  // Now swap back.
+  swap();
+  checkInvalid(v0);
+  checkInvalid(v1);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(VariantTests, TestEqualityOperatorOnDifferentTypes)
 {
   typedef sl::variant::variant<int, double> VariantType1;
