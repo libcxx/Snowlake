@@ -46,7 +46,7 @@ public:
 
   void addStringParameter(const char* name, const char short_hand,
                           const char* description, bool required,
-                          std::string* res, const char* default_val = "");
+                          std::string* res, std::string default_val = "");
 
   void addUint32Parameter(const char* name, const char short_hand,
                           const char* description, bool required,
