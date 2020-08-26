@@ -436,11 +436,14 @@ TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
   MyVariantType v( _MyStruct{ .name=myName } );
 
   {
-    std::unordered_map<std::string, MyVariantType> m;
+    std::vector<MyVariantType> vec;
+    vec.reserve(16);
 
     sl::variant::variant<_MyStruct, int> v2( v );
 
-    m[myName] = v2;
+    vec.push_back(v2);
+
+    vec.resize(32);
   }
 
   fprintf(stderr, "got here ...\n");
