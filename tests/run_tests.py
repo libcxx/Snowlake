@@ -165,7 +165,7 @@ class TestRunner(object):
         self.__run()
 
     def __run(self):
-        print
+        print()
         total_count = 0
         success_count = 0
         failure_count = 0
@@ -180,7 +180,7 @@ class TestRunner(object):
             elif err == self.StatusCode.ERROR:
                 error_count += 1
 
-        print
+        print()
         self.__log_msg_blue('Total       : {}'.format(total_count))
         self.__log_msg_blue('Passed      : {}'.format(success_count))
         self.__log_msg_blue('Failed      : {}'.format(failure_count))
@@ -291,16 +291,16 @@ def main():
     args = parser.parse_args()
 
     if args.verbose:
-        print PROG_TITLE
-        print
-        print 'Arguments:'
-        print args
+        print(PROG_TITLE)
+        print()
+        print('Arguments:')
+        print(args)
 
     input_path = args.input
 
     if args.verbose:
-        print 'Input path:'
-        print input_path
+        print('Input path:')
+        print(input_path)
 
     if not os.path.exists(input_path) or not os.path.isdir(input_path):
         sys.stderr.write('Please specify a valid input directory.\n')
@@ -326,8 +326,8 @@ def main():
         sys.exit(-1)
 
     if args.verbose:
-        print 'Executable:'
-        print executable_invoke_name
+        print('Executable:')
+        print(executable_invoke_name)
 
     runner = TestRunner(input_path, executable_invoke_name, args)
     runner.run()
