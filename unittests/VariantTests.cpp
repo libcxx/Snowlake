@@ -446,8 +446,6 @@ TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
     vec.resize(32);
   }
 
-  fprintf(stderr, "got here ...\n");
-
   ASSERT_STREQ(MY_NAME, v.get<_MyStruct>().name.c_str());
 }
 
