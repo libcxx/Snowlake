@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 // -----------------------------------------------------------------------------
 
@@ -391,6 +392,41 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
   VariantType v3_double = (double)1.0;
   bool res5 = sl::variant::apply_visitor(equality_visitor(), v1_int, v3_double);
   ASSERT_EQ(false, res5);
+}
+
+// -----------------------------------------------------------------------------
+
+class VariantMemoryIntegrityUnitTest : public VariantTests {
+
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
+{
+  struct _MyStruct {
+    std::string name;
+  };
+
+  const char* MY_NAME = "William";
+
+  const std::string myName(MY_NAME);
+
+  using MyVariantType = sl::variant::variant<_MyStruct, int>;
+
+  MyVariantType v( _MyStruct{ .name=myName } );
+
+  {
+    std::unordered_map<std::string, MyVariantType> m;
+
+    sl::variant::variant<_MyStruct, int> v2( v );
+
+    m[myName] = v2;
+  }
+
+  fprintf(stderr, "got here ...\n");
+
+  ASSERT_STREQ(MY_NAME, v.get<_MyStruct>().name.c_str());
 }
 
 // -----------------------------------------------------------------------------
