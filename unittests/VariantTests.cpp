@@ -396,18 +396,37 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
 
 // -----------------------------------------------------------------------------
 
-class VariantMemoryIntegrityUnitTest : public VariantTests {
+class VariantMemoryIntegrityUnitTest : public VariantTests
+{
+protected:
+  struct _MyStruct {
+    std::string name;
+  };
 
+  using MyVariantType = typename sl::variant::variant<_MyStruct, int>;
 };
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantMemoryIntegrityUnitTest, TestWithAssociatedMap)
+{
+  const char* MY_NAME = "William";
+
+  const std::string myName(MY_NAME);
+
+  {
+    std::unordered_map<std::string, MyVariantType> m;
+
+    sl::variant::variant<_MyStruct, int> v( _MyStruct{ .name="Some name" } );
+
+    m[myName] = v;
+  }
+}
 
 // -----------------------------------------------------------------------------
 
 TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
 {
-  struct _MyStruct {
-    std::string name;
-  };
-
   const char* MY_NAME = "William";
 
   const std::string myName(MY_NAME);
