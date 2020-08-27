@@ -256,7 +256,7 @@ namespace yy {
   {
       switch (that.type_get ())
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.move< ASTDeductionTarget > (that.value);
         break;
 
@@ -347,15 +347,15 @@ namespace yy {
         value.move< ASTPremiseDefnList > (that.value);
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.move< ASTPropositionDefn > (that.value);
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.move< ASTRangeClause > (that.value);
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.move< ASTWhileClause > (that.value);
         break;
 
@@ -410,7 +410,7 @@ namespace yy {
     state = that.state;
       switch (that.type_get ())
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.copy< ASTDeductionTarget > (that.value);
         break;
 
@@ -501,15 +501,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (that.value);
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.copy< ASTPropositionDefn > (that.value);
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.copy< ASTRangeClause > (that.value);
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.copy< ASTWhileClause > (that.value);
         break;
 
@@ -789,7 +789,7 @@ namespace yy {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         yylhs.value.build< ASTDeductionTarget > ();
         break;
 
@@ -880,15 +880,15 @@ namespace yy {
         yylhs.value.build< ASTPremiseDefnList > ();
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         yylhs.value.build< ASTPropositionDefn > ();
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         yylhs.value.build< ASTRangeClause > ();
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         yylhs.value.build< ASTWhileClause > ();
         break;
 
@@ -1752,9 +1752,9 @@ namespace yy {
   "inference_defn", "global_decl_set", "global_decl_list", "global_decl",
   "argument_set", "argument_list", "inference_argument", "premise_set",
   "premise_defn_list", "premise_defn", "premise_type_inference_defn",
-  "whileClause", "premise_type_equality_defn", "rangeClause",
-  "propositionDefn", "identifiable", "identifier",
-  "deduction_target_list", "deductionTarget", "deduction_target_singular",
+  "while_clause", "premise_type_equality_defn", "range_clause",
+  "proposition_defn", "identifiable", "identifier",
+  "deduction_target_list", "deduction_target", "deduction_target_singular",
   "deduction_target_array", "deduction_target_computed",
   "equality_operator", YY_NULLPTR
   };

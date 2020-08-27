@@ -289,7 +289,7 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // deductionTarget
+      // deduction_target
       char dummy1[sizeof(ASTDeductionTarget)];
 
       // deduction_target_array
@@ -358,13 +358,13 @@ namespace yy {
       // premise_defn_list
       char dummy22[sizeof(ASTPremiseDefnList)];
 
-      // propositionDefn
+      // proposition_defn
       char dummy23[sizeof(ASTPropositionDefn)];
 
-      // rangeClause
+      // range_clause
       char dummy24[sizeof(ASTRangeClause)];
 
-      // whileClause
+      // while_clause
       char dummy25[sizeof(ASTWhileClause)];
 
       // equality_operator
@@ -1006,7 +1006,7 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.copy< ASTDeductionTarget > (other.value);
         break;
 
@@ -1097,15 +1097,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (other.value);
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.copy< ASTPropositionDefn > (other.value);
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.copy< ASTRangeClause > (other.value);
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.copy< ASTWhileClause > (other.value);
         break;
 
@@ -1161,7 +1161,7 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.copy< ASTDeductionTarget > (v);
         break;
 
@@ -1252,15 +1252,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (v);
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.copy< ASTPropositionDefn > (v);
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.copy< ASTRangeClause > (v);
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.copy< ASTWhileClause > (v);
         break;
 
@@ -1537,7 +1537,7 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.template destroy< ASTDeductionTarget > ();
         break;
 
@@ -1628,15 +1628,15 @@ namespace yy {
         value.template destroy< ASTPremiseDefnList > ();
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.template destroy< ASTPropositionDefn > ();
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.template destroy< ASTRangeClause > ();
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.template destroy< ASTWhileClause > ();
         break;
 
@@ -1699,7 +1699,7 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 54: // deductionTarget
+      case 54: // deduction_target
         value.move< ASTDeductionTarget > (s.value);
         break;
 
@@ -1790,15 +1790,15 @@ namespace yy {
         value.move< ASTPremiseDefnList > (s.value);
         break;
 
-      case 50: // propositionDefn
+      case 50: // proposition_defn
         value.move< ASTPropositionDefn > (s.value);
         break;
 
-      case 49: // rangeClause
+      case 49: // range_clause
         value.move< ASTRangeClause > (s.value);
         break;
 
-      case 47: // whileClause
+      case 47: // while_clause
         value.move< ASTWhileClause > (s.value);
         break;
 
