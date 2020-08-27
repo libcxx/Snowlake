@@ -132,7 +132,7 @@ ArgumentParser::addParameter(const char* name, const char short_hand,
                   .description = description,
                   .required = required,
                   .dst = reinterpret_cast<void*>(res),
-                  .default_value = T(default_val)
+                  .default_value = {default_val}
                 };
   m_shorthand_map[short_hand] = name;
   m_opts[name] = opts;
