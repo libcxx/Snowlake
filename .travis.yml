@@ -1,7 +1,7 @@
 language: cpp
 
 os:
-  - osx
+  - ubuntu
 
 compiler:
   - clang
@@ -11,7 +11,7 @@ script:
   - cmake --version
   - clang++ --version
   - g++ --version
-  - python --version
+  - python3 --version
   - make -C libs
   - mkdir build && cd build && cmake -DUSE_PRECOMPILED_PARSER=ON .. && make
   - echo "DONE"
