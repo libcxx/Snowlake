@@ -85,7 +85,7 @@ ProgramDriver::run(int argc, char** argv)
   };
 
   ParserDriver parser(parser_opts);
-  res = parser.parse_from_file(cmdl_opts.input_path);
+  res = parser.parseFromFile(cmdl_opts.input_path);
   if (res != 0) {
     PRINT_VERBOSE_MSG("Failed: parsing error");
     return EXIT_FAILURE;

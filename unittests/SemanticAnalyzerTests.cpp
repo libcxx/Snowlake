@@ -37,7 +37,7 @@ protected:
   {
     ASTModule module;
     bool res;
-    std::tie(module, res) = parse_from_string(input);
+    std::tie(module, res) = parseFromString(input);
     ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
     res = analyzer.run(module);
@@ -51,7 +51,7 @@ protected:
   {
     ASTModule module;
     bool res;
-    std::tie(module, res) = parse_from_string(input);
+    std::tie(module, res) = parseFromString(input);
     ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
     res = analyzer.run(module);
@@ -63,10 +63,10 @@ protected:
   }
 
 private:
-  std::tuple<ASTModule, bool> parse_from_string(const char* input) const
+  std::tuple<ASTModule, bool> parseFromString(const char* input) const
   {
     ParserDriver parser;
-    int res = parser.parse_from_string(input);
+    int res = parser.parseFromString(input);
     return std::make_tuple(parser.module(), res);
   }
 };

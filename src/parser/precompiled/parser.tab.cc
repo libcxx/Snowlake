@@ -693,9 +693,9 @@ namespace yy {
     #line 50 "/Users/x/workspace/snowlake/src/parser/parser.yy" // lalr1.cc:745
 {
   // Initialize the initial location.
-  if (!driver.input_file().empty())
+  if (!driver.inputFile().empty())
   {
-    yyla.location.begin.filename = yyla.location.end.filename = &driver.input_file();
+    yyla.location.begin.filename = yyla.location.end.filename = &driver.inputFile();
   }
 }
 
@@ -950,7 +950,7 @@ namespace yy {
 #line 139 "/Users/x/workspace/snowlake/src/parser/parser.yy" // lalr1.cc:860
     {
             ASTModule module(std::move(yystack_[0].value.as< ASTInferenceGroupList > ()));
-            driver.set_module(std::move(module));
+            driver.setModule(std::move(module));
         }
 #line 956 "parser.tab.cc" // lalr1.cc:860
     break;

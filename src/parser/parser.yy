@@ -49,9 +49,9 @@ class ParserDriver;
 %initial-action
 {
   // Initialize the initial location.
-  if (!driver.input_file().empty())
+  if (!driver.inputFile().empty())
   {
-    @$.begin.filename = @$.end.filename = &driver.input_file();
+    @$.begin.filename = @$.end.filename = &driver.inputFile();
   }
 };
 
@@ -138,7 +138,7 @@ input
         inference_group_list
         {
             ASTModule module(std::move($1));
-            driver.set_module(std::move(module));
+            driver.setModule(std::move(module));
         }
     ;
 
