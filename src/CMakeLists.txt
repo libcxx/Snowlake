@@ -55,6 +55,7 @@ set_target_properties(snowlake
 
 # Link with dependency "Parser".
 add_dependencies(snowlake Parser)
+target_link_libraries(snowlake Parser)
 
 
 # Post-build command.
