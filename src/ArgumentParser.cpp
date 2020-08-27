@@ -131,8 +131,9 @@ ArgumentParser::addParameter(const char* name, const char short_hand,
   CmdlOption opts{.short_hand = short_hand,
                   .description = description,
                   .required = required,
+                  .default_value = {default_val},
+                  .value = {default_val},
                   .dst = reinterpret_cast<void*>(res),
-                  .default_value = {default_val}
                 };
   m_shorthand_map[short_hand] = name;
   m_opts[name] = opts;
