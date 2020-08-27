@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class SynthesizerTests : public ::testing::Test
 {
 protected:
-  void test_synthesis_with_success(const char* input)
+  void testSynthesisWithSuccess(const char* input)
   {
     ASTModule module;
     bool res;
@@ -65,20 +65,20 @@ protected:
     return std::make_tuple(parser.module(), res);
   }
 
-  std::string read_from_output_file(const char* filepath) const
+  std::string readFromOutputFile(const char* filepath) const
   {
     std::ifstream ifs(filepath);
     return std::string((std::istreambuf_iterator<char>(ifs)),
                        std::istreambuf_iterator<char>());
   }
 
-  void assert_output_file_content(const char* expected_res,
+  void assertOutputFileContent(const char* expected_res,
                                   const char* filename) const
   {
-    char output_filepath[32] = {0};
-    snprintf(output_filepath, sizeof(output_filepath), "%s%s", outputPath,
+    char outputFilepath[32] = {0};
+    snprintf(outputFilepath, sizeof(outputFilepath), "%s%s", outputPath,
              filename);
-    const auto actual_res = read_from_output_file(output_filepath);
+    const auto actual_res = readFromOutputFile(outputFilepath);
 
     ASSERT_STREQ(expected_res, actual_res.c_str());
   }
@@ -150,7 +150,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     "";
   // clang-format on
 
-  test_synthesis_with_success(INPUT);
+  testSynthesisWithSuccess(INPUT);
 
   // Check header file content.
   {
@@ -176,7 +176,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "";
     // clang-format on
 
-    assert_output_file_content(EXPECTED_HEADER_RES, "MyInference.h");
+    assertOutputFileContent(EXPECTED_HEADER_RES, "MyInference.h");
   }
 
   // Check .cpp file content.
@@ -240,7 +240,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "";
     // clang-format on
 
-    assert_output_file_content(EXPECTED_CPP_RES, "MyInference.cpp");
+    assertOutputFileContent(EXPECTED_CPP_RES, "MyInference.cpp");
   }
 
   // Check error code definition header file content.
@@ -263,7 +263,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "";
     // clang-format on
 
-    assert_output_file_content(EXPECTED_EC_HEADER_RES,
+    assertOutputFileContent(EXPECTED_EC_HEADER_RES,
                                SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
   }
 
@@ -300,7 +300,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "";
     // clang-format on
 
-    assert_output_file_content(EXPECTED_EC_CPP_RES,
+    assertOutputFileContent(EXPECTED_EC_CPP_RES,
                                SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
   }
 }
