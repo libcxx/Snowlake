@@ -39,7 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 static size_t
-get_incremental_int()
+__getIncrementalInt()
 {
   static size_t val = 1;
   return val++;
@@ -589,7 +589,7 @@ SynthesizerImpl::getClassNameFromEnvDefn(const EnvDefnMap& env_defn_map)
   if (itr == env_defn_map.cend()) {
     char buf[16] = {0};
     snprintf(buf, sizeof(buf), "%s%lu", SYNTHESIZER_DEFAULT_CLASS_NAME_PREFIX,
-             get_incremental_int());
+             __getIncrementalInt());
     return std::string(buf);
   }
   return itr->second;
