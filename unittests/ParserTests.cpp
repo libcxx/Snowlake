@@ -301,26 +301,26 @@ TEST_F(ParserTests, TestParsingAndASTConstruction)
     const ASTInferenceGroupList& inferenceGroups = module.inferenceGroups();
     ASSERT_EQ(1, inferenceGroups.size());
 
-    const ASTInferenceGroup& inference_group = inferenceGroups[0];
+    const ASTInferenceGroup& inferenceGroup = inferenceGroups[0];
 
     // Check inference group has four environment definition statements.
     const ASTEnvironmentDefnList& environmentDefns =
-        inference_group.environmentDefns();
+        inferenceGroup.environmentDefns();
     ASSERT_EQ(4, environmentDefns.size());
 
     // Check inference group has one inference definition.
     const ASTInferenceDefnList& inferenceDefns =
-        inference_group.inferenceDefns();
+        inferenceGroup.inferenceDefns();
     ASSERT_EQ(1, inferenceDefns.size());
 
-    const ASTInferenceDefn& inference_defn = inferenceDefns[0];
+    const ASTInferenceDefn& inferenceDefn = inferenceDefns[0];
 
     // Check inference definition has two arguments.
-    const ASTInferenceArgumentList& arguments = inference_defn.arguments();
+    const ASTInferenceArgumentList& arguments = inferenceDefn.arguments();
     ASSERT_EQ(2, arguments.size());
 
     // Check inference definition has six premise definitions.
-    const ASTPremiseDefnList& premiseDefns = inference_defn.premiseDefns();
+    const ASTPremiseDefnList& premiseDefns = inferenceDefn.premiseDefns();
     ASSERT_EQ(6, premiseDefns.size());
   }
 }
