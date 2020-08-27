@@ -224,7 +224,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
 // -----------------------------------------------------------------------------
 
 bool
-SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& env_defns)
+SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& envDefns)
 {
   INIT_RES;
 
@@ -237,7 +237,7 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& env_defns)
 
   for (size_t i = 0; i < sizeof(mandatoryEnvDefns) / sizeof(char*); ++i) {
     const char* defn = mandatoryEnvDefns[i];
-    if (env_defns.count(defn) == 0) {
+    if (envDefns.count(defn) == 0) {
       ON_ERROR("Missing required environment definition field \"%s\".", defn);
     }
   }
