@@ -50,7 +50,7 @@ message(STATUS "Linker executable: ${CMAKE_LINKER}")
 message(STATUS "Is compiler GNU CXX: ${CMAKE_COMPILER_IS_GNUCXX}")
 
 
-set(CMAKE_MACOSX_RPATH OFF)
+set(CMAKE_MACOSX_RPATH 1)
 
 
 # General compiler flags.
