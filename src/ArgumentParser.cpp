@@ -124,85 +124,85 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
 
 template <typename T>
 void
-ArgumentParser::addParameter(const char* name, const char short_hand,
+ArgumentParser::addParameter(const char* name, const char shorthand,
                               const char* description, bool required, T* res,
-                              T default_val)
+                              T defaultValue)
 {
-  CmdlOption opts{.short_hand = short_hand,
+  CmdlOption opts{.shorthand = shorthand,
                   .description = description,
                   .required = required,
-                  .default_value = {default_val},
+                  .defaultValue = {defaultValue},
                   .value = CmdlOptionValue(),
                   .dst = reinterpret_cast<void*>(res),
                 };
-  m_shorthand_map[short_hand] = name;
+  m_shorthand_map[shorthand] = name;
   m_opts[name] = opts;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addStringParameter(const char* name, const char short_hand,
+ArgumentParser::addStringParameter(const char* name, const char shorthand,
                                      const char* description, bool required,
-                                     std::string* res, std::string default_val)
+                                     std::string* res, std::string defaultValue)
 {
-  addParameter<std::string>(name, short_hand, description, required, res,
-                             default_val);
+  addParameter<std::string>(name, shorthand, description, required, res,
+                             defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addUint32Parameter(const char* name, const char short_hand,
+ArgumentParser::addUint32Parameter(const char* name, const char shorthand,
                                      const char* description, bool required,
-                                     uint32_t* res, uint32_t default_val)
+                                     uint32_t* res, uint32_t defaultValue)
 {
-  addParameter<uint32_t>(name, short_hand, description, required, res,
-                          default_val);
+  addParameter<uint32_t>(name, shorthand, description, required, res,
+                          defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addUint64Parameter(const char* name, const char short_hand,
+ArgumentParser::addUint64Parameter(const char* name, const char shorthand,
                                      const char* description, bool required,
-                                     uint64_t* res, uint64_t default_val)
+                                     uint64_t* res, uint64_t defaultValue)
 {
-  addParameter<uint64_t>(name, short_hand, description, required, res,
-                          default_val);
+  addParameter<uint64_t>(name, shorthand, description, required, res,
+                          defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addFloatParameter(const char* name, const char short_hand,
+ArgumentParser::addFloatParameter(const char* name, const char shorthand,
                                     const char* description, bool required,
-                                    float* res, float default_val)
+                                    float* res, float defaultValue)
 {
-  addParameter<float>(name, short_hand, description, required, res,
-                       default_val);
+  addParameter<float>(name, shorthand, description, required, res,
+                       defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addDoubleParameter(const char* name, const char short_hand,
+ArgumentParser::addDoubleParameter(const char* name, const char shorthand,
                                      const char* description, bool required,
-                                     double* res, double default_val)
+                                     double* res, double defaultValue)
 {
-  addParameter<double>(name, short_hand, description, required, res,
-                        default_val);
+  addParameter<double>(name, shorthand, description, required, res,
+                        defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ArgumentParser::addBooleanParameter(const char* name, const char short_hand,
+ArgumentParser::addBooleanParameter(const char* name, const char shorthand,
                                       const char* description, bool required,
-                                      bool* res, bool default_val)
+                                      bool* res, bool defaultValue)
 {
-  addParameter<bool>(name, short_hand, description, required, res,
-                      default_val);
+  addParameter<bool>(name, shorthand, description, required, res,
+                      defaultValue);
 }
 
 // -----------------------------------------------------------------------------
@@ -232,14 +232,14 @@ ArgumentParser::__checkParameters() const
 
   // Sanity check.
   for (const auto& pair : m_shorthand_map) {
-    const char short_hand = pair.first;
+    const char shorthand = pair.first;
     const auto& option_key = pair.second;
     const auto iter = m_opts.find(option_key);
     if (iter == m_opts.end()) {
       return false;
     }
     const auto& option = iter->second;
-    if (option.short_hand != short_hand) {
+    if (option.shorthand != shorthand) {
       return false;
     }
   }
@@ -352,11 +352,11 @@ ArgumentParser::__printHelp(Stream& stream) const
   for (const auto& pair : m_opts) {
     const auto& name = pair.first;
     const auto& option = pair.second;
-    const auto& default_value = option.default_value.value;
+    const auto& defaultValue = option.defaultValue.value;
 
-    stream << HELP_MENU_SINGLE_DASH << option.short_hand << ", ";
+    stream << HELP_MENU_SINGLE_DASH << option.shorthand << ", ";
     stream << HELP_MENU_DOUBLE_DASH << name;
-    if (!default_value.is<bool>()) {
+    if (!defaultValue.is<bool>()) {
       stream << HELP_MENU_VALUE_PLACEHOLDER;
     }
 
@@ -367,18 +367,18 @@ ArgumentParser::__printHelp(Stream& stream) const
     // Show default value for non-required options.
     if (!option.required) {
       stream << HELP_MENU_INDENT << "Optional. Default value: ";
-      if (default_value.is<bool>()) {
-        stream << default_value.get<bool>();
-      } else if (default_value.is<std::string>()) {
-        stream << default_value.get<std::string>();
-      } else if (default_value.is<uint32_t>()) {
-        stream << default_value.get<uint32_t>();
-      } else if (default_value.is<uint64_t>()) {
-        stream << default_value.get<uint64_t>();
-      } else if (default_value.is<float>()) {
-        stream << default_value.get<float>();
-      } else if (default_value.is<double>()) {
-        stream << default_value.get<double>();
+      if (defaultValue.is<bool>()) {
+        stream << defaultValue.get<bool>();
+      } else if (defaultValue.is<std::string>()) {
+        stream << defaultValue.get<std::string>();
+      } else if (defaultValue.is<uint32_t>()) {
+        stream << defaultValue.get<uint32_t>();
+      } else if (defaultValue.is<uint64_t>()) {
+        stream << defaultValue.get<uint64_t>();
+      } else if (defaultValue.is<float>()) {
+        stream << defaultValue.get<float>();
+      } else if (defaultValue.is<double>()) {
+        stream << defaultValue.get<double>();
       }
       stream << std::endl;
     }
@@ -433,11 +433,11 @@ ArgumentParser::__parseArgs(int argc, char** argv)
         return false;
       }
     } else if (s.find("-") == 0) {
-      std::string short_hand = s.substr(1);
-      if (short_hand.size() != 1) {
+      std::string shorthand = s.substr(1);
+      if (shorthand.size() != 1) {
         return false;
       }
-      const char c = short_hand[0];
+      const char c = shorthand[0];
       const auto iter = m_shorthand_map.find(c);
       if (iter == m_shorthand_map.end()) {
         return false;
@@ -490,7 +490,7 @@ ArgumentParser::__definedBooleanOption(const std::string& name) const
     return false;
   }
   const auto& option = itr->second;
-  return option.default_value.value.is<bool>();
+  return option.defaultValue.value.is<bool>();
 }
 
 // -----------------------------------------------------------------------------
@@ -531,7 +531,7 @@ void
 ArgumentParser::CmdlOption::updateValue(const std::string& new_value)
 {
   CmdlOptionValueCast cast(new_value);
-  value.value = sl::variant::apply_visitor(cast, default_value.value);
+  value.value = sl::variant::apply_visitor(cast, defaultValue.value);
 }
 
 // -----------------------------------------------------------------------------
@@ -572,13 +572,13 @@ struct CmdlOptionDestinationValueUpdate
   }
 
   template <typename T>
-  T operator()(T& default_value)
+  T operator()(T& defaultValue)
   {
     T* dst_ = reinterpret_cast<T*>(m_dst);
     if (dst_) {
-      *dst_ = m_value.valid() ? m_value.get<T>() : default_value;
+      *dst_ = m_value.valid() ? m_value.get<T>() : defaultValue;
     }
-    return default_value;
+    return defaultValue;
   }
 
 private:
@@ -592,7 +592,7 @@ void
 ArgumentParser::CmdlOption::assignValueToDst()
 {
   CmdlOptionDestinationValueUpdate update(value.value, dst);
-  sl::variant::apply_visitor(update, default_value.value);
+  sl::variant::apply_visitor(update, defaultValue.value);
 }
 
 // -----------------------------------------------------------------------------

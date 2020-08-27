@@ -44,29 +44,29 @@ public:
   ArgumentParser(const char* name, const char* version, const char* description,
                  const char* long_description);
 
-  void addStringParameter(const char* name, const char short_hand,
+  void addStringParameter(const char* name, const char shorthand,
                           const char* description, bool required,
-                          std::string* res, std::string default_val = "");
+                          std::string* res, std::string defaultValue = "");
 
-  void addUint32Parameter(const char* name, const char short_hand,
+  void addUint32Parameter(const char* name, const char shorthand,
                           const char* description, bool required,
-                          uint32_t* res, uint32_t default_val = 0);
+                          uint32_t* res, uint32_t defaultValue = 0);
 
-  void addUint64Parameter(const char* name, const char short_hand,
+  void addUint64Parameter(const char* name, const char shorthand,
                             const char* description, bool required,
-                            uint64_t* res, uint64_t default_val = 0);
+                            uint64_t* res, uint64_t defaultValue = 0);
 
-  void addFloatParameter(const char* name, const char short_hand,
+  void addFloatParameter(const char* name, const char shorthand,
                            const char* description, bool required, float* res,
-                           float default_val = 0.0f);
+                           float defaultValue = 0.0f);
 
-  void addDoubleParameter(const char* name, const char short_hand,
+  void addDoubleParameter(const char* name, const char shorthand,
                             const char* description, bool required, double* res,
-                            double default_val = 0.0);
+                            double defaultValue = 0.0);
 
-  void addBooleanParameter(const char* name, const char short_hand,
+  void addBooleanParameter(const char* name, const char shorthand,
                              const char* description, bool required, bool* res,
-                             bool default_val = false);
+                             bool defaultValue = false);
 
   void setMinimumPositionalArgsRequired(size_t n);
 
@@ -107,9 +107,9 @@ private:
   void __printHelp(Stream&) const;
 
   template <typename T>
-  void addParameter(const char* name, const char short_hand,
+  void addParameter(const char* name, const char shorthand,
                      const char* description, bool required, T* res,
-                     T default_val);
+                     T defaultValue);
 
   struct CmdlOptionValue
   {
@@ -119,10 +119,10 @@ private:
 
   struct CmdlOption
   {
-    char short_hand;
+    char shorthand;
     std::string description;
     bool required;
-    CmdlOptionValue default_value;
+    CmdlOptionValue defaultValue;
     CmdlOptionValue value;
     void* dst;
 

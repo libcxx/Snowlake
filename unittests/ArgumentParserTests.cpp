@@ -46,9 +46,9 @@ TEST_F(ArgumentParserTests, TestParseStringOption)
 {
   ArgumentParser argparser;
   std::string dst;
-  const char* default_val = "DefaltName";
+  const char* defaultValue = "DefaltName";
   argparser.addStringParameter("name", 'n', "Name of character", true, &dst,
-                                 default_val);
+                                 defaultValue);
 
   const std::vector<char*> args{"MyProgram", "--name", "HelloWorld"};
 
@@ -85,9 +85,9 @@ TEST_F(ArgumentParserTests, TestParseWithMissingRequiredOption)
 {
   ArgumentParser argparser;
   std::string dst;
-  const char* default_val = "DefaltName";
+  const char* defaultValue = "DefaltName";
   argparser.addStringParameter("name", 'n', "Name of character", true, &dst,
-                                 default_val);
+                                 defaultValue);
 
   const std::vector<char*> args{
       "MyProgram",
@@ -103,9 +103,9 @@ TEST_F(ArgumentParserTests, TestParseWithMissingNonRequiredOption)
 {
   ArgumentParser argparser;
   std::string dst;
-  const char* default_val = "DefaltName";
+  const char* defaultValue = "DefaltName";
   argparser.addStringParameter("name", 'n', "Name of character", false, &dst,
-                                 default_val);
+                                 defaultValue);
 
   const std::vector<char*> args{
       "MyProgram",
@@ -114,7 +114,7 @@ TEST_F(ArgumentParserTests, TestParseWithMissingNonRequiredOption)
   const bool res = argparser.parseArgs(args.size(), (char**)args.data());
   ASSERT_TRUE(res);
 
-  ASSERT_STREQ(default_val, dst.c_str());
+  ASSERT_STREQ(defaultValue, dst.c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -388,19 +388,19 @@ TEST_F(ArgumentParserTests,
   const char* input_path = "/tmp/hellworld";
 
   argparser.addStringParameter("str", 's', "String value", false, &str_dst,
-                                 /* default_val */ str_default_value);
+                                 /* defaultValue */ str_default_value);
   argparser.addUint32Parameter("uint32", 'u', "UInt32 value", true,
                                  &uint32_dst);
   argparser.addUint64Parameter("uint64", 'n', "UInt64 value", false,
                                  &uint64_dst,
-                                 /* default_val */ uint64_default_value);
+                                 /* defaultValue */ uint64_default_value);
   argparser.addBooleanParameter("bool", 'b', "Boolean value", false,
                                   &bool_dst,
-                                  /* default_val */ boolean_default_value);
+                                  /* defaultValue */ boolean_default_value);
   argparser.addFloatParameter("float", 'f', "Float value", true, &float_dst);
   argparser.addDoubleParameter("double", 'd', "Double value", false,
                                  &double_dst,
-                                 /* default_val */ double_default_value);
+                                 /* defaultValue */ double_default_value);
 
   const std::vector<char*> args{"MyProgram", "-u",
                                 "32",        "--float",
