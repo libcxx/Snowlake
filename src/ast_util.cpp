@@ -151,26 +151,26 @@ hasCompatibleTargetInTable(const ASTDeductionTarget& target,
   if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return existing_value->isType<ASTDeductionTargetSingular>();
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      return existingValue->isType<ASTDeductionTargetSingular>();
     } else {
       return false;
     }
   } else if (target.isType<ASTDeductionTargetArray>()) {
     const auto& value = target.value<ASTDeductionTargetArray>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      if (existing_value->isType<ASTDeductionTargetArray>()) {
-        const auto& existing_target =
-            existing_value->value<ASTDeductionTargetArray>();
-        if (value.hasSizeLiteral() && !existing_target.hasSizeLiteral()) {
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      if (existingValue->isType<ASTDeductionTargetArray>()) {
+        const auto& existingTarget =
+            existingValue->value<ASTDeductionTargetArray>();
+        if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return false;
         } else if (!value.hasSizeLiteral() &&
-                   existing_target.hasSizeLiteral()) {
+                   existingTarget.hasSizeLiteral()) {
           return false;
         } else if (value.hasSizeLiteral() &&
-                   existing_target.hasSizeLiteral()) {
-          return value.sizeLiteral() == existing_target.sizeLiteral();
+                   existingTarget.hasSizeLiteral()) {
+          return value.sizeLiteral() == existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {
           return true;
@@ -199,24 +199,24 @@ hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
   if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return !existing_value->isType<ASTDeductionTargetSingular>();
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      return !existingValue->isType<ASTDeductionTargetSingular>();
     }
   } else if (target.isType<ASTDeductionTargetArray>()) {
     const auto& value = target.value<ASTDeductionTargetArray>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      if (existing_value->isType<ASTDeductionTargetArray>()) {
-        const auto& existing_target =
-            existing_value->value<ASTDeductionTargetArray>();
-        if (value.hasSizeLiteral() && !existing_target.hasSizeLiteral()) {
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      if (existingValue->isType<ASTDeductionTargetArray>()) {
+        const auto& existingTarget =
+            existingValue->value<ASTDeductionTargetArray>();
+        if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return true;
         } else if (!value.hasSizeLiteral() &&
-                   existing_target.hasSizeLiteral()) {
+                   existingTarget.hasSizeLiteral()) {
           return true;
         } else if (value.hasSizeLiteral() &&
-                   existing_target.hasSizeLiteral()) {
-          return value.sizeLiteral() != existing_target.sizeLiteral();
+                   existingTarget.hasSizeLiteral()) {
+          return value.sizeLiteral() != existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {
           return false;

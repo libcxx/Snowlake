@@ -46,7 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ON_ERROR(msg, ...)                                                     \
   do {                                                                         \
     res = false;                                                               \
-    add_error((msg), __VA_ARGS__);                                             \
+    addError((msg), __VA_ARGS__);                                             \
     if (m_opts.bailOnFirstError) {                                             \
       return res;                                                              \
     }                                                                          \
