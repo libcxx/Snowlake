@@ -79,9 +79,9 @@ ProgramDriver::run(int argc, char** argv)
 
   // Parsing.
   ParserDriver::Options parserOpts{
-      .trace_lexer = cmdlOpts.debugMode,
-      .trace_parser = cmdlOpts.debugMode,
-      .suppress_error_messages = !(cmdlOpts.debugMode),
+      .traceLexer = cmdlOpts.debugMode,
+      .traceParser = cmdlOpts.debugMode,
+      .suppressErrorMessages = !(cmdlOpts.debugMode),
   };
 
   ParserDriver parser(parserOpts);

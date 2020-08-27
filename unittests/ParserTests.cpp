@@ -47,14 +47,14 @@ TEST_F(ParserTests, TestDefaultInitialization)
 
 TEST_F(ParserTests, TestInitializationWithOptions)
 {
-  ParserDriver::Options opts{.trace_lexer = true,
-                             .trace_parser = true,
-                             .suppress_error_messages = true};
+  ParserDriver::Options opts{.traceLexer = true,
+                             .traceParser = true,
+                             .suppressErrorMessages = true};
   ParserDriver driver(opts);
 
-  ASSERT_EQ(opts.trace_lexer, driver.traceLexer());
-  ASSERT_EQ(opts.trace_parser, driver.traceParser());
-  ASSERT_EQ(opts.suppress_error_messages, driver.suppressErrorMessages());
+  ASSERT_EQ(opts.traceLexer, driver.traceLexer());
+  ASSERT_EQ(opts.traceParser, driver.traceParser());
+  ASSERT_EQ(opts.suppressErrorMessages, driver.suppressErrorMessages());
 }
 
 // -----------------------------------------------------------------------------
