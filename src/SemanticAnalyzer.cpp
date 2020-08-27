@@ -211,7 +211,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
   // Proposition.
   {
     const auto& proposition = inference_defn.proposition_defn();
-    if (!has_compatible_target_in_table(proposition.target(),
+    if (!hasCompatibleTargetInTable(proposition.target(),
                                         context.target_tbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
@@ -257,7 +257,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   // Handle source.
   {
     const auto& source = defn.source();
-    const auto& source_root = get_root_of_ASTIdentifiable(source);
+    const auto& source_root = getRootOfASTIdentifiable(source);
     if (context->symbol_set.count(source_root) == 0) {
       ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
                source_root.c_str(), context->name.c_str());
@@ -267,11 +267,11 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   // Handle target.
   {
     const auto& target = defn.deduction_target();
-    if (has_incompatible_target_in_table(target, context->target_tbl)) {
+    if (hasIncompatibleTargetInTable(target, context->target_tbl)) {
       ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
     }
-    add_target_to_table(target, &context->target_tbl);
+    addTargetToTable(target, &context->target_tbl);
   }
 
   // Handle while-clause.
@@ -299,7 +299,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   const auto& lhs = defn.lhs();
   const auto& rhs = defn.rhs();
 
-  if (!are_targets_compatible(lhs, rhs)) {
+  if (!areTargetsCompatible(lhs, rhs)) {
     ON_ERROR("Incompatible targets in expression in inference \"%s\".",
              context->name.c_str());
   }
@@ -313,7 +313,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
-      if (!has_compatible_target_in_table(target, context->target_tbl)) {
+      if (!hasCompatibleTargetInTable(target, context->target_tbl)) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
