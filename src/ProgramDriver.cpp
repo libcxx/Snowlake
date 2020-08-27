@@ -73,7 +73,7 @@ ProgramDriver::run(int argc, char** argv)
     std::cout << cmdl_opts.input_path << std::endl;
     std::cout << std::endl;
     std::cout << "Output path:" << std::endl;
-    std::cout << cmdl_opts.output_path << std::endl;
+    std::cout << cmdl_opts.outputPath << std::endl;
     std::cout << std::endl;
   }
 
@@ -110,15 +110,15 @@ ProgramDriver::run(int argc, char** argv)
 
   // Synthesis.
   Synthesizer::Options synthesis_opts{
-    .use_exception = false,
-    .output_path = cmdl_opts.output_path
+    .useException = false,
+    .outputPath = cmdl_opts.outputPath
   };
   Synthesizer synthesizer(synthesis_opts);
   res = synthesizer.run(module);
   if (!res) {
     if (!cmdl_opts.silent) {
       std::cerr << "Error: Failed to synthesize output to: "
-                << cmdl_opts.output_path;
+                << cmdl_opts.outputPath;
     }
     return EXIT_FAILURE;
   }

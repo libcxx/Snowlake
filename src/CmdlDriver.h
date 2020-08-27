@@ -37,7 +37,7 @@ public:
     bool verbose;
     bool silent;
     std::string input_path;
-    std::string output_path;
+    std::string outputPath;
   };
 
   const Options& options() const;

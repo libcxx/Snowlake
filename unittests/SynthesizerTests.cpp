@@ -50,7 +50,7 @@ protected:
     ASSERT_TRUE(res);
 
     Synthesizer::Options opts{
-        .use_exception = false, .output_path = output_path,
+        .useException = false, .outputPath = outputPath,
     };
     Synthesizer synthesizer(opts);
 
@@ -76,14 +76,14 @@ protected:
                                   const char* filename) const
   {
     char output_filepath[32] = {0};
-    snprintf(output_filepath, sizeof(output_filepath), "%s%s", output_path,
+    snprintf(output_filepath, sizeof(output_filepath), "%s%s", outputPath,
              filename);
     const auto actual_res = read_from_output_file(output_filepath);
 
     ASSERT_STREQ(expected_res, actual_res.c_str());
   }
 
-  const char* output_path = "./";
+  const char* outputPath = "./";
 };
 
 // -----------------------------------------------------------------------------
