@@ -309,7 +309,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
     if (defn.hasRangeClause()) {
       const auto& rangeClause = defn.rangeClause();
       const auto& target = rangeClause.deductionTarget();
-      if (target.is_type<ASTDeductionTargetSingular>()) {
+      if (target.isType<ASTDeductionTargetSingular>()) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
@@ -333,10 +333,10 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
   const char* inferenceDefnName = context->name.c_str();
 
-  if (premiseDefn.is_type<ASTInferencePremiseDefn>()) {
+  if (premiseDefn.isType<ASTInferencePremiseDefn>()) {
     const auto& defnValue = premiseDefn.value<ASTInferencePremiseDefn>();
     RETURN_ON_FAILURE(recursivePremiseDefnCheck(defnValue, context));
-  } else if (premiseDefn.is_type<ASTInferenceEqualityDefn>()) {
+  } else if (premiseDefn.isType<ASTInferenceEqualityDefn>()) {
     const auto& defnValue = premiseDefn.value<ASTInferenceEqualityDefn>();
     RETURN_ON_FAILURE(recursivePremiseDefnCheck(defnValue, context));
   } else {

@@ -668,7 +668,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
   const auto& deductionTarget = premise_defn.deductionTarget();
 
   // Synthesize deduction.
-  if (deductionTarget.is_type<ASTDeductionTargetComputed>()) {
+  if (deductionTarget.isType<ASTDeductionTargetComputed>()) {
     /**
      * Computed deduction targets get special treatment.
      * Here we deduce the types of the lhs and rhs of the
@@ -759,10 +759,10 @@ SynthesizerImpl::synthesizeDeductionTarget(
 {
   auto& ofsRef = *ofs;
 
-  if (deductionTarget.is_type<ASTDeductionTargetSingular>()) {
+  if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetSingular>();
     ofsRef << value.name();
-  } else if (deductionTarget.is_type<ASTDeductionTargetArray>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetArray>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetArray>();
     // clang-format off
     switch (arrayMode) {
@@ -802,7 +802,7 @@ SynthesizerImpl::synthesizeDeductionTarget(
         break;
     }
     // clang-format on
-  } else if (deductionTarget.is_type<ASTDeductionTargetComputed>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetComputed>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetComputed>();
     ofsRef << value.name();
     ofsRef << CPP_OPEN_PAREN;
@@ -830,12 +830,12 @@ SynthesizerImpl::synthesizeDeductionTargetForDeclaration(
 
   auto& ofsRef = *ofs;
 
-  if (deductionTarget.is_type<ASTDeductionTargetSingular>()) {
+  if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     ofsRef << typeCls << CPP_SPACE;
     synthesizeDeductionTarget(
         deductionTarget, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
         ofs);
-  } else if (deductionTarget.is_type<ASTDeductionTargetArray>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetArray>()) {
     synthesizeDeductionTarget(
         deductionTarget, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
         ofs);

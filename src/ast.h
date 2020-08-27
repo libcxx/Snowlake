@@ -222,7 +222,7 @@ public:
   }
 
   template <typename U>
-  bool is_type() const
+  bool isType() const
   {
     return m_value.template is<U>();
   }
@@ -453,7 +453,7 @@ public:
   }
 
   template <class U>
-  bool is_type() const
+  bool isType() const
   {
     return m_value.template is<U>();
   }

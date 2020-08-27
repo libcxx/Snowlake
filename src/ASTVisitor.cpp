@@ -129,11 +129,11 @@ ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
 bool
 ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
 {
-  if (premise_defn.is_type<ASTInferencePremiseDefn>()) {
+  if (premise_defn.isType<ASTInferencePremiseDefn>()) {
     const ASTInferencePremiseDefn& defn =
         premise_defn.value<ASTInferencePremiseDefn>();
     VISIT_AND_VERIFY(defn);
-  } else if (premise_defn.is_type<ASTInferenceEqualityDefn>()) {
+  } else if (premise_defn.isType<ASTInferenceEqualityDefn>()) {
     const ASTInferenceEqualityDefn& defn =
         premise_defn.value<ASTInferenceEqualityDefn>();
     VISIT_AND_VERIFY(defn);
@@ -222,15 +222,15 @@ ASTVisitor::visit(const ASTDeductionTarget& deductionTarget)
 {
   PREVISIT_AND_VERIFY(deductionTarget);
 
-  if (deductionTarget.is_type<ASTDeductionTargetSingular>()) {
+  if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     const ASTDeductionTargetSingular& target =
         deductionTarget.value<ASTDeductionTargetSingular>();
     VISIT_AND_VERIFY(target);
-  } else if (deductionTarget.is_type<ASTDeductionTargetArray>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetArray>()) {
     const ASTDeductionTargetArray& target =
         deductionTarget.value<ASTDeductionTargetArray>();
     VISIT_AND_VERIFY(target);
-  } else if (deductionTarget.is_type<ASTDeductionTargetComputed>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetComputed>()) {
     const ASTDeductionTargetComputed& target =
         deductionTarget.value<ASTDeductionTargetComputed>();
     VISIT_AND_VERIFY(target);
