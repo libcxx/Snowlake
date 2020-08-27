@@ -3,7 +3,7 @@
 
 # Snowlake
 
-[![Build Status](https://travis-ci.org/libcxx/Snowlake.svg?branch=master)](https://travis-ci.org/libcxx/Snowlake)
+[![Build Status](https://travis-ci.org/tetrachrome/Snowlake.svg?branch=master)](https://travis-ci.org/tetrachrome/Snowlake)
 [![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -38,7 +38,7 @@ mkdir build && cd build && cmake .. && make
 
 ## Development Environment and Dependencies
 
-Please refer to the [Development Environment and Dependencies](https://github.com/libcxx/Snowlake/wiki/Development-Environment-and-Dependencies) wiki page for detailed up-to-date
+Please refer to the [Development Environment and Dependencies](https://github.com/tetrachrome/Snowlake/wiki/Development-Environment-and-Dependencies) wiki page for detailed up-to-date
 information.
 
 
