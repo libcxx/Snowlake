@@ -210,7 +210,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Proposition.
   {
-    const auto& proposition = inferenceDefn.proposition_defn();
+    const auto& proposition = inferenceDefn.propositionDefn();
     if (!hasCompatibleTargetInTable(proposition.target(),
                                         context.targetTbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
@@ -276,8 +276,8 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
   // Handle while-clause.
   {
-    if (defn.has_while_clause()) {
-      const auto& whileClause = defn.while_clause();
+    if (defn.hasWhileClause()) {
+      const auto& whileClause = defn.whileClause();
       for (const auto& nestedDefn : whileClause.premiseDefns()) {
         RETURN_ON_FAILURE(recursivePremiseDefnCheck(nestedDefn, context));
       }
@@ -306,8 +306,8 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
   // Handle range-clause.
   {
-    if (defn.has_range_clause()) {
-      const auto& rangeClause = defn.range_clause();
+    if (defn.hasRangeClause()) {
+      const auto& rangeClause = defn.rangeClause();
       const auto& target = rangeClause.deductionTarget();
       if (target.is_type<ASTDeductionTargetSingular>()) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",

@@ -444,7 +444,7 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 bool
 SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premiseDefn)
 {
-  const bool hasWhileClause = premiseDefn.has_while_clause();
+  const bool hasWhileClause = premiseDefn.hasWhileClause();
 
   if (hasWhileClause) {
     synthesizeInferencePremiseDefnWithWhileClause(premiseDefn);
@@ -464,7 +464,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
   const auto& typeCmpMethodName = m_context->envDefnMap.at(
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
 
-  const bool hasRangeClause = premiseDefn.has_range_clause();
+  const bool hasRangeClause = premiseDefn.hasRangeClause();
 
   static const char var1 = 'i';
   static const char var2 = 'j';
@@ -472,7 +472,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
   auto& cppFileOfs = *(m_context->cppFileOfs);
 
   if (hasRangeClause) {
-    const auto& rangeClause = premiseDefn.range_clause();
+    const auto& rangeClause = premiseDefn.rangeClause();
 
     renderIndentationInCppFile();
 
@@ -481,10 +481,10 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
     // For-loop initializers.
     {
       cppFileOfs << CPP_SIZE_T << CPP_SPACE << var1 << CPP_SPACE << CPP_ASSIGN
-                   << CPP_SPACE << rangeClause.lhs_idx();
+                   << CPP_SPACE << rangeClause.lhsIdx();
       cppFileOfs << CPP_COMA << CPP_SPACE;
       cppFileOfs << CPP_SIZE_T << CPP_SPACE << var2 << CPP_SPACE << CPP_ASSIGN
-                   << CPP_SPACE << rangeClause.rhs_idx();
+                   << CPP_SPACE << rangeClause.rhsIdx();
       cppFileOfs << CPP_SEMICOLON << CPP_SPACE;
     }
 
@@ -601,7 +601,7 @@ void
 SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     const ASTInferencePremiseDefn& premiseDefn) const
 {
-  SYNTHESIZER_ASSERT(premiseDefn.has_while_clause());
+  SYNTHESIZER_ASSERT(premiseDefn.hasWhileClause());
 
   auto& cppFileOfs = *(m_context->cppFileOfs);
 
@@ -626,7 +626,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
   // Synthesize body of while-clause.
   {
-    const auto& whileClause = premiseDefn.while_clause();
+    const auto& whileClause = premiseDefn.whileClause();
 
     for (const auto& defn : whileClause.premiseDefns()) {
       // FIXME: This const_cast here is not ideal.
@@ -742,7 +742,7 @@ SynthesizerImpl::synthesizeArgumentList(const ASTInferenceArgumentList& args,
 
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
-    ofsRef << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name()
+    ofsRef << CPP_CONST_KEYWORD << CPP_SPACE << arg.typeName()
             << CPP_AMPERSAND << CPP_SPACE << arg.name();
     if (i + 1 < args.size()) {
       ofsRef << CPP_COMA << CPP_SPACE;
@@ -768,10 +768,10 @@ SynthesizerImpl::synthesizeDeductionTarget(
     switch (arrayMode) {
       case DeductionTargetArraySynthesisMode::AS_ARRAY:
         {
-          if (value.has_size_literal()) {
+          if (value.hasSizeLiteral()) {
             ofsRef << value.name();
             ofsRef << CPP_OPEN_BRACKET;
-            ofsRef << value.size_literal();
+            ofsRef << value.sizeLiteral();
             ofsRef << CPP_CLOSE_BRACKET;
           } else {
             // If the target does not have a size literal,

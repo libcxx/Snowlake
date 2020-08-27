@@ -77,11 +77,11 @@ areTargetsCompatible(const ASTDeductionTarget& lhs,
     // compatible.
     if (lhs.is_type<ASTDeductionTargetArray>()) {
       const auto& lhs_val = lhs.value<ASTDeductionTargetArray>();
-      return lhs_val.has_size_literal();
+      return lhs_val.hasSizeLiteral();
     } else {
       ASSERT(rhs.is_type<ASTDeductionTargetArray>());
       const auto& rhs_val = rhs.value<ASTDeductionTargetArray>();
-      return rhs_val.has_size_literal();
+      return rhs_val.hasSizeLiteral();
     }
   }
 }
@@ -102,9 +102,9 @@ bool
 areTargetsCompatible(const ASTDeductionTargetArray& lhs,
                        const ASTDeductionTargetArray& rhs)
 {
-  if (lhs.has_size_literal() && rhs.has_size_literal()) {
+  if (lhs.hasSizeLiteral() && rhs.hasSizeLiteral()) {
     return true;
-  } else if (!lhs.has_size_literal() && !rhs.has_size_literal()) {
+  } else if (!lhs.hasSizeLiteral() && !rhs.hasSizeLiteral()) {
     // In range clause.
     // E.g. "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
     return true;
@@ -163,14 +163,14 @@ hasCompatibleTargetInTable(const ASTDeductionTarget& target,
       if (existing_value->is_type<ASTDeductionTargetArray>()) {
         const auto& existing_target =
             existing_value->value<ASTDeductionTargetArray>();
-        if (value.has_size_literal() && !existing_target.has_size_literal()) {
+        if (value.hasSizeLiteral() && !existing_target.hasSizeLiteral()) {
           return false;
-        } else if (!value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
+        } else if (!value.hasSizeLiteral() &&
+                   existing_target.hasSizeLiteral()) {
           return false;
-        } else if (value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
-          return value.size_literal() == existing_target.size_literal();
+        } else if (value.hasSizeLiteral() &&
+                   existing_target.hasSizeLiteral()) {
+          return value.sizeLiteral() == existing_target.sizeLiteral();
         } else // Neither has size literal.
         {
           return true;
@@ -209,14 +209,14 @@ hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
       if (existing_value->is_type<ASTDeductionTargetArray>()) {
         const auto& existing_target =
             existing_value->value<ASTDeductionTargetArray>();
-        if (value.has_size_literal() && !existing_target.has_size_literal()) {
+        if (value.hasSizeLiteral() && !existing_target.hasSizeLiteral()) {
           return true;
-        } else if (!value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
+        } else if (!value.hasSizeLiteral() &&
+                   existing_target.hasSizeLiteral()) {
           return true;
-        } else if (value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
-          return value.size_literal() != existing_target.size_literal();
+        } else if (value.hasSizeLiteral() &&
+                   existing_target.hasSizeLiteral()) {
+          return value.sizeLiteral() != existing_target.sizeLiteral();
         } else // Neither has size literal.
         {
           return false;

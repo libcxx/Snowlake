@@ -358,13 +358,13 @@ namespace yy {
       // premise_defn_list
       char dummy22[sizeof(ASTPremiseDefnList)];
 
-      // proposition_defn
+      // propositionDefn
       char dummy23[sizeof(ASTPropositionDefn)];
 
-      // range_clause
+      // rangeClause
       char dummy24[sizeof(ASTRangeClause)];
 
-      // while_clause
+      // whileClause
       char dummy25[sizeof(ASTWhileClause)];
 
       // equality_operator
@@ -1097,15 +1097,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (other.value);
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.copy< ASTPropositionDefn > (other.value);
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.copy< ASTRangeClause > (other.value);
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.copy< ASTWhileClause > (other.value);
         break;
 
@@ -1252,15 +1252,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (v);
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.copy< ASTPropositionDefn > (v);
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.copy< ASTRangeClause > (v);
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.copy< ASTWhileClause > (v);
         break;
 
@@ -1628,15 +1628,15 @@ namespace yy {
         value.template destroy< ASTPremiseDefnList > ();
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.template destroy< ASTPropositionDefn > ();
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.template destroy< ASTRangeClause > ();
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.template destroy< ASTWhileClause > ();
         break;
 
@@ -1790,15 +1790,15 @@ namespace yy {
         value.move< ASTPremiseDefnList > (s.value);
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.move< ASTPropositionDefn > (s.value);
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.move< ASTRangeClause > (s.value);
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.move< ASTWhileClause > (s.value);
         break;
 

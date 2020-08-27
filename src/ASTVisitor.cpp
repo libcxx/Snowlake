@@ -117,7 +117,7 @@ ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
   }
 
   // Proposition defn.
-  VISIT_AND_VERIFY(inference_defn.proposition_defn());
+  VISIT_AND_VERIFY(inference_defn.propositionDefn());
 
   POSTVISIT_AND_VERIFY(inference_defn);
 
@@ -172,9 +172,9 @@ ASTVisitor::visit(const ASTInferenceEqualityDefn& defn)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTWhileClause& while_clause)
+ASTVisitor::visit(const ASTWhileClause& whileClause)
 {
-  for (const auto& premise_defn : while_clause.premiseDefns()) {
+  for (const auto& premise_defn : whileClause.premiseDefns()) {
     VISIT_AND_VERIFY(premise_defn);
   }
 
@@ -204,13 +204,13 @@ ASTVisitor::visit(const ASTInferenceArgument& argument)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTPropositionDefn& proposition_defn)
+ASTVisitor::visit(const ASTPropositionDefn& propositionDefn)
 {
-  PREVISIT_AND_VERIFY(proposition_defn);
+  PREVISIT_AND_VERIFY(propositionDefn);
 
-  VISIT_AND_VERIFY(proposition_defn.target());
+  VISIT_AND_VERIFY(propositionDefn.target());
 
-  POSTVISIT_AND_VERIFY(proposition_defn);
+  POSTVISIT_AND_VERIFY(propositionDefn);
 
   DEFAULT_RETURN();
 }

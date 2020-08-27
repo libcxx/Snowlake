@@ -347,15 +347,15 @@ namespace yy {
         value.move< ASTPremiseDefnList > (that.value);
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.move< ASTPropositionDefn > (that.value);
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.move< ASTRangeClause > (that.value);
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.move< ASTWhileClause > (that.value);
         break;
 
@@ -501,15 +501,15 @@ namespace yy {
         value.copy< ASTPremiseDefnList > (that.value);
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         value.copy< ASTPropositionDefn > (that.value);
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         value.copy< ASTRangeClause > (that.value);
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         value.copy< ASTWhileClause > (that.value);
         break;
 
@@ -880,15 +880,15 @@ namespace yy {
         yylhs.value.build< ASTPremiseDefnList > ();
         break;
 
-      case 50: // proposition_defn
+      case 50: // propositionDefn
         yylhs.value.build< ASTPropositionDefn > ();
         break;
 
-      case 49: // range_clause
+      case 49: // rangeClause
         yylhs.value.build< ASTRangeClause > ();
         break;
 
-      case 47: // while_clause
+      case 47: // whileClause
         yylhs.value.build< ASTWhileClause > ();
         break;
 
@@ -1752,8 +1752,8 @@ namespace yy {
   "inference_defn", "global_decl_set", "global_decl_list", "global_decl",
   "argument_set", "argument_list", "inference_argument", "premise_set",
   "premise_defn_list", "premise_defn", "premise_type_inference_defn",
-  "while_clause", "premise_type_equality_defn", "range_clause",
-  "proposition_defn", "identifiable", "identifier",
+  "whileClause", "premise_type_equality_defn", "rangeClause",
+  "propositionDefn", "identifiable", "identifier",
   "deduction_target_list", "deductionTarget", "deduction_target_singular",
   "deduction_target_array", "deduction_target_computed",
   "equality_operator", YY_NULLPTR

@@ -152,12 +152,12 @@ public:
     return m_name;
   }
 
-  bool has_size_literal() const
+  bool hasSizeLiteral() const
   {
     return m_array_size.has_value();
   }
 
-  IntegerType size_literal() const
+  IntegerType sizeLiteral() const
   {
     return m_array_size.value();
   }
@@ -271,20 +271,20 @@ public:
   {
   }
 
-  ASTRangeClause(IntegerType lhs_idx, IntegerType rhs_idx,
+  ASTRangeClause(IntegerType lhsIdx, IntegerType rhsIdx,
                  ASTDeductionTarget&& deductionTarget)
-    : m_lhs_idx(lhs_idx)
-    , m_rhs_idx(rhs_idx)
+    : m_lhs_idx(lhsIdx)
+    , m_rhs_idx(rhsIdx)
     , m_deduction_target(deductionTarget)
   {
   }
 
-  IntegerType lhs_idx() const
+  IntegerType lhsIdx() const
   {
     return m_lhs_idx;
   }
 
-  IntegerType rhs_idx() const
+  IntegerType rhsIdx() const
   {
     return m_rhs_idx;
   }
@@ -319,11 +319,11 @@ public:
   }
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs, ASTDeductionTarget&& rhs,
-                           EqualityOperator oprt, ASTRangeClause&& range_clause)
+                           EqualityOperator oprt, ASTRangeClause&& rangeClause)
     : m_lhs(lhs)
     , m_rhs(rhs)
     , m_oprt(oprt)
-    , m_range_clause(range_clause)
+    , m_range_clause(rangeClause)
   {
   }
 
@@ -342,12 +342,12 @@ public:
     return m_oprt;
   }
 
-  bool has_range_clause() const
+  bool hasRangeClause() const
   {
     return m_range_clause.has_value();
   }
 
-  const ASTRangeClause& range_clause() const
+  const ASTRangeClause& rangeClause() const
   {
     return m_range_clause.value();
   }
@@ -401,10 +401,10 @@ public:
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
                           ASTDeductionTarget&& deductionTarget,
-                          ASTWhileClause&& while_clause)
+                          ASTWhileClause&& whileClause)
     : m_source(source)
     , m_deduction_target(deductionTarget)
-    , m_while_clause(while_clause)
+    , m_while_clause(whileClause)
   {
   }
 
@@ -418,12 +418,12 @@ public:
     return m_deduction_target;
   }
 
-  bool has_while_clause() const
+  bool hasWhileClause() const
   {
     return m_while_clause.has_value();
   }
 
-  const ASTWhileClause& while_clause() const
+  const ASTWhileClause& whileClause() const
   {
     return m_while_clause.value();
   }
@@ -478,9 +478,9 @@ public:
   {
   }
 
-  ASTInferenceArgument(StringType&& name, StringType&& type_name)
+  ASTInferenceArgument(StringType&& name, StringType&& typeName)
     : m_name(name)
-    , m_type_name(type_name)
+    , m_type_name(typeName)
   {
   }
 
@@ -489,7 +489,7 @@ public:
     return m_name;
   }
 
-  const StringType& type_name() const
+  const StringType& typeName() const
   {
     return m_type_name;
   }
@@ -536,12 +536,12 @@ public:
   ASTInferenceDefn(StringType&& name, ASTGlobalDeclList&& globalDecls,
                    ASTInferenceArgumentList&& arguments,
                    ASTPremiseDefnList&& premiseDefns,
-                   ASTPropositionDefn&& proposition_defn)
+                   ASTPropositionDefn&& propositionDefn)
     : m_name(name)
     , m_global_decls(globalDecls)
     , m_arguments(arguments)
     , m_premise_defns(premiseDefns)
-    , m_proposition_defn(proposition_defn)
+    , m_proposition_defn(propositionDefn)
   {
   }
 
@@ -565,7 +565,7 @@ public:
     return m_premise_defns;
   }
 
-  const ASTPropositionDefn& proposition_defn() const
+  const ASTPropositionDefn& propositionDefn() const
   {
     return m_proposition_defn;
   }
