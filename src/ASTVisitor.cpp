@@ -55,8 +55,8 @@ ASTVisitor::visit(const ASTModule& module)
 {
   PREVISIT_AND_VERIFY(module);
 
-  for (const auto& inference_group : module.inferenceGroups()) {
-    VISIT_AND_VERIFY(inference_group);
+  for (const auto& inferenceGroup : module.inferenceGroups()) {
+    VISIT_AND_VERIFY(inferenceGroup);
   }
 
   POSTVISIT_AND_VERIFY(module);
@@ -67,19 +67,19 @@ ASTVisitor::visit(const ASTModule& module)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTInferenceGroup& inference_group)
+ASTVisitor::visit(const ASTInferenceGroup& inferenceGroup)
 {
-  PREVISIT_AND_VERIFY(inference_group);
+  PREVISIT_AND_VERIFY(inferenceGroup);
 
-  for (const auto& environment_defn : inference_group.environmentDefns()) {
-    VISIT_AND_VERIFY(environment_defn);
+  for (const auto& environmentDefn : inferenceGroup.environmentDefns()) {
+    VISIT_AND_VERIFY(environmentDefn);
   }
 
-  for (const auto& inference_defn : inference_group.inferenceDefns()) {
-    VISIT_AND_VERIFY(inference_defn);
+  for (const auto& inferenceDefn : inferenceGroup.inferenceDefns()) {
+    VISIT_AND_VERIFY(inferenceDefn);
   }
 
-  POSTVISIT_AND_VERIFY(inference_group);
+  POSTVISIT_AND_VERIFY(inferenceGroup);
 
   DEFAULT_RETURN();
 }
@@ -87,39 +87,39 @@ ASTVisitor::visit(const ASTInferenceGroup& inference_group)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTEnvironmentDefn& environment_defn)
+ASTVisitor::visit(const ASTEnvironmentDefn& environmentDefn)
 {
-  PREVISIT_AND_VERIFY(environment_defn);
-  POSTVISIT_AND_VERIFY(environment_defn);
+  PREVISIT_AND_VERIFY(environmentDefn);
+  POSTVISIT_AND_VERIFY(environmentDefn);
   DEFAULT_RETURN();
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
+ASTVisitor::visit(const ASTInferenceDefn& inferenceDefn)
 {
-  PREVISIT_AND_VERIFY(inference_defn);
+  PREVISIT_AND_VERIFY(inferenceDefn);
 
   // Global decls.
-  for (const auto& decl : inference_defn.globalDecls()) {
+  for (const auto& decl : inferenceDefn.globalDecls()) {
     VISIT_AND_VERIFY(decl);
   }
 
   // Arguments.
-  for (const auto& argument : inference_defn.arguments()) {
+  for (const auto& argument : inferenceDefn.arguments()) {
     VISIT_AND_VERIFY(argument);
   }
 
   // Premise defns.
-  for (const auto& premise_defn : inference_defn.premiseDefns()) {
-    VISIT_AND_VERIFY(premise_defn);
+  for (const auto& premiseDefn : inferenceDefn.premiseDefns()) {
+    VISIT_AND_VERIFY(premiseDefn);
   }
 
   // Proposition defn.
-  VISIT_AND_VERIFY(inference_defn.propositionDefn());
+  VISIT_AND_VERIFY(inferenceDefn.propositionDefn());
 
-  POSTVISIT_AND_VERIFY(inference_defn);
+  POSTVISIT_AND_VERIFY(inferenceDefn);
 
   DEFAULT_RETURN();
 }
@@ -127,15 +127,15 @@ ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
+ASTVisitor::visit(const ASTPremiseDefn& premiseDefn)
 {
-  if (premise_defn.isType<ASTInferencePremiseDefn>()) {
+  if (premiseDefn.isType<ASTInferencePremiseDefn>()) {
     const ASTInferencePremiseDefn& defn =
-        premise_defn.value<ASTInferencePremiseDefn>();
+        premiseDefn.value<ASTInferencePremiseDefn>();
     VISIT_AND_VERIFY(defn);
-  } else if (premise_defn.isType<ASTInferenceEqualityDefn>()) {
+  } else if (premiseDefn.isType<ASTInferenceEqualityDefn>()) {
     const ASTInferenceEqualityDefn& defn =
-        premise_defn.value<ASTInferenceEqualityDefn>();
+        premiseDefn.value<ASTInferenceEqualityDefn>();
     VISIT_AND_VERIFY(defn);
   } else {
     ASSERT(0);
@@ -174,8 +174,8 @@ ASTVisitor::visit(const ASTInferenceEqualityDefn& defn)
 bool
 ASTVisitor::visit(const ASTWhileClause& whileClause)
 {
-  for (const auto& premise_defn : whileClause.premiseDefns()) {
-    VISIT_AND_VERIFY(premise_defn);
+  for (const auto& premiseDefn : whileClause.premiseDefns()) {
+    VISIT_AND_VERIFY(premiseDefn);
   }
 
   DEFAULT_RETURN();
@@ -184,10 +184,10 @@ ASTVisitor::visit(const ASTWhileClause& whileClause)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTGlobalDecl& global_decl)
+ASTVisitor::visit(const ASTGlobalDecl& globalDecl)
 {
-  PREVISIT_AND_VERIFY(global_decl);
-  POSTVISIT_AND_VERIFY(global_decl);
+  PREVISIT_AND_VERIFY(globalDecl);
+  POSTVISIT_AND_VERIFY(globalDecl);
   DEFAULT_RETURN();
 }
 
