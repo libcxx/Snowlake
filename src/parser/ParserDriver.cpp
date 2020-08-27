@@ -34,7 +34,7 @@ ParserDriver::ParserDriver()
   : m_opts(ParserDriver::Options{.traceLexer = false,
                                  .traceParser = false,
                                  .suppressErrorMessages = false})
-  , m_input_file()
+  , m_inputFile()
   , m_module()
 {
 }
@@ -43,7 +43,7 @@ ParserDriver::ParserDriver()
 
 ParserDriver::ParserDriver(Options opts)
   : m_opts(opts)
-  , m_input_file()
+  , m_inputFile()
   , m_module()
 {
 }
@@ -107,7 +107,7 @@ ParserDriver::setSuppressErrorMessages(bool val)
 int
 ParserDriver::parseFromFile(const std::string& filepath)
 {
-  m_input_file.assign(filepath);
+  m_inputFile.assign(filepath);
   std::ifstream infile(filepath.c_str());
   if (!infile.good()) {
     return -1;
@@ -150,7 +150,7 @@ ParserDriver::parseFromString(const char* input)
 const std::string&
 ParserDriver::inputFile() const
 {
-  return m_input_file;
+  return m_inputFile;
 }
 
 // -----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ ParserDriver::inputFile() const
 std::string&
 ParserDriver::inputFile()
 {
-  return m_input_file;
+  return m_inputFile;
 }
 
 // -----------------------------------------------------------------------------

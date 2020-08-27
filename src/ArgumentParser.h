@@ -137,10 +137,10 @@ private:
   std::string m_name;
   std::string m_version;
   std::string m_desc;
-  std::string m_long_desc;
+  std::string m_longDesc;
   std::string m_usage;
   CmdlOptionMap m_opts;
-  ShortHandMap m_shorthand_map;
-  PositionalArgumentList m_positional_args;
-  size_t m_min_positional_args_required;
+  ShortHandMap m_shorthandMap;
+  PositionalArgumentList m_positionalArgs;
+  size_t m_minPositionalArgsRequired;
 };

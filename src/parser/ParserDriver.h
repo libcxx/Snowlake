@@ -100,6 +100,6 @@ public:
 
 private:
   Options m_opts;
-  std::string m_input_file;
+  std::string m_inputFile;
   ASTModule m_module;
 };

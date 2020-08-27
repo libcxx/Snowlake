@@ -48,12 +48,12 @@ ArgumentParser::ArgumentParser()
   : m_name()
   , m_version()
   , m_desc()
-  , m_long_desc()
+  , m_longDesc()
   , m_usage()
   , m_opts()
-  , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_shorthandMap()
+  , m_positionalArgs()
+  , m_minPositionalArgsRequired(0)
 {
 }
 
@@ -63,12 +63,12 @@ ArgumentParser::ArgumentParser(const char* name)
   : m_name(name)
   , m_version()
   , m_desc()
-  , m_long_desc()
+  , m_longDesc()
   , m_usage()
   , m_opts()
-  , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_shorthandMap()
+  , m_positionalArgs()
+  , m_minPositionalArgsRequired(0)
 {
 }
 
@@ -78,12 +78,12 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
   : m_name(name)
   , m_version(version)
   , m_desc()
-  , m_long_desc()
+  , m_longDesc()
   , m_usage()
   , m_opts()
-  , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_shorthandMap()
+  , m_positionalArgs()
+  , m_minPositionalArgsRequired(0)
 {
 }
 
@@ -94,12 +94,12 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   : m_name(name)
   , m_version(version)
   , m_desc(description)
-  , m_long_desc()
+  , m_longDesc()
   , m_usage()
   , m_opts()
-  , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_shorthandMap()
+  , m_positionalArgs()
+  , m_minPositionalArgsRequired(0)
 {
 }
 
@@ -111,12 +111,12 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
   : m_name(name)
   , m_version(version)
   , m_desc(description)
-  , m_long_desc(long_description)
+  , m_longDesc(long_description)
   , m_usage()
   , m_opts()
-  , m_shorthand_map()
-  , m_positional_args()
-  , m_min_positional_args_required(0)
+  , m_shorthandMap()
+  , m_positionalArgs()
+  , m_minPositionalArgsRequired(0)
 {
 }
 
@@ -135,7 +135,7 @@ ArgumentParser::addParameter(const char* name, const char shorthand,
                   .value = CmdlOptionValue(),
                   .dst = reinterpret_cast<void*>(res),
                 };
-  m_shorthand_map[shorthand] = name;
+  m_shorthandMap[shorthand] = name;
   m_opts[name] = opts;
 }
 
@@ -226,12 +226,12 @@ ArgumentParser::__checkParameters() const
 {
   // Check if the short-hand map count matches with the number of options.
   // If not, it means there are short-hands that are duplicate.
-  if (m_shorthand_map.size() != m_opts.size()) {
+  if (m_shorthandMap.size() != m_opts.size()) {
     return false;
   }
 
   // Sanity check.
-  for (const auto& pair : m_shorthand_map) {
+  for (const auto& pair : m_shorthandMap) {
     const char shorthand = pair.first;
     const auto& option_key = pair.second;
     const auto iter = m_opts.find(option_key);
@@ -245,7 +245,7 @@ ArgumentParser::__checkParameters() const
   }
 
   // Check if we meet the required number of positional arguments.
-  if (m_positional_args.size() < m_min_positional_args_required) {
+  if (m_positionalArgs.size() < m_minPositionalArgsRequired) {
     return false;
   }
 
@@ -263,7 +263,7 @@ ArgumentParser::__checkParameters() const
 void
 ArgumentParser::setMinimumPositionalArgsRequired(size_t n)
 {
-  m_min_positional_args_required = n;
+  m_minPositionalArgsRequired = n;
 }
 
 // -----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ ArgumentParser::parseArgs(int argc, char** argv)
 const ArgumentParser::PositionalArgumentList&
 ArgumentParser::positionalArgs() const
 {
-  return m_positional_args;
+  return m_positionalArgs;
 }
 
 // -----------------------------------------------------------------------------
@@ -321,9 +321,9 @@ ArgumentParser::__printHelp(Stream& stream) const
   stream << std::endl;
 
   // Long description.
-  if (!m_long_desc.empty()) {
+  if (!m_longDesc.empty()) {
     stream << std::endl;
-    stream << m_long_desc;
+    stream << m_longDesc;
     stream << std::endl;
   }
   stream << std::endl;
@@ -408,7 +408,7 @@ ArgumentParser::printHelp() const
 void
 ArgumentParser::__addPositionalParameter(std::string&& arg)
 {
-  m_positional_args.emplace_back(arg);
+  m_positionalArgs.emplace_back(arg);
 }
 
 // -----------------------------------------------------------------------------
@@ -438,8 +438,8 @@ ArgumentParser::__parseArgs(int argc, char** argv)
         return false;
       }
       const char c = shorthand[0];
-      const auto iter = m_shorthand_map.find(c);
-      if (iter == m_shorthand_map.end()) {
+      const auto iter = m_shorthandMap.find(c);
+      if (iter == m_shorthandMap.end()) {
         return false;
       }
       std::string key = iter->second;
