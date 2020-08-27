@@ -58,9 +58,9 @@ struct InferenceGroupSynthesisContext
   EnvDefnMap envDefnMap;
   std::unique_ptr<std::ofstream> headerFileOfs;
   std::unique_ptr<std::ofstream> cppFileOfs;
-  size_t header_file_indent_lvl;
-  size_t cpp_file_indent_lvl;
-  uint32_t name_id;
+  size_t headerFileIndentLvl;
+  size_t cppFileIndentLvl;
+  uint32_t nameId;
 
   InferenceGroupSynthesisContext();
   ~InferenceGroupSynthesisContext();
@@ -188,9 +188,9 @@ InferenceGroupSynthesisContext::InferenceGroupSynthesisContext()
   , envDefnMap()
   , headerFileOfs()
   , cppFileOfs()
-  , header_file_indent_lvl(0)
-  , cpp_file_indent_lvl(0)
-  , name_id(0)
+  , headerFileIndentLvl(0)
+  , cppFileIndentLvl(0)
+  , nameId(0)
 {
 }
 
@@ -442,14 +442,14 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 
 /* virtual */
 bool
-SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premise_defn)
+SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premiseDefn)
 {
-  const bool has_while_clause = premise_defn.has_while_clause();
+  const bool hasWhileClause = premiseDefn.has_while_clause();
 
-  if (has_while_clause) {
-    synthesizeInferencePremiseDefnWithWhileClause(premise_defn);
+  if (hasWhileClause) {
+    synthesizeInferencePremiseDefnWithWhileClause(premiseDefn);
   } else {
-    synthesizeInferencePremiseDefnWithoutWhileClause(premise_defn);
+    synthesizeInferencePremiseDefnWithoutWhileClause(premiseDefn);
   }
 
   return true;
@@ -573,8 +573,8 @@ SynthesizerImpl::getEnvnDefnMapFromInferenceGroup(
 {
   EnvDefnMap envDefnMap;
 
-  for (const auto& envn_defn : inference_group.environment_defns()) {
-    envDefnMap[envn_defn.field()] = envn_defn.value();
+  for (const auto& envnDefn : inference_group.environment_defns()) {
+    envDefnMap[envnDefn.field()] = envnDefn.value();
   }
 
   return envDefnMap;
@@ -738,14 +738,14 @@ void
 SynthesizerImpl::synthesizeArgumentList(const ASTInferenceArgumentList& args,
                                           std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
 
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
-    ofs_ref << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name()
+    ofsRef << CPP_CONST_KEYWORD << CPP_SPACE << arg.type_name()
             << CPP_AMPERSAND << CPP_SPACE << arg.name();
     if (i + 1 < args.size()) {
-      ofs_ref << CPP_COMA << CPP_SPACE;
+      ofsRef << CPP_COMA << CPP_SPACE;
     }
   }
 }
@@ -757,11 +757,11 @@ SynthesizerImpl::synthesizeDeductionTarget(
     const ASTDeductionTarget& deductionTarget,
     const DeductionTargetArraySynthesisMode arrayMode, std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
 
   if (deductionTarget.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetSingular>();
-    ofs_ref << value.name();
+    ofsRef << value.name();
   } else if (deductionTarget.is_type<ASTDeductionTargetArray>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetArray>();
     // clang-format off
@@ -769,33 +769,33 @@ SynthesizerImpl::synthesizeDeductionTarget(
       case DeductionTargetArraySynthesisMode::AS_ARRAY:
         {
           if (value.has_size_literal()) {
-            ofs_ref << value.name();
-            ofs_ref << CPP_OPEN_BRACKET;
-            ofs_ref << value.size_literal();
-            ofs_ref << CPP_CLOSE_BRACKET;
+            ofsRef << value.name();
+            ofsRef << CPP_OPEN_BRACKET;
+            ofsRef << value.size_literal();
+            ofsRef << CPP_CLOSE_BRACKET;
           } else {
             // If the target does not have a size literal,
             // then just render it as a raw pointer star.
-            ofs_ref << CPP_STAR;
-            ofs_ref << value.name();
+            ofsRef << CPP_STAR;
+            ofsRef << value.name();
           }
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_RAW_POINTER_ARRAY:
         {
-          ofs_ref << CPP_STAR;
-          ofs_ref << value.name();
+          ofsRef << CPP_STAR;
+          ofsRef << value.name();
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_SINGULAR:
         {
-          ofs_ref << value.name();
+          ofsRef << value.name();
         }
         break;
       case DeductionTargetArraySynthesisMode::AS_STD_VECTOR:
         {
           const auto& typeCls = m_context->typeCls;
-          ofs_ref << "std::vector<" << typeCls << '>' << CPP_SPACE << value.name();
+          ofsRef << "std::vector<" << typeCls << '>' << CPP_SPACE << value.name();
         }
         break;
       default:
@@ -804,17 +804,17 @@ SynthesizerImpl::synthesizeDeductionTarget(
     // clang-format on
   } else if (deductionTarget.is_type<ASTDeductionTargetComputed>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetComputed>();
-    ofs_ref << value.name();
-    ofs_ref << CPP_OPEN_PAREN;
+    ofsRef << value.name();
+    ofsRef << CPP_OPEN_PAREN;
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
       synthesizeDeductionTarget(
           arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
       if (i + 1 < arguments.size()) {
-        ofs_ref << CPP_COMA << CPP_SPACE;
+        ofsRef << CPP_COMA << CPP_SPACE;
       }
     }
-    ofs_ref << CPP_CLOSE_PAREN;
+    ofsRef << CPP_CLOSE_PAREN;
   } else {
     SYNTHESIZER_ASSERT(0 && "Unknown type of deduction target.");
   }
@@ -828,10 +828,10 @@ SynthesizerImpl::synthesizeDeductionTargetForDeclaration(
 {
   const auto& typeCls = m_context->typeCls;
 
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
 
   if (deductionTarget.is_type<ASTDeductionTargetSingular>()) {
-    ofs_ref << typeCls << CPP_SPACE;
+    ofsRef << typeCls << CPP_SPACE;
     synthesizeDeductionTarget(
         deductionTarget, DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
         ofs);
@@ -850,12 +850,12 @@ void
 SynthesizerImpl::synthesizeIdentifiable(const ASTIdentifiable& identifiable,
                                          std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
   const auto& identifiers = identifiable.identifiers();
   for (size_t i = 0; i < identifiers.size(); ++i) {
-    ofs_ref << identifiers[i].value();
+    ofsRef << identifiers[i].value();
     if (i + 1 < identifiers.size()) {
-      ofs_ref << CPP_DOT;
+      ofsRef << CPP_DOT;
     }
   }
 }
@@ -866,26 +866,26 @@ void
 SynthesizerImpl::synthesizeEqualityOperator(const EqualityOperator oprt,
                                               std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
   const auto& typeCls = m_context->typeCls;
   switch (oprt) {
     case EqualityOperator::OPERATOR_EQ:
-      ofs_ref << "std::equal_to";
+      ofsRef << "std::equal_to";
       break;
     case EqualityOperator::OPERATOR_NEQ:
-      ofs_ref << "std::not_equal_to";
+      ofsRef << "std::not_equal_to";
       break;
     case EqualityOperator::OPERATOR_LT:
-      ofs_ref << "std::less";
+      ofsRef << "std::less";
       break;
     case EqualityOperator::OPERATOR_LTE:
-      ofs_ref << "std::less_equal";
+      ofsRef << "std::less_equal";
       break;
     default:
       SYNTHESIZER_ASSERT(0 && "Unsupported EqualityOperator value.");
       break;
   }
-  ofs_ref << '<' << typeCls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
+  ofsRef << '<' << typeCls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
 }
 
 // -----------------------------------------------------------------------------
@@ -911,9 +911,9 @@ void
 SynthesizerImpl::renderIndentation(const size_t indentLvl,
                                     std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
   for (size_t i = 0; i < indentLvl; ++i) {
-    ofs_ref << CPP_INDENTATION;
+    ofsRef << CPP_INDENTATION;
   }
 }
 
@@ -922,7 +922,7 @@ SynthesizerImpl::renderIndentation(const size_t indentLvl,
 void
 SynthesizerImpl::renderIndentationInHeaderFile() const
 {
-  renderIndentation(m_context->header_file_indent_lvl,
+  renderIndentation(m_context->headerFileIndentLvl,
                      m_context->headerFileOfs.get());
 }
 
@@ -931,7 +931,7 @@ SynthesizerImpl::renderIndentationInHeaderFile() const
 void
 SynthesizerImpl::renderIndentationInCppFile() const
 {
-  renderIndentation(m_context->cpp_file_indent_lvl,
+  renderIndentation(m_context->cppFileIndentLvl,
                      m_context->cppFileOfs.get());
 }
 
@@ -940,7 +940,7 @@ SynthesizerImpl::renderIndentationInCppFile() const
 void
 SynthesizerImpl::indentHeaderFile() const
 {
-  ++m_context->header_file_indent_lvl;
+  ++m_context->headerFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -948,7 +948,7 @@ SynthesizerImpl::indentHeaderFile() const
 void
 SynthesizerImpl::dedentHeaderFile() const
 {
-  --m_context->header_file_indent_lvl;
+  --m_context->headerFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -956,7 +956,7 @@ SynthesizerImpl::dedentHeaderFile() const
 void
 SynthesizerImpl::indentCppFile() const
 {
-  ++m_context->cpp_file_indent_lvl;
+  ++m_context->cppFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -964,7 +964,7 @@ SynthesizerImpl::indentCppFile() const
 void
 SynthesizerImpl::dedentCppFile() const
 {
-  --m_context->cpp_file_indent_lvl;
+  --m_context->cppFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -973,8 +973,8 @@ void
 SynthesizerImpl::renderCustomInclude(const char* header_name,
                                        std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
-  ofs_ref << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
+  auto& ofsRef = *ofs;
+  ofsRef << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
           << header_name << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << std::endl;
 }
 
@@ -999,9 +999,9 @@ void
 SynthesizerImpl::__renderSystemHeaderIncludes(
     const std::vector<const char*>& systemHeaders, std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
+  auto& ofsRef = *ofs;
   for (const auto& header : systemHeaders) {
-    ofs_ref << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
+    ofsRef << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
   }
 }
 
@@ -1010,10 +1010,10 @@ SynthesizerImpl::__renderSystemHeaderIncludes(
 void
 SynthesizerImpl::renderInferenceErrorCategory(std::ostream* ofs) const
 {
-  auto& ofs_ref = *ofs;
-  ofs_ref << std::endl;
-  ofs_ref << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
-  ofs_ref << std::endl;
+  auto& ofsRef = *ofs;
+  ofsRef << std::endl;
+  ofsRef << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
+  ofsRef << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -1025,8 +1025,8 @@ SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
 {
   // Synthesize type annotation setup code.
   renderIndentationInCppFile();
-  auto& ofs_ref = *ofs;
-  ofs_ref << methodName << CPP_OPEN_PAREN;
+  auto& ofsRef = *ofs;
+  ofsRef << methodName << CPP_OPEN_PAREN;
   synthesizeIdentifiable(premiseDefn.source(), ofs);
   auto& cppFileOfs = *(m_context->cppFileOfs);
   cppFileOfs << CPP_COMA << CPP_SPACE;
@@ -1035,8 +1035,8 @@ SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
   synthesizeDeductionTarget(premiseDefn.deduction_target(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
                               ofs);
-  ofs_ref << CPP_CLOSE_PAREN << CPP_SEMICOLON;
-  ofs_ref << std::endl;
+  ofsRef << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+  ofsRef << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -1125,7 +1125,7 @@ std::string
 SynthesizerImpl::__getNextVarName() const
 {
   static const std::string defaultPrefix("var");
-  return defaultPrefix + std::to_string(m_context->name_id++);
+  return defaultPrefix + std::to_string(m_context->nameId++);
 }
 
 // -----------------------------------------------------------------------------
