@@ -74,8 +74,8 @@ private:
   struct InferenceDefnContext
   {
     const std::string& name;
-    SymbolSet symbol_set;
-    TargetTable target_tbl;
+    SymbolSet symbolSet;
+    TargetTable targetTbl;
   };
 
   bool checkRequiredEnvDefns(const SymbolSet&);
