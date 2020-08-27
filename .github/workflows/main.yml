@@ -1,0 +1,27 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: identify-gcc
+      run: gcc --version
+    - name: identify-clang
+      run: clang --version
+    - name: prebuild
+      run: make -C libs
+    - name: build
+      run: mkdir build && cd build && cmake .. && VERBOSE=1 make
