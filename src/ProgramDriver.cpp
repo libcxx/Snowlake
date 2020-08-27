@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-static void print_semantic_analyzer_errors(const std::string&,
+static void __printSemanticAnalyzerErrors(const std::string&,
                                            const SemanticAnalyzer&,
                                            std::ostream&);
 
@@ -41,7 +41,7 @@ static void print_semantic_analyzer_errors(const std::string&,
 
 #define PRINT_VERBOSE_MSG(msg)                                                 \
   do {                                                                         \
-    if (cmdl_opts.verbose && !cmdl_opts.silent) {                              \
+    if (cmdlOpts.verbose && !cmdlOpts.silent) {                              \
       std::cerr << (msg) << std::endl;                                         \
     }                                                                          \
   } while (0)
@@ -60,32 +60,32 @@ ProgramDriver::run(int argc, char** argv)
   bool res = true;
 
   // Cmdl driver.
-  CmdlDriver cmdl_driver;
-  res = cmdl_driver.run(argc, argv);
+  CmdlDriver cmdlDriver;
+  res = cmdlDriver.run(argc, argv);
   if (!res) {
     return EXIT_FAILURE;
   }
 
-  const auto& cmdl_opts = cmdl_driver.options();
+  const auto& cmdlOpts = cmdlDriver.options();
 
-  if (cmdl_opts.verbose && !cmdl_opts.silent) {
+  if (cmdlOpts.verbose && !cmdlOpts.silent) {
     std::cout << "Input:" << std::endl;
-    std::cout << cmdl_opts.input_path << std::endl;
+    std::cout << cmdlOpts.inputPath << std::endl;
     std::cout << std::endl;
     std::cout << "Output path:" << std::endl;
-    std::cout << cmdl_opts.output_path << std::endl;
+    std::cout << cmdlOpts.outputPath << std::endl;
     std::cout << std::endl;
   }
 
   // Parsing.
-  ParserDriver::Options parser_opts{
-      .trace_lexer = cmdl_opts.debugMode,
-      .trace_parser = cmdl_opts.debugMode,
-      .suppress_error_messages = !(cmdl_opts.debugMode),
+  ParserDriver::Options parserOpts{
+      .traceLexer = cmdlOpts.debugMode,
+      .traceParser = cmdlOpts.debugMode,
+      .suppressErrorMessages = !(cmdlOpts.debugMode),
   };
 
-  ParserDriver parser(parser_opts);
-  res = parser.parseFromFile(cmdl_opts.input_path);
+  ParserDriver parser(parserOpts);
+  res = parser.parseFromFile(cmdlOpts.inputPath);
   if (res != 0) {
     PRINT_VERBOSE_MSG("Failed: parsing error");
     return EXIT_FAILURE;
@@ -95,30 +95,30 @@ ProgramDriver::run(int argc, char** argv)
 
   // Semantic analysis.
   SemanticAnalyzer::Options sema_opts{
-      .bailOnFirstError = cmdl_opts.bailOnFirstError,
-      .warningsAsErrors = cmdl_opts.warningsAsErrors,
-      .verbose = cmdl_opts.debugMode};
-  SemanticAnalyzer sema_analyzer(sema_opts);
-  res = sema_analyzer.run(module);
+      .bailOnFirstError = cmdlOpts.bailOnFirstError,
+      .warningsAsErrors = cmdlOpts.warningsAsErrors,
+      .verbose = cmdlOpts.debugMode};
+  SemanticAnalyzer semaAnalyzer(sema_opts);
+  res = semaAnalyzer.run(module);
   if (!res) {
-    if (!cmdl_opts.silent) {
-      print_semantic_analyzer_errors(cmdl_opts.input_path, sema_analyzer,
+    if (!cmdlOpts.silent) {
+      __printSemanticAnalyzerErrors(cmdlOpts.inputPath, semaAnalyzer,
                                      std::cout);
     }
     return EXIT_FAILURE;
   }
 
   // Synthesis.
-  Synthesizer::Options synthesis_opts{
-    .use_exception = false,
-    .output_path = cmdl_opts.output_path
+  Synthesizer::Options synthesisOpts{
+    .useException = false,
+    .outputPath = cmdlOpts.outputPath
   };
-  Synthesizer synthesizer(synthesis_opts);
+  Synthesizer synthesizer(synthesisOpts);
   res = synthesizer.run(module);
   if (!res) {
-    if (!cmdl_opts.silent) {
+    if (!cmdlOpts.silent) {
       std::cerr << "Error: Failed to synthesize output to: "
-                << cmdl_opts.output_path;
+                << cmdlOpts.outputPath;
     }
     return EXIT_FAILURE;
   }
@@ -132,36 +132,36 @@ ProgramDriver::run(int argc, char** argv)
 // -----------------------------------------------------------------------------
 
 static void
-print_semantic_analyzer_errors(const std::string& input_path,
-                               const SemanticAnalyzer& sema_analyzer,
+__printSemanticAnalyzerErrors(const std::string& inputPath,
+                               const SemanticAnalyzer& semaAnalyzer,
                                std::ostream& out)
 {
-  size_t errors_count = 0;
-  size_t warnings_count = 0;
-  for (const auto& error : sema_analyzer.errors()) {
+  size_t errorsCount = 0;
+  size_t warningsCount = 0;
+  for (const auto& error : semaAnalyzer.errors()) {
     if (error.code == SemanticAnalyzer::ErrorCode::Error) {
-      ++errors_count;
-      out << input_path << ": error: ";
+      ++errorsCount;
+      out << inputPath << ": error: ";
     } else if (error.code == SemanticAnalyzer::ErrorCode::Warning) {
-      ++warnings_count;
-      out << input_path << ": warning: ";
+      ++warningsCount;
+      out << inputPath << ": warning: ";
     }
     out << error.msg << std::endl;
   }
 
   out << std::endl;
-  if (warnings_count) {
-    out << warnings_count;
+  if (warningsCount) {
+    out << warningsCount;
     out << " warning";
-    if (warnings_count > 1) {
+    if (warningsCount > 1) {
       out << 's';
     }
     out << " generated." << std::endl;
   }
-  if (errors_count) {
-    out << errors_count;
+  if (errorsCount) {
+    out << errorsCount;
     out << " error";
-    if (errors_count > 1) {
+    if (errorsCount > 1) {
       out << 's';
     }
     out << " generated." << std::endl;

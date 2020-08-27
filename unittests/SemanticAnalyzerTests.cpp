@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class SemanticAnalyzerTests : public ::testing::Test
 {
 protected:
-  void assert_first_error(const char* input, const char* msg)
+  void assertFirstError(const char* input, const char* msg)
   {
     ASTModule module;
     bool res;
@@ -47,7 +47,7 @@ protected:
     ASSERT_STREQ(error.msg.c_str(), msg);
   }
 
-  void assert_no_error(const char* input)
+  void assertNoError(const char* input)
   {
     ASTModule module;
     bool res;
@@ -102,7 +102,7 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingGroup)
 
   const char* msg = "Found multiple inference group with name \"MyGroup\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ TEST_F(SemanticAnalyzerTests, TestWithRepeatingSymbolInInferenceDefinition)
 
   const char* msg = "Found duplicate symbol (argument) with name \"Arg1\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -168,7 +168,7 @@ TEST_F(SemanticAnalyzerTests, TestWithValidInput)
     "";
   // clang-format on
 
-  assert_no_error(INPUT);
+  assertNoError(INPUT);
 }
 
 // -----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidPropositionTarget)
   const char* msg =
       "Invalid proposition target type in inference \"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidRangeClauseTarget)
   const char* msg =
       "Invalid target in range clause in inference \"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -291,7 +291,7 @@ TEST_F(SemanticAnalyzerTests, TestWithIncompatibleTargetsInRangeClause)
   const char* msg = "Incompatible targets in expression in inference "
                     "\"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -334,7 +334,7 @@ TEST_F(SemanticAnalyzerTests, TestWithInvalidPremiseInNestedWhileClause)
   const char* msg = "Incompatible targets in expression in inference "
                     "\"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // -----------------------------------------------------------------------------
@@ -376,7 +376,7 @@ TEST_F(SemanticAnalyzerTests,
   const char* msg = "Found duplicate and incompatible target in inference "
                     "\"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // ----------------------------------------------------------------------------
@@ -418,7 +418,7 @@ TEST_F(SemanticAnalyzerTests,
   const char* msg = "Found duplicate and incompatible target in inference "
                     "\"MethodStaticDispatch\".";
 
-  assert_first_error(INPUT, msg);
+  assertFirstError(INPUT, msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -456,7 +456,7 @@ TEST_F(SemanticAnalyzerTests, TestValidInputWithAllComputedTargetTypes)
     "";
   // clang-format on
 
-  assert_no_error(INPUT);
+  assertNoError(INPUT);
 }
 
 // --------------------------------------------------------------------------

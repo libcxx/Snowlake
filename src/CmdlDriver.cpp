@@ -51,7 +51,7 @@ CmdlDriver::run(int argc, char** argv)
   argparser.setUsageString(SNOWLAKE_PROG_USAGE);
 
   argparser.addStringParameter("output", 'o', "Output path", true,
-                                 &m_opts.output_path);
+                                 &m_opts.outputPath);
   argparser.addBooleanParameter("errors", 'e', "Treat warnings as errors",
                                   false, &m_opts.warningsAsErrors, false);
   argparser.addBooleanParameter("bail", 'b', "Bail on first error", false,
@@ -70,7 +70,7 @@ CmdlDriver::run(int argc, char** argv)
     return false;
   }
 
-  m_opts.input_path = argparser.positionalArgs().front();
+  m_opts.inputPath = argparser.positionalArgs().front();
 
   return true;
 }

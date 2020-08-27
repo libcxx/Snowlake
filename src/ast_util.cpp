@@ -51,22 +51,22 @@ bool
 areTargetsCompatible(const ASTDeductionTarget& lhs,
                        const ASTDeductionTarget& rhs)
 {
-  if (lhs.is_type<ASTDeductionTargetSingular>() &&
-      rhs.is_type<ASTDeductionTargetSingular>()) {
+  if (lhs.isType<ASTDeductionTargetSingular>() &&
+      rhs.isType<ASTDeductionTargetSingular>()) {
     const ASTDeductionTargetSingular& lhs_val =
         lhs.value<ASTDeductionTargetSingular>();
     const ASTDeductionTargetSingular& rhs_val =
         rhs.value<ASTDeductionTargetSingular>();
     return areTargetsCompatible(lhs_val, rhs_val);
-  } else if (lhs.is_type<ASTDeductionTargetArray>() &&
-             rhs.is_type<ASTDeductionTargetArray>()) {
+  } else if (lhs.isType<ASTDeductionTargetArray>() &&
+             rhs.isType<ASTDeductionTargetArray>()) {
     const ASTDeductionTargetArray& lhs_val =
         lhs.value<ASTDeductionTargetArray>();
     const ASTDeductionTargetArray& rhs_val =
         rhs.value<ASTDeductionTargetArray>();
     return areTargetsCompatible(lhs_val, rhs_val);
-  } else if (lhs.is_type<ASTDeductionTargetComputed>() ||
-             rhs.is_type<ASTDeductionTargetComputed>()) {
+  } else if (lhs.isType<ASTDeductionTargetComputed>() ||
+             rhs.isType<ASTDeductionTargetComputed>()) {
     // NOTE: here we consider if either is a computed deduction target,
     // then the two are potentially equivalent.
     return true;
@@ -75,13 +75,13 @@ areTargetsCompatible(const ASTDeductionTarget& lhs,
     // If the array target has a size literal, meaning that it
     // references a singular element in it, then they are considered
     // compatible.
-    if (lhs.is_type<ASTDeductionTargetArray>()) {
+    if (lhs.isType<ASTDeductionTargetArray>()) {
       const auto& lhs_val = lhs.value<ASTDeductionTargetArray>();
-      return lhs_val.has_size_literal();
+      return lhs_val.hasSizeLiteral();
     } else {
-      ASSERT(rhs.is_type<ASTDeductionTargetArray>());
+      ASSERT(rhs.isType<ASTDeductionTargetArray>());
       const auto& rhs_val = rhs.value<ASTDeductionTargetArray>();
-      return rhs_val.has_size_literal();
+      return rhs_val.hasSizeLiteral();
     }
   }
 }
@@ -102,9 +102,9 @@ bool
 areTargetsCompatible(const ASTDeductionTargetArray& lhs,
                        const ASTDeductionTargetArray& rhs)
 {
-  if (lhs.has_size_literal() && rhs.has_size_literal()) {
+  if (lhs.hasSizeLiteral() && rhs.hasSizeLiteral()) {
     return true;
-  } else if (!lhs.has_size_literal() && !rhs.has_size_literal()) {
+  } else if (!lhs.hasSizeLiteral() && !rhs.hasSizeLiteral()) {
     // In range clause.
     // E.g. "ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes;"
     return true;
@@ -133,10 +133,10 @@ getRootOfASTIdentifiable(const ASTIdentifiable& identifiable)
 void
 addTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
 {
-  if (target.is_type<ASTDeductionTargetSingular>()) {
+  if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
     tbl->operator[](value.name()) = &target;
-  } else if (target.is_type<ASTDeductionTargetArray>()) {
+  } else if (target.isType<ASTDeductionTargetArray>()) {
     const auto& value = target.value<ASTDeductionTargetArray>();
     tbl->operator[](value.name()) = &target;
   }
@@ -148,29 +148,29 @@ bool
 hasCompatibleTargetInTable(const ASTDeductionTarget& target,
                                const TargetTable& tbl)
 {
-  if (target.is_type<ASTDeductionTargetSingular>()) {
+  if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return existing_value->is_type<ASTDeductionTargetSingular>();
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      return existingValue->isType<ASTDeductionTargetSingular>();
     } else {
       return false;
     }
-  } else if (target.is_type<ASTDeductionTargetArray>()) {
+  } else if (target.isType<ASTDeductionTargetArray>()) {
     const auto& value = target.value<ASTDeductionTargetArray>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      if (existing_value->is_type<ASTDeductionTargetArray>()) {
-        const auto& existing_target =
-            existing_value->value<ASTDeductionTargetArray>();
-        if (value.has_size_literal() && !existing_target.has_size_literal()) {
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      if (existingValue->isType<ASTDeductionTargetArray>()) {
+        const auto& existingTarget =
+            existingValue->value<ASTDeductionTargetArray>();
+        if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return false;
-        } else if (!value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
+        } else if (!value.hasSizeLiteral() &&
+                   existingTarget.hasSizeLiteral()) {
           return false;
-        } else if (value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
-          return value.size_literal() == existing_target.size_literal();
+        } else if (value.hasSizeLiteral() &&
+                   existingTarget.hasSizeLiteral()) {
+          return value.sizeLiteral() == existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {
           return true;
@@ -181,7 +181,7 @@ hasCompatibleTargetInTable(const ASTDeductionTarget& target,
     } else {
       return false;
     }
-  } else if (target.is_type<ASTDeductionTargetComputed>()) {
+  } else if (target.isType<ASTDeductionTargetComputed>()) {
     // We do not know the type of the target if it's computed.
     // So have to return true here.
     return true;
@@ -196,27 +196,27 @@ bool
 hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
                                  const TargetTable& tbl)
 {
-  if (target.is_type<ASTDeductionTargetSingular>()) {
+  if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      return !existing_value->is_type<ASTDeductionTargetSingular>();
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      return !existingValue->isType<ASTDeductionTargetSingular>();
     }
-  } else if (target.is_type<ASTDeductionTargetArray>()) {
+  } else if (target.isType<ASTDeductionTargetArray>()) {
     const auto& value = target.value<ASTDeductionTargetArray>();
     if (tbl.count(value.name()) > 0) {
-      const ASTDeductionTarget* existing_value = tbl.at(value.name());
-      if (existing_value->is_type<ASTDeductionTargetArray>()) {
-        const auto& existing_target =
-            existing_value->value<ASTDeductionTargetArray>();
-        if (value.has_size_literal() && !existing_target.has_size_literal()) {
+      const ASTDeductionTarget* existingValue = tbl.at(value.name());
+      if (existingValue->isType<ASTDeductionTargetArray>()) {
+        const auto& existingTarget =
+            existingValue->value<ASTDeductionTargetArray>();
+        if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return true;
-        } else if (!value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
+        } else if (!value.hasSizeLiteral() &&
+                   existingTarget.hasSizeLiteral()) {
           return true;
-        } else if (value.has_size_literal() &&
-                   existing_target.has_size_literal()) {
-          return value.size_literal() != existing_target.size_literal();
+        } else if (value.hasSizeLiteral() &&
+                   existingTarget.hasSizeLiteral()) {
+          return value.sizeLiteral() != existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {
           return false;
@@ -225,7 +225,7 @@ hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
         return true;
       }
     }
-  } else if (target.is_type<ASTDeductionTargetComputed>()) {
+  } else if (target.isType<ASTDeductionTargetComputed>()) {
     // We do not know the type of the target if it's computed.
     // So have to return false here.
     return false;

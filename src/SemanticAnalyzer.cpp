@@ -46,7 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ON_ERROR(msg, ...)                                                     \
   do {                                                                         \
     res = false;                                                               \
-    add_error((msg), __VA_ARGS__);                                             \
+    addError((msg), __VA_ARGS__);                                             \
     if (m_opts.bailOnFirstError) {                                             \
       return res;                                                              \
     }                                                                          \
@@ -106,14 +106,14 @@ SemanticAnalyzer::previsit(const ASTModule& module)
 {
   INIT_RES;
 
-  std::unordered_set<std::string> name_set;
-  for (const auto& inference_group : module.inference_groups()) {
-    const auto& name = inference_group.name();
-    if (name_set.count(name)) {
+  std::unordered_set<std::string> nameSet;
+  for (const auto& inferenceGroup : module.inferenceGroups()) {
+    const auto& name = inferenceGroup.name();
+    if (nameSet.count(name)) {
       ON_ERROR("Found multiple inference group with name \"%s\".",
                name.c_str());
     } else {
-      name_set.insert(name);
+      nameSet.insert(name);
     }
   }
 
@@ -124,37 +124,37 @@ SemanticAnalyzer::previsit(const ASTModule& module)
 
 /* override */
 bool
-SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
+SemanticAnalyzer::previsit(const ASTInferenceGroup& inferenceGroup)
 {
   INIT_RES;
 
   // Environment definitions.
   {
-    std::unordered_set<std::string> name_set;
-    for (const auto& environment_defn : inference_group.environment_defns()) {
-      const auto& field = environment_defn.field();
-      if (name_set.count(field)) {
+    std::unordered_set<std::string> nameSet;
+    for (const auto& environmentDefn : inferenceGroup.environmentDefns()) {
+      const auto& field = environmentDefn.field();
+      if (nameSet.count(field)) {
         ON_WARNING("Found repeated environment field \"%s\".", field.c_str());
       } else {
-        name_set.insert(field);
+        nameSet.insert(field);
       }
     }
 
-    if (!checkRequiredEnvDefns(name_set)) {
+    if (!checkRequiredEnvDefns(nameSet)) {
       return false;
     }
   }
 
   // Inference definitions.
   {
-    std::unordered_set<std::string> name_set;
-    for (const auto& inference_defn : inference_group.inference_defns()) {
-      const auto& name = inference_defn.name();
-      if (name_set.count(name)) {
+    std::unordered_set<std::string> nameSet;
+    for (const auto& inferenceDefn : inferenceGroup.inferenceDefns()) {
+      const auto& name = inferenceDefn.name();
+      if (nameSet.count(name)) {
         ON_ERROR("Found multiple inference definition with name \"%s\".",
                  name.c_str());
       } else {
-        name_set.insert(name);
+        nameSet.insert(name);
       }
     }
   }
@@ -166,43 +166,43 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inference_group)
 
 /* override */
 bool
-SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
+SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
 {
   INIT_RES;
 
-  InferenceDefnContext context{.name = inference_defn.name()};
+  InferenceDefnContext context{.name = inferenceDefn.name()};
 
   // Global declarations.
   {
-    for (const auto& decl : inference_defn.global_decls()) {
+    for (const auto& decl : inferenceDefn.globalDecls()) {
       const auto& name = decl.name();
-      if (context.symbol_set.count(name)) {
+      if (context.symbolSet.count(name)) {
         ON_WARNING(
             "Found duplicate symbol (global declaration) with name \"%s\".",
             name.c_str());
       } else {
-        context.symbol_set.insert(name);
+        context.symbolSet.insert(name);
       }
     }
   }
 
   // Arguments.
   {
-    for (const auto& argument : inference_defn.arguments()) {
+    for (const auto& argument : inferenceDefn.arguments()) {
       const auto& name = argument.name();
-      if (context.symbol_set.count(name)) {
+      if (context.symbolSet.count(name)) {
         ON_ERROR("Found duplicate symbol (argument) with name \"%s\".",
                  name.c_str());
       } else {
-        context.symbol_set.insert(name);
+        context.symbolSet.insert(name);
       }
     }
   }
 
   // Premise definitions.
   {
-    for (const auto& premise_defn : inference_defn.premise_defns()) {
-      if (!recursivePremiseDefnCheck(premise_defn, &context)) {
+    for (const auto& premiseDefn : inferenceDefn.premiseDefns()) {
+      if (!recursivePremiseDefnCheck(premiseDefn, &context)) {
         return false;
       }
     }
@@ -210,9 +210,9 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inference_defn)
 
   // Proposition.
   {
-    const auto& proposition = inference_defn.proposition_defn();
+    const auto& proposition = inferenceDefn.propositionDefn();
     if (!hasCompatibleTargetInTable(proposition.target(),
-                                        context.target_tbl)) {
+                                        context.targetTbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
     }
@@ -228,15 +228,15 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& env_defns)
 {
   INIT_RES;
 
-  static const char* mandatory_env_defns[]{
+  static const char* mandatoryEnvDefns[]{
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD,
   };
 
-  for (size_t i = 0; i < sizeof(mandatory_env_defns) / sizeof(char*); ++i) {
-    const char* defn = mandatory_env_defns[i];
+  for (size_t i = 0; i < sizeof(mandatoryEnvDefns) / sizeof(char*); ++i) {
+    const char* defn = mandatoryEnvDefns[i];
     if (env_defns.count(defn) == 0) {
       ON_ERROR("Missing required environment definition field \"%s\".", defn);
     }
@@ -257,29 +257,29 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   // Handle source.
   {
     const auto& source = defn.source();
-    const auto& source_root = getRootOfASTIdentifiable(source);
-    if (context->symbol_set.count(source_root) == 0) {
+    const auto& sourceRoot = getRootOfASTIdentifiable(source);
+    if (context->symbolSet.count(sourceRoot) == 0) {
       ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
-               source_root.c_str(), context->name.c_str());
+               sourceRoot.c_str(), context->name.c_str());
     }
   }
 
   // Handle target.
   {
-    const auto& target = defn.deduction_target();
-    if (hasIncompatibleTargetInTable(target, context->target_tbl)) {
+    const auto& target = defn.deductionTarget();
+    if (hasIncompatibleTargetInTable(target, context->targetTbl)) {
       ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
     }
-    addTargetToTable(target, &context->target_tbl);
+    addTargetToTable(target, &context->targetTbl);
   }
 
   // Handle while-clause.
   {
-    if (defn.has_while_clause()) {
-      const auto& while_clause = defn.while_clause();
-      for (const auto& nested_defn : while_clause.premise_defns()) {
-        RETURN_ON_FAILURE(recursivePremiseDefnCheck(nested_defn, context));
+    if (defn.hasWhileClause()) {
+      const auto& whileClause = defn.whileClause();
+      for (const auto& nestedDefn : whileClause.premiseDefns()) {
+        RETURN_ON_FAILURE(recursivePremiseDefnCheck(nestedDefn, context));
       }
     }
   }
@@ -306,14 +306,14 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
   // Handle range-clause.
   {
-    if (defn.has_range_clause()) {
-      const auto& range_clause = defn.range_clause();
-      const auto& target = range_clause.deduction_target();
-      if (target.is_type<ASTDeductionTargetSingular>()) {
+    if (defn.hasRangeClause()) {
+      const auto& rangeClause = defn.rangeClause();
+      const auto& target = rangeClause.deductionTarget();
+      if (target.isType<ASTDeductionTargetSingular>()) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
-      if (!hasCompatibleTargetInTable(target, context->target_tbl)) {
+      if (!hasCompatibleTargetInTable(target, context->targetTbl)) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
@@ -327,21 +327,21 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
 bool
 SemanticAnalyzer::recursivePremiseDefnCheck(
-    const ASTPremiseDefn& premise_defn, InferenceDefnContext* context)
+    const ASTPremiseDefn& premiseDefn, InferenceDefnContext* context)
 {
   INIT_RES;
 
-  const char* inference_defn_name = context->name.c_str();
+  const char* inferenceDefnName = context->name.c_str();
 
-  if (premise_defn.is_type<ASTInferencePremiseDefn>()) {
-    const auto& defn_value = premise_defn.value<ASTInferencePremiseDefn>();
-    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defn_value, context));
-  } else if (premise_defn.is_type<ASTInferenceEqualityDefn>()) {
-    const auto& defn_value = premise_defn.value<ASTInferenceEqualityDefn>();
-    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defn_value, context));
+  if (premiseDefn.isType<ASTInferencePremiseDefn>()) {
+    const auto& defnValue = premiseDefn.value<ASTInferencePremiseDefn>();
+    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defnValue, context));
+  } else if (premiseDefn.isType<ASTInferenceEqualityDefn>()) {
+    const auto& defnValue = premiseDefn.value<ASTInferenceEqualityDefn>();
+    RETURN_ON_FAILURE(recursivePremiseDefnCheck(defnValue, context));
   } else {
     ON_ERROR("Found unknown type of premise definition in inference \"%s\".",
-             inference_defn_name);
+             inferenceDefnName);
   }
 
   DEFAULT_RETURN;

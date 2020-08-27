@@ -74,8 +74,8 @@ private:
   struct InferenceDefnContext
   {
     const std::string& name;
-    SymbolSet symbol_set;
-    TargetTable target_tbl;
+    SymbolSet symbolSet;
+    TargetTable targetTbl;
   };
 
   bool checkRequiredEnvDefns(const SymbolSet&);
@@ -96,7 +96,7 @@ private:
   void addWarning(const U& msg, Args... args)
   {
     if (m_opts.warningsAsErrors) {
-      add_error(msg, args...);
+      addError(msg, args...);
     } else {
       char buffer[MAX_MSG_LEN];
       snprintf(buffer, sizeof(buffer), msg, args...);
@@ -105,7 +105,7 @@ private:
   }
 
   template <typename U, typename... Args>
-  void add_error(const U& msg, Args... args)
+  void addError(const U& msg, Args... args)
   {
     char buffer[MAX_MSG_LEN];
     snprintf(buffer, sizeof(buffer), msg, args...);

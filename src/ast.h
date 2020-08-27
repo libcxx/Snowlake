@@ -152,12 +152,12 @@ public:
     return m_name;
   }
 
-  bool has_size_literal() const
+  bool hasSizeLiteral() const
   {
     return m_array_size.has_value();
   }
 
-  IntegerType size_literal() const
+  IntegerType sizeLiteral() const
   {
     return m_array_size.value();
   }
@@ -222,7 +222,7 @@ public:
   }
 
   template <typename U>
-  bool is_type() const
+  bool isType() const
   {
     return m_value.template is<U>();
   }
@@ -271,25 +271,25 @@ public:
   {
   }
 
-  ASTRangeClause(IntegerType lhs_idx, IntegerType rhs_idx,
-                 ASTDeductionTarget&& deduction_target)
-    : m_lhs_idx(lhs_idx)
-    , m_rhs_idx(rhs_idx)
-    , m_deduction_target(deduction_target)
+  ASTRangeClause(IntegerType lhsIdx, IntegerType rhsIdx,
+                 ASTDeductionTarget&& deductionTarget)
+    : m_lhs_idx(lhsIdx)
+    , m_rhs_idx(rhsIdx)
+    , m_deduction_target(deductionTarget)
   {
   }
 
-  IntegerType lhs_idx() const
+  IntegerType lhsIdx() const
   {
     return m_lhs_idx;
   }
 
-  IntegerType rhs_idx() const
+  IntegerType rhsIdx() const
   {
     return m_rhs_idx;
   }
 
-  const ASTDeductionTarget& deduction_target() const
+  const ASTDeductionTarget& deductionTarget() const
   {
     return m_deduction_target;
   }
@@ -319,11 +319,11 @@ public:
   }
 
   ASTInferenceEqualityDefn(ASTDeductionTarget&& lhs, ASTDeductionTarget&& rhs,
-                           EqualityOperator oprt, ASTRangeClause&& range_clause)
+                           EqualityOperator oprt, ASTRangeClause&& rangeClause)
     : m_lhs(lhs)
     , m_rhs(rhs)
     , m_oprt(oprt)
-    , m_range_clause(range_clause)
+    , m_range_clause(rangeClause)
   {
   }
 
@@ -342,12 +342,12 @@ public:
     return m_oprt;
   }
 
-  bool has_range_clause() const
+  bool hasRangeClause() const
   {
     return m_range_clause.has_value();
   }
 
-  const ASTRangeClause& range_clause() const
+  const ASTRangeClause& rangeClause() const
   {
     return m_range_clause.value();
   }
@@ -367,12 +367,12 @@ public:
   {
   }
 
-  explicit ASTWhileClause(ASTPremiseDefnList&& premise_defns)
-    : m_premise_defns(premise_defns)
+  explicit ASTWhileClause(ASTPremiseDefnList&& premiseDefns)
+    : m_premise_defns(premiseDefns)
   {
   }
 
-  const ASTPremiseDefnList& premise_defns() const
+  const ASTPremiseDefnList& premiseDefns() const
   {
     return m_premise_defns;
   }
@@ -392,19 +392,19 @@ public:
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
-                          ASTDeductionTarget&& deduction_target)
+                          ASTDeductionTarget&& deductionTarget)
     : m_source(source)
-    , m_deduction_target(deduction_target)
+    , m_deduction_target(deductionTarget)
     , m_while_clause()
   {
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
-                          ASTDeductionTarget&& deduction_target,
-                          ASTWhileClause&& while_clause)
+                          ASTDeductionTarget&& deductionTarget,
+                          ASTWhileClause&& whileClause)
     : m_source(source)
-    , m_deduction_target(deduction_target)
-    , m_while_clause(while_clause)
+    , m_deduction_target(deductionTarget)
+    , m_while_clause(whileClause)
   {
   }
 
@@ -413,17 +413,17 @@ public:
     return m_source;
   }
 
-  const ASTDeductionTarget& deduction_target() const
+  const ASTDeductionTarget& deductionTarget() const
   {
     return m_deduction_target;
   }
 
-  bool has_while_clause() const
+  bool hasWhileClause() const
   {
     return m_while_clause.has_value();
   }
 
-  const ASTWhileClause& while_clause() const
+  const ASTWhileClause& whileClause() const
   {
     return m_while_clause.value();
   }
@@ -453,7 +453,7 @@ public:
   }
 
   template <class U>
-  bool is_type() const
+  bool isType() const
   {
     return m_value.template is<U>();
   }
@@ -478,9 +478,9 @@ public:
   {
   }
 
-  ASTInferenceArgument(StringType&& name, StringType&& type_name)
+  ASTInferenceArgument(StringType&& name, StringType&& typeName)
     : m_name(name)
-    , m_type_name(type_name)
+    , m_type_name(typeName)
   {
   }
 
@@ -489,7 +489,7 @@ public:
     return m_name;
   }
 
-  const StringType& type_name() const
+  const StringType& typeName() const
   {
     return m_type_name;
   }
@@ -533,15 +533,15 @@ public:
   {
   }
 
-  ASTInferenceDefn(StringType&& name, ASTGlobalDeclList&& global_decls,
+  ASTInferenceDefn(StringType&& name, ASTGlobalDeclList&& globalDecls,
                    ASTInferenceArgumentList&& arguments,
-                   ASTPremiseDefnList&& premise_defns,
-                   ASTPropositionDefn&& proposition_defn)
+                   ASTPremiseDefnList&& premiseDefns,
+                   ASTPropositionDefn&& propositionDefn)
     : m_name(name)
-    , m_global_decls(global_decls)
+    , m_global_decls(globalDecls)
     , m_arguments(arguments)
-    , m_premise_defns(premise_defns)
-    , m_proposition_defn(proposition_defn)
+    , m_premise_defns(premiseDefns)
+    , m_proposition_defn(propositionDefn)
   {
   }
 
@@ -550,7 +550,7 @@ public:
     return m_name;
   }
 
-  const ASTGlobalDeclList& global_decls() const
+  const ASTGlobalDeclList& globalDecls() const
   {
     return m_global_decls;
   }
@@ -560,12 +560,12 @@ public:
     return m_arguments;
   }
 
-  const ASTPremiseDefnList& premise_defns() const
+  const ASTPremiseDefnList& premiseDefns() const
   {
     return m_premise_defns;
   }
 
-  const ASTPropositionDefn& proposition_defn() const
+  const ASTPropositionDefn& propositionDefn() const
   {
     return m_proposition_defn;
   }
@@ -619,11 +619,11 @@ public:
   }
 
   ASTInferenceGroup(StringType&& name,
-                    ASTEnvironmentDefnList&& environment_defns,
-                    ASTInferenceDefnList&& inference_defns)
+                    ASTEnvironmentDefnList&& environmentDefns,
+                    ASTInferenceDefnList&& inferenceDefns)
     : m_name(name)
-    , m_environment_defns(environment_defns)
-    , m_inference_defns(inference_defns)
+    , m_environment_defns(environmentDefns)
+    , m_inference_defns(inferenceDefns)
   {
   }
 
@@ -632,12 +632,12 @@ public:
     return m_name;
   }
 
-  const ASTEnvironmentDefnList& environment_defns() const
+  const ASTEnvironmentDefnList& environmentDefns() const
   {
     return m_environment_defns;
   }
 
-  const ASTInferenceDefnList& inference_defns() const
+  const ASTInferenceDefnList& inferenceDefns() const
   {
     return m_inference_defns;
   }
@@ -656,17 +656,17 @@ public:
   {
   }
 
-  explicit ASTModule(ASTInferenceGroupList&& inference_groups)
-    : m_inference_groups(inference_groups)
+  explicit ASTModule(ASTInferenceGroupList&& inferenceGroups)
+    : m_inference_groups(inferenceGroups)
   {
   }
 
-  const ASTInferenceGroupList& inference_groups() const
+  const ASTInferenceGroupList& inferenceGroups() const
   {
     return m_inference_groups;
   }
 
-  ASTInferenceGroupList& inference_groups()
+  ASTInferenceGroupList& inferenceGroups()
   {
     return m_inference_groups;
   }

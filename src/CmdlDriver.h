@@ -36,8 +36,8 @@ public:
     bool debugMode;
     bool verbose;
     bool silent;
-    std::string input_path;
-    std::string output_path;
+    std::string inputPath;
+    std::string outputPath;
   };
 
   const Options& options() const;

@@ -39,9 +39,9 @@ class ParserDriver
 public:
   struct Options
   {
-    bool trace_lexer;
-    bool trace_parser;
-    bool suppress_error_messages;
+    bool traceLexer;
+    bool traceParser;
+    bool suppressErrorMessages;
   };
 
 public:

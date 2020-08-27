@@ -31,9 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-  : m_opts(ParserDriver::Options{.trace_lexer = false,
-                                 .trace_parser = false,
-                                 .suppress_error_messages = false})
+  : m_opts(ParserDriver::Options{.traceLexer = false,
+                                 .traceParser = false,
+                                 .suppressErrorMessages = false})
   , m_input_file()
   , m_module()
 {
@@ -59,7 +59,7 @@ ParserDriver::~ParserDriver()
 bool
 ParserDriver::traceLexer() const
 {
-  return m_opts.trace_lexer;
+  return m_opts.traceLexer;
 }
 
 // -----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ ParserDriver::traceLexer() const
 void
 ParserDriver::setTraceLexer(bool val)
 {
-  m_opts.trace_lexer = val;
+  m_opts.traceLexer = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ ParserDriver::setTraceLexer(bool val)
 bool
 ParserDriver::traceParser() const
 {
-  return m_opts.trace_parser;
+  return m_opts.traceParser;
 }
 
 // -----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ ParserDriver::traceParser() const
 void
 ParserDriver::setTraceParser(bool val)
 {
-  m_opts.trace_parser = val;
+  m_opts.traceParser = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ ParserDriver::setTraceParser(bool val)
 bool
 ParserDriver::suppressErrorMessages() const
 {
-  return m_opts.suppress_error_messages;
+  return m_opts.suppressErrorMessages;
 }
 
 // -----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ ParserDriver::suppressErrorMessages() const
 void
 ParserDriver::setSuppressErrorMessages(bool val)
 {
-  m_opts.suppress_error_messages = val;
+  m_opts.suppressErrorMessages = val;
 }
 
 // -----------------------------------------------------------------------------

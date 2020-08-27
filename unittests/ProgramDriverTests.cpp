@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class ProgramDriverTests : public ::testing::Test
 {
 protected:
-  bool setup_valid_run()
+  bool setupValidRun()
   {
     // clang-format off
     static const char* INPUT =
@@ -84,10 +84,10 @@ protected:
       "";
     // clang-format on
 
-    return save_input(INPUT);
+    return saveInput(INPUT);
   }
 
-  bool setup_invalid_run()
+  bool setupInvalidRun()
   {
     // clang-format off
     static const char* INPUT =
@@ -116,11 +116,11 @@ protected:
       "";
     // clang-format on
 
-    return save_input(INPUT);
+    return saveInput(INPUT);
   }
 
 private:
-  bool save_input(const char* input)
+  bool saveInput(const char* input)
   {
     std::ofstream ofs(m_input_path, std::ofstream::out);
     if (ofs.good()) {
@@ -148,7 +148,7 @@ TEST_F(ProgramDriverTests, TestDefaultInitialization)
 
 TEST_F(ProgramDriverTests, TestRunWithSuccess)
 {
-  if (setup_valid_run()) {
+  if (setupValidRun()) {
     ProgramDriver driver;
 
     const std::vector<char*> args{"snowlake",
@@ -167,7 +167,7 @@ TEST_F(ProgramDriverTests, TestRunWithSuccess)
 
 TEST_F(ProgramDriverTests, TestRunWithFailure)
 {
-  if (setup_invalid_run()) {
+  if (setupInvalidRun()) {
     ProgramDriver driver;
 
     const std::vector<char*> args{"snowlake",

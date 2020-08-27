@@ -55,8 +55,8 @@ ASTVisitor::visit(const ASTModule& module)
 {
   PREVISIT_AND_VERIFY(module);
 
-  for (const auto& inference_group : module.inference_groups()) {
-    VISIT_AND_VERIFY(inference_group);
+  for (const auto& inferenceGroup : module.inferenceGroups()) {
+    VISIT_AND_VERIFY(inferenceGroup);
   }
 
   POSTVISIT_AND_VERIFY(module);
@@ -67,19 +67,19 @@ ASTVisitor::visit(const ASTModule& module)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTInferenceGroup& inference_group)
+ASTVisitor::visit(const ASTInferenceGroup& inferenceGroup)
 {
-  PREVISIT_AND_VERIFY(inference_group);
+  PREVISIT_AND_VERIFY(inferenceGroup);
 
-  for (const auto& environment_defn : inference_group.environment_defns()) {
-    VISIT_AND_VERIFY(environment_defn);
+  for (const auto& environmentDefn : inferenceGroup.environmentDefns()) {
+    VISIT_AND_VERIFY(environmentDefn);
   }
 
-  for (const auto& inference_defn : inference_group.inference_defns()) {
-    VISIT_AND_VERIFY(inference_defn);
+  for (const auto& inferenceDefn : inferenceGroup.inferenceDefns()) {
+    VISIT_AND_VERIFY(inferenceDefn);
   }
 
-  POSTVISIT_AND_VERIFY(inference_group);
+  POSTVISIT_AND_VERIFY(inferenceGroup);
 
   DEFAULT_RETURN();
 }
@@ -87,39 +87,39 @@ ASTVisitor::visit(const ASTInferenceGroup& inference_group)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTEnvironmentDefn& environment_defn)
+ASTVisitor::visit(const ASTEnvironmentDefn& environmentDefn)
 {
-  PREVISIT_AND_VERIFY(environment_defn);
-  POSTVISIT_AND_VERIFY(environment_defn);
+  PREVISIT_AND_VERIFY(environmentDefn);
+  POSTVISIT_AND_VERIFY(environmentDefn);
   DEFAULT_RETURN();
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
+ASTVisitor::visit(const ASTInferenceDefn& inferenceDefn)
 {
-  PREVISIT_AND_VERIFY(inference_defn);
+  PREVISIT_AND_VERIFY(inferenceDefn);
 
   // Global decls.
-  for (const auto& decl : inference_defn.global_decls()) {
+  for (const auto& decl : inferenceDefn.globalDecls()) {
     VISIT_AND_VERIFY(decl);
   }
 
   // Arguments.
-  for (const auto& argument : inference_defn.arguments()) {
+  for (const auto& argument : inferenceDefn.arguments()) {
     VISIT_AND_VERIFY(argument);
   }
 
   // Premise defns.
-  for (const auto& premise_defn : inference_defn.premise_defns()) {
-    VISIT_AND_VERIFY(premise_defn);
+  for (const auto& premiseDefn : inferenceDefn.premiseDefns()) {
+    VISIT_AND_VERIFY(premiseDefn);
   }
 
   // Proposition defn.
-  VISIT_AND_VERIFY(inference_defn.proposition_defn());
+  VISIT_AND_VERIFY(inferenceDefn.propositionDefn());
 
-  POSTVISIT_AND_VERIFY(inference_defn);
+  POSTVISIT_AND_VERIFY(inferenceDefn);
 
   DEFAULT_RETURN();
 }
@@ -127,15 +127,15 @@ ASTVisitor::visit(const ASTInferenceDefn& inference_defn)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTPremiseDefn& premise_defn)
+ASTVisitor::visit(const ASTPremiseDefn& premiseDefn)
 {
-  if (premise_defn.is_type<ASTInferencePremiseDefn>()) {
+  if (premiseDefn.isType<ASTInferencePremiseDefn>()) {
     const ASTInferencePremiseDefn& defn =
-        premise_defn.value<ASTInferencePremiseDefn>();
+        premiseDefn.value<ASTInferencePremiseDefn>();
     VISIT_AND_VERIFY(defn);
-  } else if (premise_defn.is_type<ASTInferenceEqualityDefn>()) {
+  } else if (premiseDefn.isType<ASTInferenceEqualityDefn>()) {
     const ASTInferenceEqualityDefn& defn =
-        premise_defn.value<ASTInferenceEqualityDefn>();
+        premiseDefn.value<ASTInferenceEqualityDefn>();
     VISIT_AND_VERIFY(defn);
   } else {
     ASSERT(0);
@@ -172,10 +172,10 @@ ASTVisitor::visit(const ASTInferenceEqualityDefn& defn)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTWhileClause& while_clause)
+ASTVisitor::visit(const ASTWhileClause& whileClause)
 {
-  for (const auto& premise_defn : while_clause.premise_defns()) {
-    VISIT_AND_VERIFY(premise_defn);
+  for (const auto& premiseDefn : whileClause.premiseDefns()) {
+    VISIT_AND_VERIFY(premiseDefn);
   }
 
   DEFAULT_RETURN();
@@ -184,10 +184,10 @@ ASTVisitor::visit(const ASTWhileClause& while_clause)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTGlobalDecl& global_decl)
+ASTVisitor::visit(const ASTGlobalDecl& globalDecl)
 {
-  PREVISIT_AND_VERIFY(global_decl);
-  POSTVISIT_AND_VERIFY(global_decl);
+  PREVISIT_AND_VERIFY(globalDecl);
+  POSTVISIT_AND_VERIFY(globalDecl);
   DEFAULT_RETURN();
 }
 
@@ -204,13 +204,13 @@ ASTVisitor::visit(const ASTInferenceArgument& argument)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTPropositionDefn& proposition_defn)
+ASTVisitor::visit(const ASTPropositionDefn& propositionDefn)
 {
-  PREVISIT_AND_VERIFY(proposition_defn);
+  PREVISIT_AND_VERIFY(propositionDefn);
 
-  VISIT_AND_VERIFY(proposition_defn.target());
+  VISIT_AND_VERIFY(propositionDefn.target());
 
-  POSTVISIT_AND_VERIFY(proposition_defn);
+  POSTVISIT_AND_VERIFY(propositionDefn);
 
   DEFAULT_RETURN();
 }
@@ -218,27 +218,27 @@ ASTVisitor::visit(const ASTPropositionDefn& proposition_defn)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
+ASTVisitor::visit(const ASTDeductionTarget& deductionTarget)
 {
-  PREVISIT_AND_VERIFY(deduction_target);
+  PREVISIT_AND_VERIFY(deductionTarget);
 
-  if (deduction_target.is_type<ASTDeductionTargetSingular>()) {
+  if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     const ASTDeductionTargetSingular& target =
-        deduction_target.value<ASTDeductionTargetSingular>();
+        deductionTarget.value<ASTDeductionTargetSingular>();
     VISIT_AND_VERIFY(target);
-  } else if (deduction_target.is_type<ASTDeductionTargetArray>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetArray>()) {
     const ASTDeductionTargetArray& target =
-        deduction_target.value<ASTDeductionTargetArray>();
+        deductionTarget.value<ASTDeductionTargetArray>();
     VISIT_AND_VERIFY(target);
-  } else if (deduction_target.is_type<ASTDeductionTargetComputed>()) {
+  } else if (deductionTarget.isType<ASTDeductionTargetComputed>()) {
     const ASTDeductionTargetComputed& target =
-        deduction_target.value<ASTDeductionTargetComputed>();
+        deductionTarget.value<ASTDeductionTargetComputed>();
     VISIT_AND_VERIFY(target);
   } else {
     ASSERT(0);
   }
 
-  POSTVISIT_AND_VERIFY(deduction_target);
+  POSTVISIT_AND_VERIFY(deductionTarget);
 
   DEFAULT_RETURN();
 }
@@ -246,30 +246,30 @@ ASTVisitor::visit(const ASTDeductionTarget& deduction_target)
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTDeductionTargetSingular& deduction_target)
+ASTVisitor::visit(const ASTDeductionTargetSingular& deductionTarget)
 {
-  PREVISIT_AND_VERIFY(deduction_target);
-  POSTVISIT_AND_VERIFY(deduction_target);
+  PREVISIT_AND_VERIFY(deductionTarget);
+  POSTVISIT_AND_VERIFY(deductionTarget);
   DEFAULT_RETURN();
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTDeductionTargetArray& deduction_target)
+ASTVisitor::visit(const ASTDeductionTargetArray& deductionTarget)
 {
-  PREVISIT_AND_VERIFY(deduction_target);
-  POSTVISIT_AND_VERIFY(deduction_target);
+  PREVISIT_AND_VERIFY(deductionTarget);
+  POSTVISIT_AND_VERIFY(deductionTarget);
   DEFAULT_RETURN();
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-ASTVisitor::visit(const ASTDeductionTargetComputed& deduction_target)
+ASTVisitor::visit(const ASTDeductionTargetComputed& deductionTarget)
 {
-  PREVISIT_AND_VERIFY(deduction_target);
-  POSTVISIT_AND_VERIFY(deduction_target);
+  PREVISIT_AND_VERIFY(deductionTarget);
+  POSTVISIT_AND_VERIFY(deductionTarget);
   DEFAULT_RETURN();
 }
 
