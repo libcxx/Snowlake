@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 #include "optional.h"
+#include <string>
+#include <vector>
 
 class OptionalTests : public ::testing::Test
 {
@@ -73,6 +75,33 @@ TEST_F(OptionalTests, TestUpdateValueAndReset)
   opt = val;
   ASSERT_TRUE(opt.has_value());
   ASSERT_EQ(val, opt.value());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(OptionalTests, TestMemoryIntegrity)
+{
+  const char* HELLO_WORLD = "Hello, World";
+
+  sl::optional<std::string> opt(HELLO_WORLD);
+
+  std::vector<sl::optional<std::string>> vec;
+  vec.reserve(4);
+
+  vec.push_back(opt);
+
+  ASSERT_TRUE(vec.front().has_value());
+  ASSERT_STREQ(HELLO_WORLD, vec.front().value().c_str());
+
+  vec.resize(vec.capacity() << 2);
+
+  ASSERT_TRUE(vec.front().has_value());
+  ASSERT_STREQ(HELLO_WORLD, vec.front().value().c_str());
+
+  vec.resize(1);
+
+  ASSERT_TRUE(vec.front().has_value());
+  ASSERT_STREQ(HELLO_WORLD, vec.front().value().c_str());
 }
 
 // -----------------------------------------------------------------------------

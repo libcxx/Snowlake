@@ -54,8 +54,23 @@ private:
 
   void swap(variant<Types...>& lhs, variant<Types...>& rhs)
   {
+    auto lhs_type_index = lhs.m_type_index;
+    auto rhs_type_index = rhs.m_type_index;
+
+    // Create a temporary copy of the data storage.
+    data_type tmpData;
+
+    // Copy rhs data -> tmp data
+    helper_type::copy(rhs_type_index, &rhs.m_data, &tmpData);
+
+    // Copy lhs data -> rhs data
+    helper_type::copy(lhs_type_index, &lhs.m_data, &rhs.m_data);
+
+    // Copy tmp data -> lhs data
+    helper_type::copy(rhs_type_index, &tmpData, &lhs.m_data);
+
+    // Then we can swap the indices.
     std::swap(lhs.m_type_index, rhs.m_type_index);
-    std::swap(lhs.m_data, rhs.m_data);
   }
 
 public:

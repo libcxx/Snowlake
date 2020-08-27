@@ -47,6 +47,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=/usr/bin/lld")
 message(STATUS "C Compiler executable: ${CMAKE_C_COMPILER}")
 message(STATUS "CXX Compiler executable: ${CMAKE_CXX_COMPILER}")
 message(STATUS "Linker executable: ${CMAKE_LINKER}")
+message(STATUS "Is compiler GNU CXX: ${CMAKE_COMPILER_IS_GNUCXX}")
 
 
 set(CMAKE_MACOSX_RPATH 1)
@@ -54,9 +55,9 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # General compiler flags.
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++17 -w")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -g -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++17 -Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-format-nonliteral -Wno-c99-extensions")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -g -Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-format-nonliteral -Wno-c99-extensions")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 

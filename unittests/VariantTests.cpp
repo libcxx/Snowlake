@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 // -----------------------------------------------------------------------------
 
@@ -235,6 +236,138 @@ TEST_F(VariantTests, TestEqualityOperatorOnSameType)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(VariantTests, TestFullSwap)
+{
+  std::vector<int> nums = {1, 2, 3};
+
+  VariantType v0(nums);
+
+  const auto checkIsVector = [&](const auto& v) {
+    ASSERT_EQ(true, v.valid());
+    ASSERT_EQ(3, v.which());
+    ASSERT_EQ(true, v.template is<std::vector<int>>());
+    ASSERT_EQ(nums.size(), v.template get<std::vector<int>>().size());
+    ASSERT_EQ(nums.front(), v.template get<std::vector<int>>().front());
+    ASSERT_EQ(nums.back(), v.template get<std::vector<int>>().back());
+  };
+
+  const auto checkIsString = [&](const auto& v) {
+    ASSERT_EQ(true, v.valid());
+    ASSERT_EQ(2, v.which());
+    ASSERT_EQ(true, v.template is<std::string>());
+    ASSERT_STREQ(HELLO_WORLD, v.template get<std::string>().c_str());
+  };
+
+  checkIsVector(v0);
+
+  VariantType v1(HELLO_WORLD);
+
+  checkIsString(v1);
+
+  const auto swap = [&]() {
+    auto tmp = v1;
+    v1 = v0;
+    v0 = tmp;
+  };
+
+  // Now we swap
+  swap();
+
+  // Now v0 and v1 should have been swapped entirely.
+  checkIsString(v0);
+  checkIsVector(v1);
+
+  // Now swap back.
+  swap();
+  checkIsVector(v0);
+  checkIsString(v1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantTests, TestPartialSwap)
+{
+  std::vector<int> nums = {1, 2, 3};
+
+  VariantType v0(nums);
+
+  const auto checkIsVector = [&](const auto& v) {
+    ASSERT_EQ(true, v.valid());
+    ASSERT_EQ(3, v.which());
+    ASSERT_EQ(true, v.template is<std::vector<int>>());
+    ASSERT_EQ(nums.size(), v.template get<std::vector<int>>().size());
+    ASSERT_EQ(nums.front(), v.template get<std::vector<int>>().front());
+    ASSERT_EQ(nums.back(), v.template get<std::vector<int>>().back());
+  };
+
+  const auto checkInvalid = [](const auto& v) {
+    ASSERT_EQ(false, v.valid());
+    ASSERT_EQ(sl::variant::impl::invalid_type_index, v.type_index());
+  };
+
+  checkIsVector(v0);
+
+  VariantType v1; // v1 is incomplete
+
+  checkInvalid(v1);
+
+  const auto swap = [&]() {
+    auto tmp = v1;
+    v1 = v0;
+    v0 = tmp;
+  };
+
+  // Now we swap
+  swap();
+
+  // Now v0 and v1 should have been swapped entirely.
+  checkInvalid(v0);
+  checkIsVector(v1);
+
+  // Now swap back.
+  swap();
+  checkIsVector(v0);
+  checkInvalid(v1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantTests, TestIncompleteSwap)
+{
+  const auto checkInvalid = [](const auto& v) {
+    ASSERT_EQ(false, v.valid());
+    ASSERT_EQ(sl::variant::impl::invalid_type_index, v.type_index());
+  };
+
+  VariantType v0;   // v0 is incomplete
+
+  checkInvalid(v0);
+
+  VariantType v1;   // v1 is incomplete
+
+  checkInvalid(v1);
+
+  const auto swap = [&]() {
+    auto tmp = v1;
+    v1 = v0;
+    v0 = tmp;
+  };
+
+  // Now we swap
+  swap();
+
+  // Now v0 and v1 should have been swapped entirely.
+  checkInvalid(v0);
+  checkInvalid(v1);
+
+  // Now swap back.
+  swap();
+  checkInvalid(v0);
+  checkInvalid(v1);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(VariantTests, TestEqualityOperatorOnDifferentTypes)
 {
   typedef sl::variant::variant<int, double> VariantType1;
@@ -391,6 +524,61 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
   VariantType v3_double = (double)1.0;
   bool res5 = sl::variant::apply_visitor(equality_visitor(), v1_int, v3_double);
   ASSERT_EQ(false, res5);
+}
+
+// -----------------------------------------------------------------------------
+
+class VariantMemoryIntegrityUnitTest : public VariantTests
+{
+protected:
+  struct _MyStruct {
+    std::string name;
+  };
+
+  using MyVariantType = typename sl::variant::variant<_MyStruct, int>;
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantMemoryIntegrityUnitTest, TestWithAssociatedMap)
+{
+  const char* MY_NAME = "William";
+
+  const std::string myName(MY_NAME);
+
+  {
+    std::unordered_map<std::string, MyVariantType> m;
+
+    sl::variant::variant<_MyStruct, int> v( _MyStruct{ .name="Some name" } );
+
+    m[myName] = v;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
+{
+  const char* MY_NAME = "William";
+
+  const std::string myName(MY_NAME);
+
+  using MyVariantType = sl::variant::variant<_MyStruct, int>;
+
+  MyVariantType v( _MyStruct{ .name=myName } );
+
+  {
+    std::vector<MyVariantType> vec;
+    vec.reserve(16);
+
+    sl::variant::variant<_MyStruct, int> v2( v );
+
+    vec.push_back(v2);
+
+    vec.resize(32);
+  }
+
+  ASSERT_STREQ(MY_NAME, v.get<_MyStruct>().name.c_str());
 }
 
 // -----------------------------------------------------------------------------

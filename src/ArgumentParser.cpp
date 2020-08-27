@@ -132,7 +132,8 @@ ArgumentParser::addParameter(const char* name, const char short_hand,
                   .description = description,
                   .required = required,
                   .dst = reinterpret_cast<void*>(res),
-                  .default_value = {default_val}};
+                  .default_value = T(default_val)
+                };
   m_shorthand_map[short_hand] = name;
   m_opts[name] = opts;
 }
@@ -142,7 +143,7 @@ ArgumentParser::addParameter(const char* name, const char short_hand,
 void
 ArgumentParser::addStringParameter(const char* name, const char short_hand,
                                      const char* description, bool required,
-                                     std::string* res, const char* default_val)
+                                     std::string* res, std::string default_val)
 {
   addParameter<std::string>(name, short_hand, description, required, res,
                              default_val);
