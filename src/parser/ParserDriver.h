@@ -52,45 +52,45 @@ public:
   /**
    * Getter and setter for tracing lexer.
    */
-  bool trace_lexer() const;
-  void set_trace_lexer(bool);
+  bool traceLexer() const;
+  void setTraceLexer(bool);
 
   /**
    * Getter and setter for tracing parser.
    */
-  bool trace_parser() const;
-  void set_trace_parser(bool);
+  bool traceParser() const;
+  void setTraceParser(bool);
 
   /**
    * Getter and setter for suppressing error messages.
    */
-  bool suppress_error_messages() const;
-  void set_suppress_error_messages(bool);
+  bool suppressErrorMessages() const;
+  void setSuppressErrorMessages(bool);
 
   /**
    * Run the parser on input file.
    * Return 0 on success.
    */
-  int parse_from_file(const std::string& filepath);
+  int parseFromFile(const std::string& filepath);
 
   /**
    * Run the parser on input string.
    * Return 0 on success.
    */
-  int parse_from_string(const char*);
+  int parseFromString(const char*);
 
   /**
    * The name of the file being parsed.
    * Used later to pass the file name to the location tracker.
    */
-  const std::string& input_file() const;
-  std::string& input_file();
+  const std::string& inputFile() const;
+  std::string& inputFile();
 
   /**
    * Getter and setter for module.
    */
   const ASTModule& module() const;
-  void set_module(ASTModule&&);
+  void setModule(ASTModule&&);
 
   /**
    * Error handlings.

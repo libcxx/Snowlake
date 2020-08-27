@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 std::string
-canonicalize_ASTIdentifiable(const ASTIdentifiable& identifiable)
+canonicalizeASTIdentifiable(const ASTIdentifiable& identifiable)
 {
   std::stringstream stream;
 
@@ -48,7 +48,7 @@ canonicalize_ASTIdentifiable(const ASTIdentifiable& identifiable)
 // -----------------------------------------------------------------------------
 
 bool
-are_targets_compatible(const ASTDeductionTarget& lhs,
+areTargetsCompatible(const ASTDeductionTarget& lhs,
                        const ASTDeductionTarget& rhs)
 {
   if (lhs.is_type<ASTDeductionTargetSingular>() &&
@@ -57,14 +57,14 @@ are_targets_compatible(const ASTDeductionTarget& lhs,
         lhs.value<ASTDeductionTargetSingular>();
     const ASTDeductionTargetSingular& rhs_val =
         rhs.value<ASTDeductionTargetSingular>();
-    return are_targets_compatible(lhs_val, rhs_val);
+    return areTargetsCompatible(lhs_val, rhs_val);
   } else if (lhs.is_type<ASTDeductionTargetArray>() &&
              rhs.is_type<ASTDeductionTargetArray>()) {
     const ASTDeductionTargetArray& lhs_val =
         lhs.value<ASTDeductionTargetArray>();
     const ASTDeductionTargetArray& rhs_val =
         rhs.value<ASTDeductionTargetArray>();
-    return are_targets_compatible(lhs_val, rhs_val);
+    return areTargetsCompatible(lhs_val, rhs_val);
   } else if (lhs.is_type<ASTDeductionTargetComputed>() ||
              rhs.is_type<ASTDeductionTargetComputed>()) {
     // NOTE: here we consider if either is a computed deduction target,
@@ -89,7 +89,7 @@ are_targets_compatible(const ASTDeductionTarget& lhs,
 // -----------------------------------------------------------------------------
 
 bool
-are_targets_compatible(const ASTDeductionTargetSingular& /* lhs */,
+areTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
                        const ASTDeductionTargetSingular& /* rhs */)
 {
   // Singular targets should be compatible.
@@ -99,7 +99,7 @@ are_targets_compatible(const ASTDeductionTargetSingular& /* lhs */,
 // -----------------------------------------------------------------------------
 
 bool
-are_targets_compatible(const ASTDeductionTargetArray& lhs,
+areTargetsCompatible(const ASTDeductionTargetArray& lhs,
                        const ASTDeductionTargetArray& rhs)
 {
   if (lhs.has_size_literal() && rhs.has_size_literal()) {
@@ -116,7 +116,7 @@ are_targets_compatible(const ASTDeductionTargetArray& lhs,
 // -----------------------------------------------------------------------------
 
 const std::string&
-get_root_of_ASTIdentifiable(const ASTIdentifiable& identifiable)
+getRootOfASTIdentifiable(const ASTIdentifiable& identifiable)
 {
   static const std::string nullvalue;
 
@@ -131,7 +131,7 @@ get_root_of_ASTIdentifiable(const ASTIdentifiable& identifiable)
 // -----------------------------------------------------------------------------
 
 void
-add_target_to_table(const ASTDeductionTarget& target, TargetTable* tbl)
+addTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
 {
   if (target.is_type<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
@@ -145,7 +145,7 @@ add_target_to_table(const ASTDeductionTarget& target, TargetTable* tbl)
 // -----------------------------------------------------------------------------
 
 bool
-has_compatible_target_in_table(const ASTDeductionTarget& target,
+hasCompatibleTargetInTable(const ASTDeductionTarget& target,
                                const TargetTable& tbl)
 {
   if (target.is_type<ASTDeductionTargetSingular>()) {
@@ -193,7 +193,7 @@ has_compatible_target_in_table(const ASTDeductionTarget& target,
 // -----------------------------------------------------------------------------
 
 bool
-has_incompatible_target_in_table(const ASTDeductionTarget& target,
+hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
                                  const TargetTable& tbl)
 {
   if (target.is_type<ASTDeductionTargetSingular>()) {

@@ -57,7 +57,7 @@ ParserDriver::~ParserDriver()
 // -----------------------------------------------------------------------------
 
 bool
-ParserDriver::trace_lexer() const
+ParserDriver::traceLexer() const
 {
   return m_opts.trace_lexer;
 }
@@ -65,7 +65,7 @@ ParserDriver::trace_lexer() const
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::set_trace_lexer(bool val)
+ParserDriver::setTraceLexer(bool val)
 {
   m_opts.trace_lexer = val;
 }
@@ -73,7 +73,7 @@ ParserDriver::set_trace_lexer(bool val)
 // -----------------------------------------------------------------------------
 
 bool
-ParserDriver::trace_parser() const
+ParserDriver::traceParser() const
 {
   return m_opts.trace_parser;
 }
@@ -81,7 +81,7 @@ ParserDriver::trace_parser() const
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::set_trace_parser(bool val)
+ParserDriver::setTraceParser(bool val)
 {
   m_opts.trace_parser = val;
 }
@@ -89,7 +89,7 @@ ParserDriver::set_trace_parser(bool val)
 // -----------------------------------------------------------------------------
 
 bool
-ParserDriver::suppress_error_messages() const
+ParserDriver::suppressErrorMessages() const
 {
   return m_opts.suppress_error_messages;
 }
@@ -97,7 +97,7 @@ ParserDriver::suppress_error_messages() const
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::set_suppress_error_messages(bool val)
+ParserDriver::setSuppressErrorMessages(bool val)
 {
   m_opts.suppress_error_messages = val;
 }
@@ -105,7 +105,7 @@ ParserDriver::set_suppress_error_messages(bool val)
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parse_from_file(const std::string& filepath)
+ParserDriver::parseFromFile(const std::string& filepath)
 {
   m_input_file.assign(filepath);
   std::ifstream infile(filepath.c_str());
@@ -115,24 +115,24 @@ ParserDriver::parse_from_file(const std::string& filepath)
   std::string file_contents((std::istreambuf_iterator<char>(infile)),
                             std::istreambuf_iterator<char>());
   infile.close();
-  return parse_from_string(file_contents.c_str());
+  return parseFromString(file_contents.c_str());
 }
 
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parse_from_string(const char* input)
+ParserDriver::parseFromString(const char* input)
 {
   YY_BUFFER_STATE buf;
   buf = yy_scan_string(input);
 
   // Trace lexer.
-  yyset_debug(trace_lexer());
+  yyset_debug(traceLexer());
 
   yy::Parser parser(*this);
 
   // Trace parser.
-  parser.set_debug_level(trace_parser());
+  parser.set_debug_level(traceParser());
 
   const int res = parser.parse();
 
@@ -148,7 +148,7 @@ ParserDriver::parse_from_string(const char* input)
 // -----------------------------------------------------------------------------
 
 const std::string&
-ParserDriver::input_file() const
+ParserDriver::inputFile() const
 {
   return m_input_file;
 }
@@ -156,7 +156,7 @@ ParserDriver::input_file() const
 // -----------------------------------------------------------------------------
 
 std::string&
-ParserDriver::input_file()
+ParserDriver::inputFile()
 {
   return m_input_file;
 }
@@ -172,7 +172,7 @@ ParserDriver::module() const
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::set_module(ASTModule&& module)
+ParserDriver::setModule(ASTModule&& module)
 {
   m_module = module;
 }
@@ -182,7 +182,7 @@ ParserDriver::set_module(ASTModule&& module)
 void
 ParserDriver::error(const yy::location& l, const std::string& m)
 {
-  if (!suppress_error_messages()) {
+  if (!suppressErrorMessages()) {
     std::cerr << "Parser error [" << l << "] : " << m << std::endl;
   }
 }
@@ -192,7 +192,7 @@ ParserDriver::error(const yy::location& l, const std::string& m)
 void
 ParserDriver::error(const std::string& m)
 {
-  if (!suppress_error_messages()) {
+  if (!suppressErrorMessages()) {
     std::cerr << "Parser error: " << m << std::endl;
   }
 }

@@ -29,23 +29,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 
-std::string canonicalize_ASTIdentifiable(const ASTIdentifiable&);
+std::string canonicalizeASTIdentifiable(const ASTIdentifiable&);
 
-bool are_targets_compatible(const ASTDeductionTarget&,
+bool areTargetsCompatible(const ASTDeductionTarget&,
                             const ASTDeductionTarget&);
 
-bool are_targets_compatible(const ASTDeductionTargetSingular&,
+bool areTargetsCompatible(const ASTDeductionTargetSingular&,
                             const ASTDeductionTargetSingular&);
 
-bool are_targets_compatible(const ASTDeductionTargetArray&,
+bool areTargetsCompatible(const ASTDeductionTargetArray&,
                             const ASTDeductionTargetArray&);
 
-const std::string& get_root_of_ASTIdentifiable(const ASTIdentifiable&);
+const std::string& getRootOfASTIdentifiable(const ASTIdentifiable&);
 
-void add_target_to_table(const ASTDeductionTarget&, TargetTable*);
+void addTargetToTable(const ASTDeductionTarget&, TargetTable*);
 
-bool has_compatible_target_in_table(const ASTDeductionTarget&,
+bool hasCompatibleTargetInTable(const ASTDeductionTarget&,
                                     const TargetTable&);
 
-bool has_incompatible_target_in_table(const ASTDeductionTarget&,
+bool hasIncompatibleTargetInTable(const ASTDeductionTarget&,
                                       const TargetTable&);
