@@ -64,7 +64,7 @@ TEST_F(CmdlDriverTests, TestRun)
   ASSERT_TRUE(driver.options().verbose);
   ASSERT_TRUE(driver.options().silent);
   ASSERT_STREQ("/tmp/out", driver.options().outputPath.c_str());
-  ASSERT_STREQ("/tmp/in", driver.options().input_path.c_str());
+  ASSERT_STREQ("/tmp/in", driver.options().inputPath.c_str());
 }
 
 // -----------------------------------------------------------------------------

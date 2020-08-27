@@ -70,7 +70,7 @@ CmdlDriver::run(int argc, char** argv)
     return false;
   }
 
-  m_opts.input_path = argparser.positionalArgs().front();
+  m_opts.inputPath = argparser.positionalArgs().front();
 
   return true;
 }
