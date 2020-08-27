@@ -298,30 +298,30 @@ TEST_F(ParserTests, TestParsingAndASTConstruction)
   {
     // Check module has one inference group.
     const ASTModule& module = driver.module();
-    const ASTInferenceGroupList& inference_groups = module.inference_groups();
-    ASSERT_EQ(1, inference_groups.size());
+    const ASTInferenceGroupList& inferenceGroups = module.inferenceGroups();
+    ASSERT_EQ(1, inferenceGroups.size());
 
-    const ASTInferenceGroup& inference_group = inference_groups[0];
+    const ASTInferenceGroup& inference_group = inferenceGroups[0];
 
     // Check inference group has four environment definition statements.
-    const ASTEnvironmentDefnList& environment_defns =
-        inference_group.environment_defns();
-    ASSERT_EQ(4, environment_defns.size());
+    const ASTEnvironmentDefnList& environmentDefns =
+        inference_group.environmentDefns();
+    ASSERT_EQ(4, environmentDefns.size());
 
     // Check inference group has one inference definition.
-    const ASTInferenceDefnList& inference_defns =
-        inference_group.inference_defns();
-    ASSERT_EQ(1, inference_defns.size());
+    const ASTInferenceDefnList& inferenceDefns =
+        inference_group.inferenceDefns();
+    ASSERT_EQ(1, inferenceDefns.size());
 
-    const ASTInferenceDefn& inference_defn = inference_defns[0];
+    const ASTInferenceDefn& inference_defn = inferenceDefns[0];
 
     // Check inference definition has two arguments.
     const ASTInferenceArgumentList& arguments = inference_defn.arguments();
     ASSERT_EQ(2, arguments.size());
 
     // Check inference definition has six premise definitions.
-    const ASTPremiseDefnList& premise_defns = inference_defn.premise_defns();
-    ASSERT_EQ(6, premise_defns.size());
+    const ASTPremiseDefnList& premiseDefns = inference_defn.premiseDefns();
+    ASSERT_EQ(6, premiseDefns.size());
   }
 }
 

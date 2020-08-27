@@ -272,10 +272,10 @@ public:
   }
 
   ASTRangeClause(IntegerType lhs_idx, IntegerType rhs_idx,
-                 ASTDeductionTarget&& deduction_target)
+                 ASTDeductionTarget&& deductionTarget)
     : m_lhs_idx(lhs_idx)
     , m_rhs_idx(rhs_idx)
-    , m_deduction_target(deduction_target)
+    , m_deduction_target(deductionTarget)
   {
   }
 
@@ -289,7 +289,7 @@ public:
     return m_rhs_idx;
   }
 
-  const ASTDeductionTarget& deduction_target() const
+  const ASTDeductionTarget& deductionTarget() const
   {
     return m_deduction_target;
   }
@@ -367,12 +367,12 @@ public:
   {
   }
 
-  explicit ASTWhileClause(ASTPremiseDefnList&& premise_defns)
-    : m_premise_defns(premise_defns)
+  explicit ASTWhileClause(ASTPremiseDefnList&& premiseDefns)
+    : m_premise_defns(premiseDefns)
   {
   }
 
-  const ASTPremiseDefnList& premise_defns() const
+  const ASTPremiseDefnList& premiseDefns() const
   {
     return m_premise_defns;
   }
@@ -392,18 +392,18 @@ public:
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
-                          ASTDeductionTarget&& deduction_target)
+                          ASTDeductionTarget&& deductionTarget)
     : m_source(source)
-    , m_deduction_target(deduction_target)
+    , m_deduction_target(deductionTarget)
     , m_while_clause()
   {
   }
 
   ASTInferencePremiseDefn(ASTIdentifiable&& source,
-                          ASTDeductionTarget&& deduction_target,
+                          ASTDeductionTarget&& deductionTarget,
                           ASTWhileClause&& while_clause)
     : m_source(source)
-    , m_deduction_target(deduction_target)
+    , m_deduction_target(deductionTarget)
     , m_while_clause(while_clause)
   {
   }
@@ -413,7 +413,7 @@ public:
     return m_source;
   }
 
-  const ASTDeductionTarget& deduction_target() const
+  const ASTDeductionTarget& deductionTarget() const
   {
     return m_deduction_target;
   }
@@ -533,14 +533,14 @@ public:
   {
   }
 
-  ASTInferenceDefn(StringType&& name, ASTGlobalDeclList&& global_decls,
+  ASTInferenceDefn(StringType&& name, ASTGlobalDeclList&& globalDecls,
                    ASTInferenceArgumentList&& arguments,
-                   ASTPremiseDefnList&& premise_defns,
+                   ASTPremiseDefnList&& premiseDefns,
                    ASTPropositionDefn&& proposition_defn)
     : m_name(name)
-    , m_global_decls(global_decls)
+    , m_global_decls(globalDecls)
     , m_arguments(arguments)
-    , m_premise_defns(premise_defns)
+    , m_premise_defns(premiseDefns)
     , m_proposition_defn(proposition_defn)
   {
   }
@@ -550,7 +550,7 @@ public:
     return m_name;
   }
 
-  const ASTGlobalDeclList& global_decls() const
+  const ASTGlobalDeclList& globalDecls() const
   {
     return m_global_decls;
   }
@@ -560,7 +560,7 @@ public:
     return m_arguments;
   }
 
-  const ASTPremiseDefnList& premise_defns() const
+  const ASTPremiseDefnList& premiseDefns() const
   {
     return m_premise_defns;
   }
@@ -619,11 +619,11 @@ public:
   }
 
   ASTInferenceGroup(StringType&& name,
-                    ASTEnvironmentDefnList&& environment_defns,
-                    ASTInferenceDefnList&& inference_defns)
+                    ASTEnvironmentDefnList&& environmentDefns,
+                    ASTInferenceDefnList&& inferenceDefns)
     : m_name(name)
-    , m_environment_defns(environment_defns)
-    , m_inference_defns(inference_defns)
+    , m_environment_defns(environmentDefns)
+    , m_inference_defns(inferenceDefns)
   {
   }
 
@@ -632,12 +632,12 @@ public:
     return m_name;
   }
 
-  const ASTEnvironmentDefnList& environment_defns() const
+  const ASTEnvironmentDefnList& environmentDefns() const
   {
     return m_environment_defns;
   }
 
-  const ASTInferenceDefnList& inference_defns() const
+  const ASTInferenceDefnList& inferenceDefns() const
   {
     return m_inference_defns;
   }
@@ -656,17 +656,17 @@ public:
   {
   }
 
-  explicit ASTModule(ASTInferenceGroupList&& inference_groups)
-    : m_inference_groups(inference_groups)
+  explicit ASTModule(ASTInferenceGroupList&& inferenceGroups)
+    : m_inference_groups(inferenceGroups)
   {
   }
 
-  const ASTInferenceGroupList& inference_groups() const
+  const ASTInferenceGroupList& inferenceGroups() const
   {
     return m_inference_groups;
   }
 
-  ASTInferenceGroupList& inference_groups()
+  ASTInferenceGroupList& inferenceGroups()
   {
     return m_inference_groups;
   }

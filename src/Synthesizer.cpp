@@ -492,7 +492,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
     {
       cppFileOfs << var1 << CPP_SPACE << CPP_LESS_THAN << CPP_SPACE;
       synthesizeDeductionTarget(
-          rangeClause.deduction_target(),
+          rangeClause.deductionTarget(),
           DeductionTargetArraySynthesisMode::AS_SINGULAR,
           m_context->cppFileOfs.get());
       cppFileOfs << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
@@ -573,7 +573,7 @@ SynthesizerImpl::getEnvnDefnMapFromInferenceGroup(
 {
   EnvDefnMap envDefnMap;
 
-  for (const auto& envnDefn : inference_group.environment_defns()) {
+  for (const auto& envnDefn : inference_group.environmentDefns()) {
     envDefnMap[envnDefn.field()] = envnDefn.value();
   }
 
@@ -628,7 +628,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
   {
     const auto& whileClause = premiseDefn.while_clause();
 
-    for (const auto& defn : whileClause.premise_defns()) {
+    for (const auto& defn : whileClause.premiseDefns()) {
       // FIXME: This const_cast here is not ideal.
       // Also because we have to make the `visit` members in `ASTVisitor`
       // protected instead of private.
@@ -665,7 +665,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
 
   auto& cppFileOfs = *(m_context->cppFileOfs);
 
-  const auto& deductionTarget = premise_defn.deduction_target();
+  const auto& deductionTarget = premise_defn.deductionTarget();
 
   // Synthesize deduction.
   if (deductionTarget.is_type<ASTDeductionTargetComputed>()) {
@@ -720,7 +720,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << std::endl;
   } else {
     renderIndentationInCppFile();
-    synthesizeDeductionTargetForDeclaration(premise_defn.deduction_target(),
+    synthesizeDeductionTargetForDeclaration(premise_defn.deductionTarget(),
                                                 m_context->cppFileOfs.get());
     cppFileOfs << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
@@ -1032,7 +1032,7 @@ SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
   cppFileOfs << CPP_COMA << CPP_SPACE;
   // Should assert that this deduction target here is singular form only.
   // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
-  synthesizeDeductionTarget(premiseDefn.deduction_target(),
+  synthesizeDeductionTarget(premiseDefn.deductionTarget(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
                               ofs);
   ofsRef << CPP_CLOSE_PAREN << CPP_SEMICOLON;

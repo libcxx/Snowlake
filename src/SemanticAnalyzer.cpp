@@ -107,7 +107,7 @@ SemanticAnalyzer::previsit(const ASTModule& module)
   INIT_RES;
 
   std::unordered_set<std::string> nameSet;
-  for (const auto& inferenceGroup : module.inference_groups()) {
+  for (const auto& inferenceGroup : module.inferenceGroups()) {
     const auto& name = inferenceGroup.name();
     if (nameSet.count(name)) {
       ON_ERROR("Found multiple inference group with name \"%s\".",
@@ -131,7 +131,7 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inferenceGroup)
   // Environment definitions.
   {
     std::unordered_set<std::string> nameSet;
-    for (const auto& environmentDefn : inferenceGroup.environment_defns()) {
+    for (const auto& environmentDefn : inferenceGroup.environmentDefns()) {
       const auto& field = environmentDefn.field();
       if (nameSet.count(field)) {
         ON_WARNING("Found repeated environment field \"%s\".", field.c_str());
@@ -148,7 +148,7 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inferenceGroup)
   // Inference definitions.
   {
     std::unordered_set<std::string> nameSet;
-    for (const auto& inferenceDefn : inferenceGroup.inference_defns()) {
+    for (const auto& inferenceDefn : inferenceGroup.inferenceDefns()) {
       const auto& name = inferenceDefn.name();
       if (nameSet.count(name)) {
         ON_ERROR("Found multiple inference definition with name \"%s\".",
@@ -174,7 +174,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Global declarations.
   {
-    for (const auto& decl : inferenceDefn.global_decls()) {
+    for (const auto& decl : inferenceDefn.globalDecls()) {
       const auto& name = decl.name();
       if (context.symbolSet.count(name)) {
         ON_WARNING(
@@ -201,7 +201,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Premise definitions.
   {
-    for (const auto& premiseDefn : inferenceDefn.premise_defns()) {
+    for (const auto& premiseDefn : inferenceDefn.premiseDefns()) {
       if (!recursivePremiseDefnCheck(premiseDefn, &context)) {
         return false;
       }
@@ -266,7 +266,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 
   // Handle target.
   {
-    const auto& target = defn.deduction_target();
+    const auto& target = defn.deductionTarget();
     if (hasIncompatibleTargetInTable(target, context->targetTbl)) {
       ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
@@ -278,7 +278,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   {
     if (defn.has_while_clause()) {
       const auto& whileClause = defn.while_clause();
-      for (const auto& nestedDefn : whileClause.premise_defns()) {
+      for (const auto& nestedDefn : whileClause.premiseDefns()) {
         RETURN_ON_FAILURE(recursivePremiseDefnCheck(nestedDefn, context));
       }
     }
@@ -308,7 +308,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   {
     if (defn.has_range_clause()) {
       const auto& rangeClause = defn.range_clause();
-      const auto& target = rangeClause.deduction_target();
+      const auto& target = rangeClause.deductionTarget();
       if (target.is_type<ASTDeductionTargetSingular>()) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());

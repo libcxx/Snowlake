@@ -256,7 +256,7 @@ namespace yy {
   {
       switch (that.type_get ())
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.move< ASTDeductionTarget > (that.value);
         break;
 
@@ -410,7 +410,7 @@ namespace yy {
     state = that.state;
       switch (that.type_get ())
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.copy< ASTDeductionTarget > (that.value);
         break;
 
@@ -789,7 +789,7 @@ namespace yy {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         yylhs.value.build< ASTDeductionTarget > ();
         break;
 
@@ -1754,7 +1754,7 @@ namespace yy {
   "premise_defn_list", "premise_defn", "premise_type_inference_defn",
   "while_clause", "premise_type_equality_defn", "range_clause",
   "proposition_defn", "identifiable", "identifier",
-  "deduction_target_list", "deduction_target", "deduction_target_singular",
+  "deduction_target_list", "deductionTarget", "deduction_target_singular",
   "deduction_target_array", "deduction_target_computed",
   "equality_operator", YY_NULLPTR
   };

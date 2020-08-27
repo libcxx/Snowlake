@@ -289,7 +289,7 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // deduction_target
+      // deductionTarget
       char dummy1[sizeof(ASTDeductionTarget)];
 
       // deduction_target_array
@@ -1006,7 +1006,7 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.copy< ASTDeductionTarget > (other.value);
         break;
 
@@ -1161,7 +1161,7 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.copy< ASTDeductionTarget > (v);
         break;
 
@@ -1537,7 +1537,7 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.template destroy< ASTDeductionTarget > ();
         break;
 
@@ -1699,7 +1699,7 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 54: // deduction_target
+      case 54: // deductionTarget
         value.move< ASTDeductionTarget > (s.value);
         break;
 
