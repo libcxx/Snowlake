@@ -381,7 +381,7 @@ TEST_F(ArgumentParserTests,
   bool bool_dst = false;
   float float_dst = 0.0f;
   double double_dst = 0.0;
-  const const char* str_default_value = "Hello";
+  const char* str_default_value = "Hello";
   const uint64_t uint64_default_value = 64;
   const bool boolean_default_value = true;
   const double double_default_value = 2.71828;
