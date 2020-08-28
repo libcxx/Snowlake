@@ -70,6 +70,26 @@ struct InferenceGroupSynthesisContext
 
 // -----------------------------------------------------------------------------
 
+template <typename T>
+struct ScopedIndentationGuard
+{
+  explicit ScopedIndentationGuard(T& indentLvl)
+    : _indentLvl(++indentLvl)
+  {
+  }
+
+  ~ScopedIndentationGuard()
+  {
+    ASSERT(_indentLvl >= 1);
+    --_indentLvl;
+  }
+
+private:
+  T& _indentLvl;
+};
+
+// -----------------------------------------------------------------------------
+
 class SynthesizerImpl : public ASTVisitor
 {
 public:
@@ -142,10 +162,6 @@ private:
       const std::string& method_name, std::ostream*) const;
 
   void renderErrorHandling() const;
-
-  void indentHeaderFile() const;
-
-  void dedentHeaderFile() const;
 
   void indentCppFile() const;
 
@@ -316,8 +332,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     auto& cppFileOfsRef = *(_context->cppFileOfs);
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     cppFileOfsRef << std::endl;
-    renderCustomInclude(_context->clsName.c_str(),
-                        _context->cppFileOfs.get());
+    renderCustomInclude(_context->clsName.c_str(), _context->cppFileOfs.get());
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
                         _context->cppFileOfs.get());
   }
@@ -375,8 +390,9 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Synthesize member function declaration.
   {
-    indentHeaderFile();
+    ScopedIndentationGuard scopedIndentation(_context->headerFileIndentLvl);
     renderIndentationInHeaderFile();
+
     auto& headerFileOfs = *(_context->headerFileOfs);
     headerFileOfs << _context->typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
@@ -390,7 +406,6 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     headerFileOfs << CPP_CLOSE_PAREN;
     headerFileOfs << CPP_SEMICOLON;
     headerFileOfs << std::endl;
-    dedentHeaderFile();
   }
 
   // Synthesize member function definition.
@@ -540,9 +555,8 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
 
     // Body of if statement
     {
-      indentCppFile();
+      ScopedIndentationGuard scopedIndentation(_context->cppFileIndentLvl);
       renderErrorHandling();
-      dedentCppFile();
     }
 
     renderIndentationInCppFile();
@@ -704,9 +718,8 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
 
     // Body of if-statement.
     {
-      indentCppFile();
+      ScopedIndentationGuard scopedIndentation(_context->cppFileIndentLvl);
       renderErrorHandling();
-      dedentCppFile();
     }
 
     renderIndentationInCppFile();
@@ -922,22 +935,6 @@ void
 SynthesizerImpl::renderIndentationInCppFile() const
 {
   renderIndentation(_context->cppFileIndentLvl, _context->cppFileOfs.get());
-}
-
-// -----------------------------------------------------------------------------
-
-void
-SynthesizerImpl::indentHeaderFile() const
-{
-  ++_context->headerFileIndentLvl;
-}
-
-// -----------------------------------------------------------------------------
-
-void
-SynthesizerImpl::dedentHeaderFile() const
-{
-  --_context->headerFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
