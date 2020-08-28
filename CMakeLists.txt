@@ -54,19 +54,23 @@ set(CMAKE_MACOSX_RPATH 1)
 
 
 # General compiler flags.
-set(CMAKE_CXX_FLAGS "\
--std=c++17 \
--g \
--Wno-c++98-compat \
--Wno-padded \
--Wno-c++98-compat-pedantic \
--Wno-format-nonliteral \
--Wno-c99-extensions \
--Wno-extra-semi \
--Wno-exit-time-destructors \
--Wno-covered-switch-default \
-")
-
+if (CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "-std=c++17 -g")
+else ()
+    set(CMAKE_CXX_FLAGS "\
+        -std=c++17 \
+        -g \
+        -Wno-c++98-compat \
+        -Wno-padded \
+        -Wno-c++98-compat-pedantic \
+        -Wno-format-nonliteral \
+        -Wno-c99-extensions \
+        -Wno-extra-semi \
+        -Wno-exit-time-destructors \
+        -Wno-covered-switch-default \
+        "
+    )
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
 # Linker options.
 # Suppressing passing -rdynamic.
