@@ -134,13 +134,13 @@ private:
   using CmdlOptionMap = std::unordered_map<std::string, CmdlOption>;
   using ShortHandMap = std::unordered_map<char, std::string>;
 
-  std::string m_name;
-  std::string m_version;
-  std::string m_desc;
-  std::string m_longDesc;
-  std::string m_usage;
-  CmdlOptionMap m_opts;
-  ShortHandMap m_shorthandMap;
-  PositionalArgumentList m_positionalArgs;
-  size_t m_minPositionalArgsRequired;
+  std::string _name;
+  std::string _version;
+  std::string _desc;
+  std::string _longDesc;
+  std::string _usage;
+  CmdlOptionMap _opts;
+  ShortHandMap _shorthandMap;
+  PositionalArgumentList _positionalArgs;
+  size_t _minPositionalArgsRequired;
 };

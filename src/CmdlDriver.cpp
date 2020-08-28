@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 CmdlDriver::CmdlDriver()
-  : m_opts()
+  : _opts()
 {
 }
 
@@ -37,7 +37,7 @@ CmdlDriver::CmdlDriver()
 const CmdlDriver::Options&
 CmdlDriver::options() const
 {
-  return m_opts;
+  return _opts;
 }
 
 // -----------------------------------------------------------------------------
@@ -51,17 +51,17 @@ CmdlDriver::run(int argc, char** argv)
   argparser.setUsageString(SNOWLAKE_PROG_USAGE);
 
   argparser.addStringParameter("output", 'o', "Output path", true,
-                                 &m_opts.outputPath);
+                                 &_opts.outputPath);
   argparser.addBooleanParameter("errors", 'e', "Treat warnings as errors",
-                                  false, &m_opts.warningsAsErrors, false);
+                                  false, &_opts.warningsAsErrors, false);
   argparser.addBooleanParameter("bail", 'b', "Bail on first error", false,
-                                  &m_opts.bailOnFirstError, false);
+                                  &_opts.bailOnFirstError, false);
   argparser.addBooleanParameter("debug", 'd', "Debug mode", false,
-                                  &m_opts.debugMode, false);
+                                  &_opts.debugMode, false);
   argparser.addBooleanParameter("verbose", 'v', "Verbose mode", false,
-                                  &m_opts.verbose, false);
+                                  &_opts.verbose, false);
   argparser.addBooleanParameter("silent", 's', "Silent mode", false,
-                                  &m_opts.silent, false);
+                                  &_opts.silent, false);
   argparser.setMinimumPositionalArgsRequired(1);
 
   const bool res = argparser.parseArgs(argc, argv);
@@ -70,7 +70,7 @@ CmdlDriver::run(int argc, char** argv)
     return false;
   }
 
-  m_opts.inputPath = argparser.positionalArgs().front();
+  _opts.inputPath = argparser.positionalArgs().front();
 
   return true;
 }

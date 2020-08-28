@@ -31,20 +31,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver()
-  : m_opts(ParserDriver::Options{.traceLexer = false,
+  : _opts(ParserDriver::Options{.traceLexer = false,
                                  .traceParser = false,
                                  .suppressErrorMessages = false})
-  , m_inputFile()
-  , m_module()
+  , _inputFile()
+  , _module()
 {
 }
 
 // -----------------------------------------------------------------------------
 
 ParserDriver::ParserDriver(Options opts)
-  : m_opts(opts)
-  , m_inputFile()
-  , m_module()
+  : _opts(opts)
+  , _inputFile()
+  , _module()
 {
 }
 
@@ -59,7 +59,7 @@ ParserDriver::~ParserDriver()
 bool
 ParserDriver::traceLexer() const
 {
-  return m_opts.traceLexer;
+  return _opts.traceLexer;
 }
 
 // -----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ ParserDriver::traceLexer() const
 void
 ParserDriver::setTraceLexer(bool val)
 {
-  m_opts.traceLexer = val;
+  _opts.traceLexer = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ ParserDriver::setTraceLexer(bool val)
 bool
 ParserDriver::traceParser() const
 {
-  return m_opts.traceParser;
+  return _opts.traceParser;
 }
 
 // -----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ ParserDriver::traceParser() const
 void
 ParserDriver::setTraceParser(bool val)
 {
-  m_opts.traceParser = val;
+  _opts.traceParser = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ ParserDriver::setTraceParser(bool val)
 bool
 ParserDriver::suppressErrorMessages() const
 {
-  return m_opts.suppressErrorMessages;
+  return _opts.suppressErrorMessages;
 }
 
 // -----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ ParserDriver::suppressErrorMessages() const
 void
 ParserDriver::setSuppressErrorMessages(bool val)
 {
-  m_opts.suppressErrorMessages = val;
+  _opts.suppressErrorMessages = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ ParserDriver::setSuppressErrorMessages(bool val)
 int
 ParserDriver::parseFromFile(const std::string& filepath)
 {
-  m_inputFile.assign(filepath);
+  _inputFile.assign(filepath);
   std::ifstream infile(filepath.c_str());
   if (!infile.good()) {
     return -1;
@@ -150,7 +150,7 @@ ParserDriver::parseFromString(const char* input)
 const std::string&
 ParserDriver::inputFile() const
 {
-  return m_inputFile;
+  return _inputFile;
 }
 
 // -----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ ParserDriver::inputFile() const
 std::string&
 ParserDriver::inputFile()
 {
-  return m_inputFile;
+  return _inputFile;
 }
 
 // -----------------------------------------------------------------------------
@@ -166,7 +166,7 @@ ParserDriver::inputFile()
 const ASTModule&
 ParserDriver::module() const
 {
-  return m_module;
+  return _module;
 }
 
 // -----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ ParserDriver::module() const
 void
 ParserDriver::setModule(ASTModule&& module)
 {
-  m_module = module;
+  _module = module;
 }
 
 // -----------------------------------------------------------------------------

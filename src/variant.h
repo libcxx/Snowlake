@@ -49,47 +49,47 @@ private:
   using data_type = typename std::aligned_storage<data_size, data_align>::type;
   using helper_type = impl::variant_helper<Types...>;
 
-  std::size_t m_type_index;
-  data_type m_data;
+  std::size_t _type_index;
+  data_type _data;
 
   void swap(variant<Types...>& lhs, variant<Types...>& rhs)
   {
-    auto lhs_type_index = lhs.m_type_index;
-    auto rhs_type_index = rhs.m_type_index;
+    auto lhs_type_index = lhs._type_index;
+    auto rhs_type_index = rhs._type_index;
 
     // Create a temporary copy of the data storage.
     data_type tmpData;
 
     // Copy rhs data -> tmp data
-    helper_type::copy(rhs_type_index, &rhs.m_data, &tmpData);
+    helper_type::copy(rhs_type_index, &rhs._data, &tmpData);
 
     // Copy lhs data -> rhs data
-    helper_type::copy(lhs_type_index, &lhs.m_data, &rhs.m_data);
+    helper_type::copy(lhs_type_index, &lhs._data, &rhs._data);
 
     // Copy tmp data -> lhs data
-    helper_type::copy(rhs_type_index, &tmpData, &lhs.m_data);
+    helper_type::copy(rhs_type_index, &tmpData, &lhs._data);
 
     // Then we can swap the indices.
-    std::swap(lhs.m_type_index, rhs.m_type_index);
+    std::swap(lhs._type_index, rhs._type_index);
   }
 
 public:
   variant()
-    : m_type_index(impl::invalid_type_index)
+    : _type_index(impl::invalid_type_index)
   {
   }
 
   variant(variant<Types...> const& other)
-    : m_type_index(other.m_type_index)
+    : _type_index(other._type_index)
   {
-    helper_type::copy(other.m_type_index, &other.m_data, &m_data);
+    helper_type::copy(other._type_index, &other._data, &_data);
   }
 
   variant(variant<Types...>&& other) noexcept
-    : m_type_index(other.m_type_index)
+    : _type_index(other._type_index)
   {
-    helper_type::move(other.m_type_index, &other.m_data, &m_data);
-    other.m_type_index = impl::invalid_type_index;
+    helper_type::move(other._type_index, &other._data, &_data);
+    other._type_index = impl::invalid_type_index;
   }
 
   template <
@@ -97,7 +97,7 @@ public:
       class = typename std::enable_if<impl::is_valid_type<
           typename std::remove_reference<T>::type, Types...>::value>::type>
   variant(T&& val) noexcept
-    : m_type_index(impl::value_traits<typename std::remove_reference<T>::type,
+    : _type_index(impl::value_traits<typename std::remove_reference<T>::type,
                                       Types...>::index)
   {
     constexpr std::size_t index =
@@ -107,12 +107,12 @@ public:
         1;
 
     using target_type = typename impl::select_type<index, Types...>::type;
-    new (&m_data) target_type(std::forward<T>(val));
+    new (&_data) target_type(std::forward<T>(val));
   }
 
   ~variant() noexcept
   {
-    helper_type::destroy(m_type_index, &m_data);
+    helper_type::destroy(_type_index, &_data);
   }
 
   variant<Types...>& operator=(variant<Types...> other)
@@ -177,12 +177,12 @@ public:
   template <typename T>
   bool is() const
   {
-    return (m_type_index == impl::direct_type<T, Types...>::index);
+    return (_type_index == impl::direct_type<T, Types...>::index);
   }
 
   bool valid() const
   {
-    return (m_type_index != impl::invalid_type_index);
+    return (_type_index != impl::invalid_type_index);
   }
 
   template <
@@ -191,8 +191,8 @@ public:
                                impl::invalid_type_index)>::type* = nullptr>
   T& get()
   {
-    if (m_type_index == impl::direct_type<T, Types...>::index) {
-      return *reinterpret_cast<T*>(&m_data);
+    if (_type_index == impl::direct_type<T, Types...>::index) {
+      return *reinterpret_cast<T*>(&_data);
     } else {
       THROW(std::runtime_error("failed get<T>() in variant type"));
     }
@@ -204,8 +204,8 @@ public:
                                impl::invalid_type_index)>::type* = nullptr>
   T const& get() const
   {
-    if (m_type_index == impl::direct_type<T, Types...>::index) {
-      return *reinterpret_cast<T const*>(&m_data);
+    if (_type_index == impl::direct_type<T, Types...>::index) {
+      return *reinterpret_cast<T const*>(&_data);
     } else {
       THROW(std::runtime_error("failed get<T>() in variant type"));
     }
@@ -217,7 +217,7 @@ public:
    */
   std::size_t type_index() const
   {
-    return m_type_index;
+    return _type_index;
   }
 
   /**
@@ -226,7 +226,7 @@ public:
    */
   int which() const noexcept
   {
-    return static_cast<int>(sizeof...(Types) - m_type_index - 1);
+    return static_cast<int>(sizeof...(Types) - _type_index - 1);
   }
 
   /** Unary visitation (const operand) */

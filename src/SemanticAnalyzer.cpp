@@ -35,9 +35,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ON_WARNING(msg, ...)                                                   \
   do {                                                                         \
     addWarning((msg), __VA_ARGS__);                                           \
-    if (m_opts.warningsAsErrors) {                                             \
+    if (_opts.warningsAsErrors) {                                             \
       res = false;                                                             \
-      if (m_opts.bailOnFirstError) {                                           \
+      if (_opts.bailOnFirstError) {                                           \
         return res;                                                            \
       }                                                                        \
     }                                                                          \
@@ -47,7 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   do {                                                                         \
     res = false;                                                               \
     addError((msg), __VA_ARGS__);                                             \
-    if (m_opts.bailOnFirstError) {                                             \
+    if (_opts.bailOnFirstError) {                                             \
       return res;                                                              \
     }                                                                          \
   } while (0)
@@ -60,8 +60,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 SemanticAnalyzer::SemanticAnalyzer()
   : ASTVisitor()
-  , m_errors()
-  , m_opts()
+  , _errors()
+  , _opts()
 {
 }
 
@@ -69,8 +69,8 @@ SemanticAnalyzer::SemanticAnalyzer()
 
 SemanticAnalyzer::SemanticAnalyzer(const Options& opts)
   : ASTVisitor()
-  , m_errors()
-  , m_opts(opts)
+  , _errors()
+  , _opts(opts)
 {
 }
 
@@ -79,7 +79,7 @@ SemanticAnalyzer::SemanticAnalyzer(const Options& opts)
 const SemanticAnalyzer::ErrorList&
 SemanticAnalyzer::errors() const
 {
-  return m_errors;
+  return _errors;
 }
 
 // -----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ SemanticAnalyzer::errors() const
 const SemanticAnalyzer::Options&
 SemanticAnalyzer::options() const
 {
-  return m_opts;
+  return _opts;
 }
 
 // -----------------------------------------------------------------------------

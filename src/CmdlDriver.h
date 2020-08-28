@@ -45,5 +45,5 @@ public:
   bool run(int argc, char** argv);
 
 private:
-  Options m_opts;
+  Options _opts;
 };

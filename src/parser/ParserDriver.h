@@ -99,7 +99,7 @@ public:
   void error(const std::string& m);
 
 private:
-  Options m_opts;
-  std::string m_inputFile;
-  ASTModule m_module;
+  Options _opts;
+  std::string _inputFile;
+  ASTModule _module;
 };
