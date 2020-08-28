@@ -29,7 +29,8 @@ class CmdlDriver
 public:
   CmdlDriver();
 
-  struct Options {
+  struct Options
+  {
     bool warningsAsErrors;
     bool bailOnFirstError;
     bool debugMode;

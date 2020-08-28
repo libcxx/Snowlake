@@ -38,7 +38,8 @@ YY_DECL;
 class ParserDriver
 {
 public:
-  struct Options {
+  struct Options
+  {
     bool traceLexer;
     bool traceParser;
     bool suppressErrorMessages;

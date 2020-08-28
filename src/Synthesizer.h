@@ -30,7 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class Synthesizer
 {
 public:
-  struct Options {
+  struct Options
+  {
     bool useException;
     std::string outputPath;
   };

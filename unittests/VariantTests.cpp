@@ -408,7 +408,8 @@ TEST_F(VariantTests, TestLessThanOperatorOnDifferentTypes)
 class VariantUnaryVisitationUnitTest : public VariantTests
 {
 protected:
-  struct tostring_visitor : public sl::variant::static_visitor<std::string> {
+  struct tostring_visitor : public sl::variant::static_visitor<std::string>
+  {
     std::string operator()(const int& val) const
     {
       return std::to_string(val);
@@ -474,7 +475,8 @@ TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
 class VariantBinaryVisitationUnitTest : public VariantTests
 {
 protected:
-  struct equality_visitor : public sl::variant::static_visitor<bool> {
+  struct equality_visitor : public sl::variant::static_visitor<bool>
+  {
     template <typename T>
     bool operator()(const T& lhs, const T& rhs) const
     {
@@ -528,7 +530,8 @@ TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
 class VariantMemoryIntegrityUnitTest : public VariantTests
 {
 protected:
-  struct _MyStruct {
+  struct _MyStruct
+  {
     std::string name;
   };
 

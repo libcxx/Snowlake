@@ -498,7 +498,8 @@ ArgumentParser::__definedBooleanOption(const std::string& name) const
 // -----------------------------------------------------------------------------
 
 struct CmdlOptionValueCast
-  : public sl::variant::static_visitor<ArgumentParser::value_type> {
+  : public sl::variant::static_visitor<ArgumentParser::value_type>
+{
   explicit CmdlOptionValueCast(const std::string& raw_value)
     : m_raw_value(raw_value)
   {
@@ -559,7 +560,8 @@ ArgumentParser::__assignValues()
 // -----------------------------------------------------------------------------
 
 struct CmdlOptionDestinationValueUpdate
-  : public sl::variant::static_visitor<ArgumentParser::value_type> {
+  : public sl::variant::static_visitor<ArgumentParser::value_type>
+{
   CmdlOptionDestinationValueUpdate(const ArgumentParser::value_type& value,
                                    void* dst)
     : m_value(value)

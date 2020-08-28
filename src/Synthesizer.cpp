@@ -53,7 +53,8 @@ typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 
 // -----------------------------------------------------------------------------
 
-struct InferenceGroupSynthesisContext {
+struct InferenceGroupSynthesisContext
+{
   std::string clsName;
   std::string typeCls;
   EnvDefnMap envDefnMap;

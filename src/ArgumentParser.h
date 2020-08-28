@@ -112,12 +112,14 @@ private:
                     const char* description, bool required, T* res,
                     T defaultValue);
 
-  struct CmdlOptionValue {
+  struct CmdlOptionValue
+  {
     using value_type = ArgumentParser::value_type;
     value_type value;
   };
 
-  struct CmdlOption {
+  struct CmdlOption
+  {
     char shorthand;
     std::string description;
     bool required;

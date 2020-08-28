@@ -42,7 +42,8 @@ struct direct_type;
 // -----------------------------------------------------------------------------
 
 template <typename T, typename First, typename... Types>
-struct direct_type<T, First, Types...> {
+struct direct_type<T, First, Types...>
+{
   static constexpr std::size_t index = std::is_same<T, First>::value
                                            ? sizeof...(Types)
                                            : direct_type<T, Types...>::index;
@@ -51,7 +52,8 @@ struct direct_type<T, First, Types...> {
 // -----------------------------------------------------------------------------
 
 template <typename T>
-struct direct_type<T> {
+struct direct_type<T>
+{
   static constexpr std::size_t index = invalid_type_index;
 };
 
@@ -63,7 +65,8 @@ struct convertible_type;
 // -----------------------------------------------------------------------------
 
 template <typename T, typename First, typename... Types>
-struct convertible_type<T, First, Types...> {
+struct convertible_type<T, First, Types...>
+{
   static constexpr std::size_t index =
       std::is_convertible<T, First>::value
           ? sizeof...(Types)
@@ -73,14 +76,16 @@ struct convertible_type<T, First, Types...> {
 // -----------------------------------------------------------------------------
 
 template <typename T>
-struct convertible_type<T> {
+struct convertible_type<T>
+{
   static constexpr std::size_t index = invalid_type_index;
 };
 
 // -----------------------------------------------------------------------------
 
 template <typename T, typename... Types>
-struct value_traits {
+struct value_traits
+{
   static constexpr std::size_t direct_index = direct_type<T, Types...>::index;
   static constexpr std::size_t index =
       (direct_index == invalid_type_index)
@@ -96,7 +101,8 @@ struct is_valid_type;
 // -----------------------------------------------------------------------------
 
 template <typename T, typename First, typename... Types>
-struct is_valid_type<T, First, Types...> {
+struct is_valid_type<T, First, Types...>
+{
   static constexpr bool value =
       std::is_convertible<T, First>::value || is_valid_type<T, Types...>::value;
 };
@@ -104,41 +110,47 @@ struct is_valid_type<T, First, Types...> {
 // -----------------------------------------------------------------------------
 
 template <typename T>
-struct is_valid_type<T> : std::false_type {
+struct is_valid_type<T> : std::false_type
+{
 };
 
 // -----------------------------------------------------------------------------
 
 template <std::size_t N, typename... Types>
-struct select_type {
+struct select_type
+{
   static_assert(N < sizeof...(Types), "index out of bounds");
 };
 
 // -----------------------------------------------------------------------------
 
 template <std::size_t N, typename T, typename... Types>
-struct select_type<N, T, Types...> {
+struct select_type<N, T, Types...>
+{
   using type = typename select_type<N - 1, Types...>::type;
 };
 
 // -----------------------------------------------------------------------------
 
 template <typename T, typename... Types>
-struct select_type<0, T, Types...> {
+struct select_type<0, T, Types...>
+{
   using type = T;
 };
 
 // -----------------------------------------------------------------------------
 
 template <typename T, typename R = void>
-struct enable_if_type {
+struct enable_if_type
+{
   using type = R;
 };
 
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename Enable = void>
-struct result_of_unary_visit {
+struct result_of_unary_visit
+{
   using type = typename std::result_of<F(V&)>::type;
 };
 
@@ -146,14 +158,16 @@ struct result_of_unary_visit {
 
 template <typename F, typename V>
 struct result_of_unary_visit<
-    F, V, typename enable_if_type<typename F::result_type>::type> {
+    F, V, typename enable_if_type<typename F::result_type>::type>
+{
   using type = typename F::result_type;
 };
 
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, class Enable = void>
-struct result_of_binary_visit {
+struct result_of_binary_visit
+{
   using type = typename std::result_of<F(V&, V&)>::type;
 };
 
@@ -161,7 +175,8 @@ struct result_of_binary_visit {
 
 template <typename F, typename V>
 struct result_of_binary_visit<
-    F, V, typename enable_if_type<typename F::result_type>::type> {
+    F, V, typename enable_if_type<typename F::result_type>::type>
+{
   using type = typename F::result_type;
 };
 
@@ -173,14 +188,16 @@ struct static_max;
 // -----------------------------------------------------------------------------
 
 template <std::size_t arg>
-struct static_max<arg> {
+struct static_max<arg>
+{
   static const std::size_t value = arg;
 };
 
 // -----------------------------------------------------------------------------
 
 template <std::size_t arg1, std::size_t arg2, std::size_t... others>
-struct static_max<arg1, arg2, others...> {
+struct static_max<arg1, arg2, others...>
+{
   static const std::size_t value = arg1 >= arg2
                                        ? static_max<arg1, others...>::value
                                        : static_max<arg2, others...>::value;
@@ -194,7 +211,8 @@ struct variant_helper;
 // -----------------------------------------------------------------------------
 
 template <typename T, typename... Types>
-struct variant_helper<T, Types...> {
+struct variant_helper<T, Types...>
+{
   static void destroy(const std::size_t id, void* m_data)
   {
     if (id == sizeof...(Types)) {
@@ -227,7 +245,8 @@ struct variant_helper<T, Types...> {
 // -----------------------------------------------------------------------------
 
 template <>
-struct variant_helper<> {
+struct variant_helper<>
+{
   static void destroy(const std::size_t, void*)
   {
   }
@@ -241,7 +260,8 @@ struct variant_helper<> {
 
 // -----------------------------------------------------------------------------
 
-struct equal_to {
+struct equal_to
+{
   template <typename T>
   bool operator()(T const& lhs, T const& rhs) const
   {
@@ -251,7 +271,8 @@ struct equal_to {
 
 // -----------------------------------------------------------------------------
 
-struct less_than {
+struct less_than
+{
   template <typename T>
   bool operator()(T const& lhs, T const& rhs) const
   {

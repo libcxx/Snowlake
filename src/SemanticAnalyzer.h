@@ -39,7 +39,8 @@ public:
     Error = 0x10
   };
 
-  struct Error {
+  struct Error
+  {
     ErrorCode code;
     std::string msg;
   };
@@ -47,7 +48,8 @@ public:
 public:
   typedef std::vector<Error> ErrorList;
 
-  struct Options {
+  struct Options
+  {
     bool bailOnFirstError;
     bool warningsAsErrors;
     bool verbose;
@@ -70,7 +72,8 @@ private:
 
   typedef std::unordered_set<std::string> SymbolSet;
 
-  struct InferenceDefnContext {
+  struct InferenceDefnContext
+  {
     const std::string& name;
     SymbolSet symbolSet;
     TargetTable targetTbl;
