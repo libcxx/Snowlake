@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SemanticAnalyzer.h"
 
+#include "ASTUtils.h"
 #include "ast.h"
-#include "ast_util.h"
 #include "format_defn.h"
 
 // -----------------------------------------------------------------------------
@@ -212,7 +212,8 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
   // Proposition.
   {
     const auto& proposition = inferenceDefn.propositionDefn();
-    if (!hasCompatibleTargetInTable(proposition.target(), context.targetTbl)) {
+    if (!ASTUtils::hasCompatibleTargetInTable(proposition.target(),
+                                              context.targetTbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
     }
@@ -257,7 +258,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
   // Handle source.
   {
     const auto& source = defn.source();
-    const auto& sourceRoot = getRootOfASTIdentifiable(source);
+    const auto& sourceRoot = ASTUtils::getRootOfASTIdentifiable(source);
     if (context->symbolSet.count(sourceRoot) == 0) {
       ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
                sourceRoot.c_str(), context->name.c_str());
@@ -267,11 +268,11 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
   // Handle target.
   {
     const auto& target = defn.deductionTarget();
-    if (hasIncompatibleTargetInTable(target, context->targetTbl)) {
+    if (ASTUtils::hasIncompatibleTargetInTable(target, context->targetTbl)) {
       ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
     }
-    addTargetToTable(target, &context->targetTbl);
+    ASTUtils::addTargetToTable(target, &context->targetTbl);
   }
 
   // Handle while-clause.
@@ -299,7 +300,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   const auto& lhs = defn.lhs();
   const auto& rhs = defn.rhs();
 
-  if (!areTargetsCompatible(lhs, rhs)) {
+  if (!ASTUtils::areTargetsCompatible(lhs, rhs)) {
     ON_ERROR("Incompatible targets in expression in inference \"%s\".",
              context->name.c_str());
   }
@@ -313,7 +314,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
-      if (!hasCompatibleTargetInTable(target, context->targetTbl)) {
+      if (!ASTUtils::hasCompatibleTargetInTable(target, context->targetTbl)) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }

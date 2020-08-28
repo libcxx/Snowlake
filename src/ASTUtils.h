@@ -30,21 +30,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 
-std::string canonicalizeASTIdentifiable(const ASTIdentifiable&);
+class ASTUtils
+{
+public:
+  static std::string canonicalizeASTIdentifiable(const ASTIdentifiable&);
 
-bool areTargetsCompatible(const ASTDeductionTarget&, const ASTDeductionTarget&);
+  static bool areTargetsCompatible(const ASTDeductionTarget&,
+                                   const ASTDeductionTarget&);
 
-bool areTargetsCompatible(const ASTDeductionTargetSingular&,
-                          const ASTDeductionTargetSingular&);
+  static bool areTargetsCompatible(const ASTDeductionTargetSingular&,
+                                   const ASTDeductionTargetSingular&);
 
-bool areTargetsCompatible(const ASTDeductionTargetArray&,
-                          const ASTDeductionTargetArray&);
+  static bool areTargetsCompatible(const ASTDeductionTargetArray&,
+                                   const ASTDeductionTargetArray&);
 
-const std::string& getRootOfASTIdentifiable(const ASTIdentifiable&);
+  static const std::string& getRootOfASTIdentifiable(const ASTIdentifiable&);
 
-void addTargetToTable(const ASTDeductionTarget&, TargetTable*);
+  static void addTargetToTable(const ASTDeductionTarget&, TargetTable*);
 
-bool hasCompatibleTargetInTable(const ASTDeductionTarget&, const TargetTable&);
+  static bool hasCompatibleTargetInTable(const ASTDeductionTarget&,
+                                         const TargetTable&);
 
-bool hasIncompatibleTargetInTable(const ASTDeductionTarget&,
-                                  const TargetTable&);
+  static bool hasIncompatibleTargetInTable(const ASTDeductionTarget&,
+                                           const TargetTable&);
+};
