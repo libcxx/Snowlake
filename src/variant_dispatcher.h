@@ -23,10 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "macros.h"
+
 #include <stdexcept>
 #include <string>
-
-#include "macros.h"
 
 namespace sl {
 namespace variant {

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "SemanticAnalyzer.h"
+
 #include "ast.h"
 #include "ast_util.h"
 #include "format_defn.h"
@@ -34,10 +35,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define ON_WARNING(msg, ...)                                                   \
   do {                                                                         \
-    addWarning((msg), __VA_ARGS__);                                           \
-    if (_opts.warningsAsErrors) {                                             \
+    addWarning((msg), __VA_ARGS__);                                            \
+    if (_opts.warningsAsErrors) {                                              \
       res = false;                                                             \
-      if (_opts.bailOnFirstError) {                                           \
+      if (_opts.bailOnFirstError) {                                            \
         return res;                                                            \
       }                                                                        \
     }                                                                          \
@@ -46,8 +47,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ON_ERROR(msg, ...)                                                     \
   do {                                                                         \
     res = false;                                                               \
-    addError((msg), __VA_ARGS__);                                             \
-    if (_opts.bailOnFirstError) {                                             \
+    addError((msg), __VA_ARGS__);                                              \
+    if (_opts.bailOnFirstError) {                                              \
       return res;                                                              \
     }                                                                          \
   } while (0)
@@ -211,8 +212,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
   // Proposition.
   {
     const auto& proposition = inferenceDefn.propositionDefn();
-    if (!hasCompatibleTargetInTable(proposition.target(),
-                                        context.targetTbl)) {
+    if (!hasCompatibleTargetInTable(proposition.target(), context.targetTbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
     }
@@ -249,8 +249,8 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& envDefns)
 
 template <>
 bool
-SemanticAnalyzer::recursivePremiseDefnCheck(
-    const ASTInferencePremiseDefn& defn, InferenceDefnContext* context)
+SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
+                                            InferenceDefnContext* context)
 {
   INIT_RES;
 
@@ -326,8 +326,8 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
 // -----------------------------------------------------------------------------
 
 bool
-SemanticAnalyzer::recursivePremiseDefnCheck(
-    const ASTPremiseDefn& premiseDefn, InferenceDefnContext* context)
+SemanticAnalyzer::recursivePremiseDefnCheck(const ASTPremiseDefn& premiseDefn,
+                                            InferenceDefnContext* context)
 {
   INIT_RES;
 

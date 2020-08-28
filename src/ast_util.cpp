@@ -22,7 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ast_util.h"
+
 #include "ast.h"
+
 #include <sstream>
 
 // -----------------------------------------------------------------------------
@@ -49,7 +51,7 @@ canonicalizeASTIdentifiable(const ASTIdentifiable& identifiable)
 
 bool
 areTargetsCompatible(const ASTDeductionTarget& lhs,
-                       const ASTDeductionTarget& rhs)
+                     const ASTDeductionTarget& rhs)
 {
   if (lhs.isType<ASTDeductionTargetSingular>() &&
       rhs.isType<ASTDeductionTargetSingular>()) {
@@ -90,7 +92,7 @@ areTargetsCompatible(const ASTDeductionTarget& lhs,
 
 bool
 areTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
-                       const ASTDeductionTargetSingular& /* rhs */)
+                     const ASTDeductionTargetSingular& /* rhs */)
 {
   // Singular targets should be compatible.
   return true;
@@ -100,7 +102,7 @@ areTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
 
 bool
 areTargetsCompatible(const ASTDeductionTargetArray& lhs,
-                       const ASTDeductionTargetArray& rhs)
+                     const ASTDeductionTargetArray& rhs)
 {
   if (lhs.hasSizeLiteral() && rhs.hasSizeLiteral()) {
     return true;
@@ -146,7 +148,7 @@ addTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
 
 bool
 hasCompatibleTargetInTable(const ASTDeductionTarget& target,
-                               const TargetTable& tbl)
+                           const TargetTable& tbl)
 {
   if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
@@ -165,11 +167,9 @@ hasCompatibleTargetInTable(const ASTDeductionTarget& target,
             existingValue->value<ASTDeductionTargetArray>();
         if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return false;
-        } else if (!value.hasSizeLiteral() &&
-                   existingTarget.hasSizeLiteral()) {
+        } else if (!value.hasSizeLiteral() && existingTarget.hasSizeLiteral()) {
           return false;
-        } else if (value.hasSizeLiteral() &&
-                   existingTarget.hasSizeLiteral()) {
+        } else if (value.hasSizeLiteral() && existingTarget.hasSizeLiteral()) {
           return value.sizeLiteral() == existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {
@@ -194,7 +194,7 @@ hasCompatibleTargetInTable(const ASTDeductionTarget& target,
 
 bool
 hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
-                                 const TargetTable& tbl)
+                             const TargetTable& tbl)
 {
   if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
@@ -211,11 +211,9 @@ hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
             existingValue->value<ASTDeductionTargetArray>();
         if (value.hasSizeLiteral() && !existingTarget.hasSizeLiteral()) {
           return true;
-        } else if (!value.hasSizeLiteral() &&
-                   existingTarget.hasSizeLiteral()) {
+        } else if (!value.hasSizeLiteral() && existingTarget.hasSizeLiteral()) {
           return true;
-        } else if (value.hasSizeLiteral() &&
-                   existingTarget.hasSizeLiteral()) {
+        } else if (value.hasSizeLiteral() && existingTarget.hasSizeLiteral()) {
           return value.sizeLiteral() != existingTarget.sizeLiteral();
         } else // Neither has size literal.
         {

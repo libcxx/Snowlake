@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ProgramDriver.h"
+
 #include "CmdlDriver.h"
 #include "SemanticAnalyzer.h"
 #include "Synthesizer.h"
@@ -34,14 +35,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 static void __printSemanticAnalyzerErrors(const std::string&,
-                                           const SemanticAnalyzer&,
-                                           std::ostream&);
+                                          const SemanticAnalyzer&,
+                                          std::ostream&);
 
 // -----------------------------------------------------------------------------
 
 #define PRINT_VERBOSE_MSG(msg)                                                 \
   do {                                                                         \
-    if (cmdlOpts.verbose && !cmdlOpts.silent) {                              \
+    if (cmdlOpts.verbose && !cmdlOpts.silent) {                                \
       std::cerr << (msg) << std::endl;                                         \
     }                                                                          \
   } while (0)
@@ -103,16 +104,14 @@ ProgramDriver::run(int argc, char** argv)
   if (!res) {
     if (!cmdlOpts.silent) {
       __printSemanticAnalyzerErrors(cmdlOpts.inputPath, semaAnalyzer,
-                                     std::cout);
+                                    std::cout);
     }
     return EXIT_FAILURE;
   }
 
   // Synthesis.
-  Synthesizer::Options synthesisOpts{
-    .useException = false,
-    .outputPath = cmdlOpts.outputPath
-  };
+  Synthesizer::Options synthesisOpts{.useException = false,
+                                     .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
   res = synthesizer.run(module);
   if (!res) {
@@ -133,8 +132,8 @@ ProgramDriver::run(int argc, char** argv)
 
 static void
 __printSemanticAnalyzerErrors(const std::string& inputPath,
-                               const SemanticAnalyzer& semaAnalyzer,
-                               std::ostream& out)
+                              const SemanticAnalyzer& semaAnalyzer,
+                              std::ostream& out)
 {
   size_t errorsCount = 0;
   size_t warningsCount = 0;

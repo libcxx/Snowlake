@@ -31,7 +31,7 @@ namespace {
 struct nullopt_t
 {
 };
-}
+} // namespace
 
 /**
  * Simple implementation of an optional container.

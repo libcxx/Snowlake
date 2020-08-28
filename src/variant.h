@@ -98,7 +98,7 @@ public:
           typename std::remove_reference<T>::type, Types...>::value>::type>
   variant(T&& val) noexcept
     : _type_index(impl::value_traits<typename std::remove_reference<T>::type,
-                                      Types...>::index)
+                                     Types...>::index)
   {
     constexpr std::size_t index =
         sizeof...(Types) -
@@ -185,10 +185,9 @@ public:
     return (_type_index != impl::invalid_type_index);
   }
 
-  template <
-      typename T,
-      typename std::enable_if<(impl::direct_type<T, Types...>::index !=
-                               impl::invalid_type_index)>::type* = nullptr>
+  template <typename T, typename std::enable_if<
+                            (impl::direct_type<T, Types...>::index !=
+                             impl::invalid_type_index)>::type* = nullptr>
   T& get()
   {
     if (_type_index == impl::direct_type<T, Types...>::index) {
@@ -198,10 +197,9 @@ public:
     }
   }
 
-  template <
-      typename T,
-      typename std::enable_if<(impl::direct_type<T, Types...>::index !=
-                               impl::invalid_type_index)>::type* = nullptr>
+  template <typename T, typename std::enable_if<
+                            (impl::direct_type<T, Types...>::index !=
+                             impl::invalid_type_index)>::type* = nullptr>
   T const& get() const
   {
     if (_type_index == impl::direct_type<T, Types...>::index) {
@@ -231,11 +229,12 @@ public:
 
   /** Unary visitation (const operand) */
   template <typename F, typename V>
-  auto static visit(V const& v, F f) -> decltype(
-      impl::dispatcher<
-          F, V, typename impl::result_of_unary_visit<
-                    F, typename impl::select_type<0, Types...>::type>::type,
-          Types...>::apply_const(v, f))
+  auto static visit(V const& v, F f)
+      -> decltype(impl::dispatcher<
+                  F, V,
+                  typename impl::result_of_unary_visit<
+                      F, typename impl::select_type<0, Types...>::type>::type,
+                  Types...>::apply_const(v, f))
   {
     using R = typename impl::result_of_unary_visit<
         F, typename impl::select_type<0, Types...>::type>::type;
@@ -244,11 +243,12 @@ public:
 
   /** Unary visitation (non-const operand) */
   template <typename F, typename V>
-  auto static visit(V& v, F f) -> decltype(
-      impl::dispatcher<
-          F, V, typename impl::result_of_unary_visit<
-                    F, typename impl::select_type<0, Types...>::type>::type,
-          Types...>::apply(v, f))
+  auto static visit(V& v, F f)
+      -> decltype(impl::dispatcher<
+                  F, V,
+                  typename impl::result_of_unary_visit<
+                      F, typename impl::select_type<0, Types...>::type>::type,
+                  Types...>::apply(v, f))
   {
     using R = typename impl::result_of_unary_visit<
         F, typename impl::select_type<0, Types...>::type>::type;
@@ -257,11 +257,12 @@ public:
 
   /** Binary visitation (const operands) */
   template <typename F, typename V>
-  auto static binary_visit(V const& v0, V const& v1, F f) -> decltype(
-      impl::binary_dispatcher<
-          F, V, typename impl::result_of_binary_visit<
-                    F, typename impl::select_type<0, Types...>::type>::type,
-          Types...>::apply_const(v0, v1, f))
+  auto static binary_visit(V const& v0, V const& v1, F f)
+      -> decltype(impl::binary_dispatcher<
+                  F, V,
+                  typename impl::result_of_binary_visit<
+                      F, typename impl::select_type<0, Types...>::type>::type,
+                  Types...>::apply_const(v0, v1, f))
   {
     using R = typename impl::result_of_binary_visit<
         F, typename impl::select_type<0, Types...>::type>::type;
@@ -270,11 +271,12 @@ public:
 
   /** Binary visitation (non-const operands) */
   template <typename F, typename V>
-  auto static binary_visit(V& v0, V& v1, F f) -> decltype(
-      impl::binary_dispatcher<
-          F, V, typename impl::result_of_binary_visit<
-                    F, typename impl::select_type<0, Types...>::type>::type,
-          Types...>::apply(v0, v1, f))
+  auto static binary_visit(V& v0, V& v1, F f)
+      -> decltype(impl::binary_dispatcher<
+                  F, V,
+                  typename impl::result_of_binary_visit<
+                      F, typename impl::select_type<0, Types...>::type>::type,
+                  Types...>::apply(v0, v1, f))
   {
     using R = typename impl::result_of_binary_visit<
         F, typename impl::select_type<0, Types...>::type>::type;

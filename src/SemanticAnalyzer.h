@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ASTVisitor.h"
 #include "ast_util.h"
+
 #include <unordered_set>
 #include <vector>
 
@@ -80,8 +81,7 @@ private:
 
   bool checkRequiredEnvDefns(const SymbolSet&);
 
-  bool recursivePremiseDefnCheck(const ASTPremiseDefn&,
-                                    InferenceDefnContext*);
+  bool recursivePremiseDefnCheck(const ASTPremiseDefn&, InferenceDefnContext*);
 
   template <typename T>
   bool recursivePremiseDefnCheck(const T&, InferenceDefnContext*);
