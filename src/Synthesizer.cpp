@@ -156,7 +156,7 @@ private:
   std::string __getNextVarName() const;
 
   const Synthesizer::Options& _opts;
-  std::unique_ptr<InferenceGroupSynthesisContext> m_context;
+  std::unique_ptr<InferenceGroupSynthesisContext> _context;
 };
 
 // -----------------------------------------------------------------------------
@@ -214,7 +214,7 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 
 SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
   : _opts(opts)
-  , m_context()
+  , _context()
 {
 }
 
@@ -280,30 +280,30 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
     return false;
   }
 
-  m_context.reset(new InferenceGroupSynthesisContext());
-  if (!m_context) {
+  _context.reset(new InferenceGroupSynthesisContext());
+  if (!_context) {
     headerFileOfs.release();
     cppFileOfs.release();
     return false;
   }
-  m_context->headerFileOfs = std::move(headerFileOfs);
-  m_context->cppFileOfs = std::move(cppFileOfs);
-  m_context->clsName = std::move(clsName);
-  m_context->typeCls = std::move(typeCls);
-  m_context->envDefnMap = std::move(envDefnMap);
+  _context->headerFileOfs = std::move(headerFileOfs);
+  _context->cppFileOfs = std::move(cppFileOfs);
+  _context->clsName = std::move(clsName);
+  _context->typeCls = std::move(typeCls);
+  _context->envDefnMap = std::move(envDefnMap);
 
   // Write to header file.
   {
-    auto& headerFileOfsRef = *(m_context->headerFileOfs);
+    auto& headerFileOfsRef = *(_context->headerFileOfs);
     headerFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     headerFileOfsRef << std::endl;
     headerFileOfsRef << std::endl;
     headerFileOfsRef << CPP_PRAGMA_ONCE << std::endl;
     headerFileOfsRef << std::endl;
-    renderSystemHeaderIncludes(m_context->headerFileOfs.get());
+    renderSystemHeaderIncludes(_context->headerFileOfs.get());
     headerFileOfsRef << std::endl;
     headerFileOfsRef << CPP_CLASS_KEYWORD << ' ';
-    headerFileOfsRef << m_context->clsName;
+    headerFileOfsRef << _context->clsName;
     headerFileOfsRef << std::endl;
     headerFileOfsRef << CPP_OPEN_BRACE;
     headerFileOfsRef << std::endl;
@@ -313,13 +313,13 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 
   // Write to .cpp file.
   {
-    auto& cppFileOfsRef = *(m_context->cppFileOfs);
+    auto& cppFileOfsRef = *(_context->cppFileOfs);
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     cppFileOfsRef << std::endl;
-    renderCustomInclude(m_context->clsName.c_str(),
-                        m_context->cppFileOfs.get());
+    renderCustomInclude(_context->clsName.c_str(),
+                        _context->cppFileOfs.get());
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
-                        m_context->cppFileOfs.get());
+                        _context->cppFileOfs.get());
   }
 
   return true;
@@ -331,13 +331,13 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
 bool
 SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 {
-  SYNTHESIZER_ASSERT(m_context);
-  SYNTHESIZER_ASSERT(m_context->headerFileOfs);
-  SYNTHESIZER_ASSERT(m_context->cppFileOfs);
+  SYNTHESIZER_ASSERT(_context);
+  SYNTHESIZER_ASSERT(_context->headerFileOfs);
+  SYNTHESIZER_ASSERT(_context->cppFileOfs);
 
   // Write closing };
   {
-    auto& headerFileOfs = *(m_context->headerFileOfs);
+    auto& headerFileOfs = *(_context->headerFileOfs);
     headerFileOfs << CPP_CLOSE_BRACE;
     headerFileOfs << CPP_SEMICOLON;
     headerFileOfs << std::endl;
@@ -345,19 +345,19 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 
   // Close and release header file stream.
   {
-    m_context->headerFileOfs->close();
-    m_context->headerFileOfs.release();
+    _context->headerFileOfs->close();
+    _context->headerFileOfs.release();
   }
 
   // Close and release .cpp file stream.
   {
-    m_context->cppFileOfs->close();
-    m_context->cppFileOfs.release();
+    _context->cppFileOfs->close();
+    _context->cppFileOfs.release();
   }
 
   // Close and release context.
   {
-    m_context.release();
+    _context.release();
   }
 
   return true;
@@ -369,20 +369,20 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 bool
 SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 {
-  SYNTHESIZER_ASSERT(m_context);
-  SYNTHESIZER_ASSERT(m_context->headerFileOfs);
-  SYNTHESIZER_ASSERT(m_context->cppFileOfs);
+  SYNTHESIZER_ASSERT(_context);
+  SYNTHESIZER_ASSERT(_context->headerFileOfs);
+  SYNTHESIZER_ASSERT(_context->cppFileOfs);
 
   // Synthesize member function declaration.
   {
     indentHeaderFile();
     renderIndentationInHeaderFile();
-    auto& headerFileOfs = *(m_context->headerFileOfs);
-    headerFileOfs << m_context->typeCls << CPP_SPACE;
+    auto& headerFileOfs = *(_context->headerFileOfs);
+    headerFileOfs << _context->typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
     headerFileOfs << CPP_OPEN_PAREN;
     synthesizeArgumentList(inferenceDefn.arguments(),
-                           m_context->headerFileOfs.get());
+                           _context->headerFileOfs.get());
     if (!_opts.useException) {
       headerFileOfs << CPP_COMA << CPP_SPACE;
       headerFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
@@ -395,15 +395,15 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Synthesize member function definition.
   {
-    auto& cppFileOfs = *(m_context->cppFileOfs);
+    auto& cppFileOfs = *(_context->cppFileOfs);
     cppFileOfs << std::endl;
-    cppFileOfs << m_context->typeCls << std::endl;
-    cppFileOfs << m_context->clsName;
+    cppFileOfs << _context->typeCls << std::endl;
+    cppFileOfs << _context->clsName;
     cppFileOfs << CPP_COLON << CPP_COLON;
     cppFileOfs << inferenceDefn.name();
     cppFileOfs << CPP_OPEN_PAREN;
     synthesizeArgumentList(inferenceDefn.arguments(),
-                           m_context->cppFileOfs.get());
+                           _context->cppFileOfs.get());
     if (!_opts.useException) {
       cppFileOfs << CPP_COMA << CPP_SPACE;
       cppFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
@@ -427,12 +427,12 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 bool
 SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 {
-  SYNTHESIZER_ASSERT(m_context);
-  SYNTHESIZER_ASSERT(m_context->cppFileOfs);
+  SYNTHESIZER_ASSERT(_context);
+  SYNTHESIZER_ASSERT(_context->cppFileOfs);
 
   dedentCppFile();
 
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
   cppFileOfs << CPP_CLOSE_BRACE;
   cppFileOfs << std::endl;
 
@@ -463,14 +463,14 @@ bool
 SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
 {
   const auto& typeCmpMethodName =
-      m_context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
+      _context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
 
   const bool hasRangeClause = premiseDefn.hasRangeClause();
 
   static const char var1 = 'i';
   static const char var2 = 'j';
 
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
 
   if (hasRangeClause) {
     const auto& rangeClause = premiseDefn.rangeClause();
@@ -494,7 +494,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
       cppFileOfs << var1 << CPP_SPACE << CPP_LESS_THAN << CPP_SPACE;
       synthesizeDeductionTarget(rangeClause.deductionTarget(),
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                                m_context->cppFileOfs.get());
+                                _context->cppFileOfs.get());
       cppFileOfs << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
     }
 
@@ -521,19 +521,19 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
     cppFileOfs << typeCmpMethodName << CPP_OPEN_PAREN;
     synthesizeDeductionTarget(premiseDefn.lhs(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              m_context->cppFileOfs.get());
+                              _context->cppFileOfs.get());
     if (hasRangeClause) {
-      *(m_context->cppFileOfs) << CPP_OPEN_BRACKET << var1 << CPP_CLOSE_BRACKET;
+      *(_context->cppFileOfs) << CPP_OPEN_BRACKET << var1 << CPP_CLOSE_BRACKET;
     }
     cppFileOfs << CPP_COMA << CPP_SPACE;
     synthesizeDeductionTarget(premiseDefn.rhs(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              m_context->cppFileOfs.get());
+                              _context->cppFileOfs.get());
     if (hasRangeClause) {
-      *(m_context->cppFileOfs) << CPP_OPEN_BRACKET << var2 << CPP_CLOSE_BRACKET;
+      *(_context->cppFileOfs) << CPP_OPEN_BRACKET << var2 << CPP_CLOSE_BRACKET;
     }
     cppFileOfs << CPP_COMA << CPP_SPACE;
-    synthesizeEqualityOperator(premiseDefn.oprt(), m_context->cppFileOfs.get());
+    synthesizeEqualityOperator(premiseDefn.oprt(), _context->cppFileOfs.get());
     cppFileOfs << CPP_CLOSE_PAREN;
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SPACE << CPP_OPEN_BRACE;
     cppFileOfs << std::endl;
@@ -600,13 +600,13 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 {
   SYNTHESIZER_ASSERT(premiseDefn.hasWhileClause());
 
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
 
   // Type annotation setup fixture.
   {
     cppFileOfs << std::endl;
 
-    const auto& typeAnnotationSetupMethod = m_context->envDefnMap.at(
+    const auto& typeAnnotationSetupMethod = _context->envDefnMap.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_SETUP_METHOD);
 
     // Synthesize type annotation setup comment.
@@ -615,7 +615,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
     // Synthesize type annotation setup code.
     renderTypeAnnotationSetupTeardownFixture(
-        premiseDefn, typeAnnotationSetupMethod, m_context->cppFileOfs.get());
+        premiseDefn, typeAnnotationSetupMethod, _context->cppFileOfs.get());
 
     cppFileOfs << std::endl;
   }
@@ -634,7 +634,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
   // Type annotation teardown fixture.
   {
-    const auto& typeAnnotationTeardownMethod = m_context->envDefnMap.at(
+    const auto& typeAnnotationTeardownMethod = _context->envDefnMap.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
 
     // Synthesize type annotation teardown comment.
@@ -643,7 +643,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
     // Synthesize type annotation teardown code.
     renderTypeAnnotationSetupTeardownFixture(
-        premiseDefn, typeAnnotationTeardownMethod, m_context->cppFileOfs.get());
+        premiseDefn, typeAnnotationTeardownMethod, _context->cppFileOfs.get());
   }
 
   cppFileOfs << std::endl;
@@ -656,9 +656,9 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     const ASTInferencePremiseDefn& premise_defn) const
 {
   const auto& proofMethodName =
-      m_context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
+      _context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
 
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
 
   const auto& deductionTarget = premise_defn.deductionTarget();
 
@@ -670,9 +670,9 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
      * premise definition respectively, and check
      * to see if they are evaluated to be equivalent.
      */
-    const auto& typeCls = m_context->typeCls;
+    const auto& typeCls = _context->typeCls;
 
-    const auto& type_cmp_method_name = m_context->envDefnMap.at(
+    const auto& type_cmp_method_name = _context->envDefnMap.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD);
 
     const auto name1 = __getNextVarName();
@@ -682,7 +682,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
                << CPP_SPACE;
     synthesizeDeductionTarget(deductionTarget,
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              m_context->cppFileOfs.get());
+                              _context->cppFileOfs.get());
     cppFileOfs << CPP_SEMICOLON << std::endl;
 
     const auto name2 = __getNextVarName();
@@ -690,7 +690,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << typeCls << CPP_SPACE << name2 << CPP_SPACE << CPP_ASSIGN
                << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premise_defn.source(), m_context->cppFileOfs.get());
+    synthesizeIdentifiable(premise_defn.source(), _context->cppFileOfs.get());
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON << std::endl;
 
     renderIndentationInCppFile();
@@ -715,10 +715,10 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
   } else {
     renderIndentationInCppFile();
     synthesizeDeductionTargetForDeclaration(premise_defn.deductionTarget(),
-                                            m_context->cppFileOfs.get());
+                                            _context->cppFileOfs.get());
     cppFileOfs << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premise_defn.source(), m_context->cppFileOfs.get());
+    synthesizeIdentifiable(premise_defn.source(), _context->cppFileOfs.get());
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON;
   }
 
@@ -787,7 +787,7 @@ SynthesizerImpl::synthesizeDeductionTarget(
         break;
       case DeductionTargetArraySynthesisMode::AS_STD_VECTOR:
         {
-          const auto& typeCls = m_context->typeCls;
+          const auto& typeCls = _context->typeCls;
           ofsRef << "std::vector<" << typeCls << '>' << CPP_SPACE << value.name();
         }
         break;
@@ -819,7 +819,7 @@ void
 SynthesizerImpl::synthesizeDeductionTargetForDeclaration(
     const ASTDeductionTarget& deductionTarget, std::ostream* ofs) const
 {
-  const auto& typeCls = m_context->typeCls;
+  const auto& typeCls = _context->typeCls;
 
   auto& ofsRef = *ofs;
 
@@ -858,7 +858,7 @@ SynthesizerImpl::synthesizeEqualityOperator(const EqualityOperator oprt,
                                             std::ostream* ofs) const
 {
   auto& ofsRef = *ofs;
-  const auto& typeCls = m_context->typeCls;
+  const auto& typeCls = _context->typeCls;
   switch (oprt) {
     case EqualityOperator::OPERATOR_EQ:
       ofsRef << "std::equal_to";
@@ -885,11 +885,11 @@ bool
 SynthesizerImpl::previsit(const ASTPropositionDefn& propositionDefn)
 {
   renderIndentationInCppFile();
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
   cppFileOfs << CPP_RETURN_KEYWORD << CPP_SPACE;
   synthesizeDeductionTarget(propositionDefn.target(),
                             DeductionTargetArraySynthesisMode::AS_ARRAY,
-                            m_context->cppFileOfs.get());
+                            _context->cppFileOfs.get());
   cppFileOfs << CPP_SEMICOLON << std::endl;
 
   return true;
@@ -912,8 +912,8 @@ SynthesizerImpl::renderIndentation(const size_t indentLvl,
 void
 SynthesizerImpl::renderIndentationInHeaderFile() const
 {
-  renderIndentation(m_context->headerFileIndentLvl,
-                    m_context->headerFileOfs.get());
+  renderIndentation(_context->headerFileIndentLvl,
+                    _context->headerFileOfs.get());
 }
 
 // -----------------------------------------------------------------------------
@@ -921,7 +921,7 @@ SynthesizerImpl::renderIndentationInHeaderFile() const
 void
 SynthesizerImpl::renderIndentationInCppFile() const
 {
-  renderIndentation(m_context->cppFileIndentLvl, m_context->cppFileOfs.get());
+  renderIndentation(_context->cppFileIndentLvl, _context->cppFileOfs.get());
 }
 
 // -----------------------------------------------------------------------------
@@ -929,7 +929,7 @@ SynthesizerImpl::renderIndentationInCppFile() const
 void
 SynthesizerImpl::indentHeaderFile() const
 {
-  ++m_context->headerFileIndentLvl;
+  ++_context->headerFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -937,7 +937,7 @@ SynthesizerImpl::indentHeaderFile() const
 void
 SynthesizerImpl::dedentHeaderFile() const
 {
-  --m_context->headerFileIndentLvl;
+  --_context->headerFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -945,7 +945,7 @@ SynthesizerImpl::dedentHeaderFile() const
 void
 SynthesizerImpl::indentCppFile() const
 {
-  ++m_context->cppFileIndentLvl;
+  ++_context->cppFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -953,7 +953,7 @@ SynthesizerImpl::indentCppFile() const
 void
 SynthesizerImpl::dedentCppFile() const
 {
-  --m_context->cppFileIndentLvl;
+  --_context->cppFileIndentLvl;
 }
 
 // -----------------------------------------------------------------------------
@@ -1017,7 +1017,7 @@ SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
   auto& ofsRef = *ofs;
   ofsRef << methodName << CPP_OPEN_PAREN;
   synthesizeIdentifiable(premiseDefn.source(), ofs);
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
   cppFileOfs << CPP_COMA << CPP_SPACE;
   // Should assert that this deduction target here is singular form only.
   // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
@@ -1034,9 +1034,9 @@ void
 SynthesizerImpl::renderErrorHandling() const
 {
   const auto typeCls =
-      m_context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
+      _context->envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
 
-  auto& cppFileOfs = *(m_context->cppFileOfs);
+  auto& cppFileOfs = *(_context->cppFileOfs);
 
   // Assign to output error parameter.
   renderIndentationInCppFile();
@@ -1112,7 +1112,7 @@ std::string
 SynthesizerImpl::__getNextVarName() const
 {
   static const std::string defaultPrefix("var");
-  return defaultPrefix + std::to_string(m_context->nameId++);
+  return defaultPrefix + std::to_string(_context->nameId++);
 }
 
 // -----------------------------------------------------------------------------
