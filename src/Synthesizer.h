@@ -42,5 +42,5 @@ public:
   bool run(const ASTModule&);
 
 private:
-  Options m_opts;
+  Options _opts;
 };

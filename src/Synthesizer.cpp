@@ -153,21 +153,21 @@ private:
 
   std::string __getNextVarName() const;
 
-  const Synthesizer::Options& m_opts;
+  const Synthesizer::Options& _opts;
   std::unique_ptr<InferenceGroupSynthesisContext> m_context;
 };
 
 // -----------------------------------------------------------------------------
 
 Synthesizer::Synthesizer()
-  : m_opts()
+  : _opts()
 {
 }
 
 // -----------------------------------------------------------------------------
 
 Synthesizer::Synthesizer(const Options& opts)
-  : m_opts(opts)
+  : _opts(opts)
 {
 }
 
@@ -176,7 +176,7 @@ Synthesizer::Synthesizer(const Options& opts)
 bool
 Synthesizer::run(const ASTModule& module)
 {
-  SynthesizerImpl impl(m_opts);
+  SynthesizerImpl impl(_opts);
   return impl.run(module);
 }
 
@@ -211,7 +211,7 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 // -----------------------------------------------------------------------------
 
 SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
-  : m_opts(opts)
+  : _opts(opts)
   , m_context()
 {
 }
@@ -242,7 +242,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
       envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
 
   // Create header file.
-  std::string headerFilepath(m_opts.outputPath);
+  std::string headerFilepath(_opts.outputPath);
   if (!headerFilepath.empty() && headerFilepath.back() != FORWARD_SLASH) {
     headerFilepath.push_back(FORWARD_SLASH);
   }
@@ -260,7 +260,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   }
 
   // Create .cpp file.
-  std::string cppFilepath(m_opts.outputPath);
+  std::string cppFilepath(_opts.outputPath);
   if (!cppFilepath.empty() && cppFilepath.back() != FORWARD_SLASH) {
     cppFilepath.push_back(FORWARD_SLASH);
   }
@@ -382,7 +382,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     headerFileOfs << CPP_OPEN_PAREN;
     synthesizeArgumentList(inferenceDefn.arguments(),
                              m_context->headerFileOfs.get());
-    if (!m_opts.useException) {
+    if (!_opts.useException) {
       headerFileOfs << CPP_COMA << CPP_SPACE;
       headerFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
     }
@@ -403,7 +403,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     cppFileOfs << CPP_OPEN_PAREN;
     synthesizeArgumentList(inferenceDefn.arguments(),
                              m_context->cppFileOfs.get());
-    if (!m_opts.useException) {
+    if (!_opts.useException) {
       cppFileOfs << CPP_COMA << CPP_SPACE;
       cppFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
       cppFileOfs << CPP_SPACE
@@ -984,7 +984,7 @@ void
 SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
 {
   std::vector<const char*> systemHeaders{"cstdlib", "cstddef", "vector"};
-  if (m_opts.useException) {
+  if (_opts.useException) {
     systemHeaders.push_back("exception");
   } else {
     systemHeaders.push_back("system_error");
@@ -1069,7 +1069,7 @@ bool
 SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
 {
   // Initialize header file.
-  std::string ecHeaderFilepath(m_opts.outputPath);
+  std::string ecHeaderFilepath(_opts.outputPath);
   if (!ecHeaderFilepath.empty() &&
       ecHeaderFilepath.back() != FORWARD_SLASH) {
     ecHeaderFilepath.push_back(FORWARD_SLASH);
@@ -1082,7 +1082,7 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
   }
 
   // Initialize .cpp file.
-  std::string ecCppFilepath(m_opts.outputPath);
+  std::string ecCppFilepath(_opts.outputPath);
   if (!ecCppFilepath.empty() && ecCppFilepath.back() != FORWARD_SLASH) {
     ecCppFilepath.push_back(FORWARD_SLASH);
   }

@@ -95,12 +95,12 @@ private:
   template <typename U, typename... Args>
   void addWarning(const U& msg, Args... args)
   {
-    if (m_opts.warningsAsErrors) {
+    if (_opts.warningsAsErrors) {
       addError(msg, args...);
     } else {
       char buffer[MAX_MSG_LEN];
       snprintf(buffer, sizeof(buffer), msg, args...);
-      m_errors.emplace_back(Error{ErrorCode::Warning, buffer});
+      _errors.emplace_back(Error{ErrorCode::Warning, buffer});
     }
   }
 
@@ -109,9 +109,9 @@ private:
   {
     char buffer[MAX_MSG_LEN];
     snprintf(buffer, sizeof(buffer), msg, args...);
-    m_errors.emplace_back(Error{ErrorCode::Error, buffer});
+    _errors.emplace_back(Error{ErrorCode::Error, buffer});
   }
 
-  std::vector<Error> m_errors;
-  Options m_opts;
+  std::vector<Error> _errors;
+  Options _opts;
 };

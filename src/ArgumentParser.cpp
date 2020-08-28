@@ -45,45 +45,45 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 ArgumentParser::ArgumentParser()
-  : m_name()
-  , m_version()
-  , m_desc()
-  , m_longDesc()
-  , m_usage()
-  , m_opts()
-  , m_shorthandMap()
-  , m_positionalArgs()
-  , m_minPositionalArgsRequired(0)
+  : _name()
+  , _version()
+  , _desc()
+  , _longDesc()
+  , _usage()
+  , _opts()
+  , _shorthandMap()
+  , _positionalArgs()
+  , _minPositionalArgsRequired(0)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 ArgumentParser::ArgumentParser(const char* name)
-  : m_name(name)
-  , m_version()
-  , m_desc()
-  , m_longDesc()
-  , m_usage()
-  , m_opts()
-  , m_shorthandMap()
-  , m_positionalArgs()
-  , m_minPositionalArgsRequired(0)
+  : _name(name)
+  , _version()
+  , _desc()
+  , _longDesc()
+  , _usage()
+  , _opts()
+  , _shorthandMap()
+  , _positionalArgs()
+  , _minPositionalArgsRequired(0)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 ArgumentParser::ArgumentParser(const char* name, const char* version)
-  : m_name(name)
-  , m_version(version)
-  , m_desc()
-  , m_longDesc()
-  , m_usage()
-  , m_opts()
-  , m_shorthandMap()
-  , m_positionalArgs()
-  , m_minPositionalArgsRequired(0)
+  : _name(name)
+  , _version(version)
+  , _desc()
+  , _longDesc()
+  , _usage()
+  , _opts()
+  , _shorthandMap()
+  , _positionalArgs()
+  , _minPositionalArgsRequired(0)
 {
 }
 
@@ -91,15 +91,15 @@ ArgumentParser::ArgumentParser(const char* name, const char* version)
 
 ArgumentParser::ArgumentParser(const char* name, const char* version,
                                const char* description)
-  : m_name(name)
-  , m_version(version)
-  , m_desc(description)
-  , m_longDesc()
-  , m_usage()
-  , m_opts()
-  , m_shorthandMap()
-  , m_positionalArgs()
-  , m_minPositionalArgsRequired(0)
+  : _name(name)
+  , _version(version)
+  , _desc(description)
+  , _longDesc()
+  , _usage()
+  , _opts()
+  , _shorthandMap()
+  , _positionalArgs()
+  , _minPositionalArgsRequired(0)
 {
 }
 
@@ -108,15 +108,15 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
 ArgumentParser::ArgumentParser(const char* name, const char* version,
                                const char* description,
                                const char* long_description)
-  : m_name(name)
-  , m_version(version)
-  , m_desc(description)
-  , m_longDesc(long_description)
-  , m_usage()
-  , m_opts()
-  , m_shorthandMap()
-  , m_positionalArgs()
-  , m_minPositionalArgsRequired(0)
+  : _name(name)
+  , _version(version)
+  , _desc(description)
+  , _longDesc(long_description)
+  , _usage()
+  , _opts()
+  , _shorthandMap()
+  , _positionalArgs()
+  , _minPositionalArgsRequired(0)
 {
 }
 
@@ -135,8 +135,8 @@ ArgumentParser::addParameter(const char* name, const char shorthand,
                   .value = CmdlOptionValue(),
                   .dst = reinterpret_cast<void*>(res),
                 };
-  m_shorthandMap[shorthand] = name;
-  m_opts[name] = opts;
+  _shorthandMap[shorthand] = name;
+  _opts[name] = opts;
 }
 
 // -----------------------------------------------------------------------------
@@ -210,8 +210,8 @@ ArgumentParser::addBooleanParameter(const char* name, const char shorthand,
 bool
 ArgumentParser::optionProvided(const char* name) const
 {
-  auto itr = m_opts.find(name);
-  if (itr == m_opts.end()) {
+  auto itr = _opts.find(name);
+  if (itr == _opts.end()) {
     return false;
   }
 
@@ -226,16 +226,16 @@ ArgumentParser::__checkParameters() const
 {
   // Check if the short-hand map count matches with the number of options.
   // If not, it means there are short-hands that are duplicate.
-  if (m_shorthandMap.size() != m_opts.size()) {
+  if (_shorthandMap.size() != _opts.size()) {
     return false;
   }
 
   // Sanity check.
-  for (const auto& pair : m_shorthandMap) {
+  for (const auto& pair : _shorthandMap) {
     const char shorthand = pair.first;
     const auto& option_key = pair.second;
-    const auto iter = m_opts.find(option_key);
-    if (iter == m_opts.end()) {
+    const auto iter = _opts.find(option_key);
+    if (iter == _opts.end()) {
       return false;
     }
     const auto& option = iter->second;
@@ -245,11 +245,11 @@ ArgumentParser::__checkParameters() const
   }
 
   // Check if we meet the required number of positional arguments.
-  if (m_positionalArgs.size() < m_minPositionalArgsRequired) {
+  if (_positionalArgs.size() < _minPositionalArgsRequired) {
     return false;
   }
 
-  for (const auto& pair : m_opts) {
+  for (const auto& pair : _opts) {
     const auto& option = pair.second;
     if (option.required && !option.value.value.valid()) {
       return false;
@@ -263,7 +263,7 @@ ArgumentParser::__checkParameters() const
 void
 ArgumentParser::setMinimumPositionalArgsRequired(size_t n)
 {
-  m_minPositionalArgsRequired = n;
+  _minPositionalArgsRequired = n;
 }
 
 // -----------------------------------------------------------------------------
@@ -271,7 +271,7 @@ ArgumentParser::setMinimumPositionalArgsRequired(size_t n)
 void
 ArgumentParser::setUsageString(const char* usage)
 {
-  m_usage.assign(usage);
+  _usage.assign(usage);
 }
 
 // -----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ ArgumentParser::parseArgs(int argc, char** argv)
 const ArgumentParser::PositionalArgumentList&
 ArgumentParser::positionalArgs() const
 {
-  return m_positionalArgs;
+  return _positionalArgs;
 }
 
 // -----------------------------------------------------------------------------
@@ -307,32 +307,32 @@ void
 ArgumentParser::__printHelp(Stream& stream) const
 {
   // Name and version.
-  stream << (m_name.empty() ? "PROGRAM" : m_name);
-  if (!m_version.empty()) {
-    stream << " (version " << m_version << ')';
+  stream << (_name.empty() ? "PROGRAM" : _name);
+  if (!_version.empty()) {
+    stream << " (version " << _version << ')';
   }
   stream << std::endl;
 
   // Description.
-  if (!m_desc.empty()) {
+  if (!_desc.empty()) {
     stream << std::endl;
-    stream << m_desc;
+    stream << _desc;
   }
   stream << std::endl;
 
   // Long description.
-  if (!m_longDesc.empty()) {
+  if (!_longDesc.empty()) {
     stream << std::endl;
-    stream << m_longDesc;
+    stream << _longDesc;
     stream << std::endl;
   }
   stream << std::endl;
 
   // Usage.
-  if (!m_usage.empty()) {
+  if (!_usage.empty()) {
     stream << "Usage: ";
-    stream << (m_name.empty() ? "PROGRAM" : m_name) << ' ';
-    stream << m_usage;
+    stream << (_name.empty() ? "PROGRAM" : _name) << ' ';
+    stream << _usage;
     stream << std::endl;
   }
   stream << std::endl;
@@ -349,7 +349,7 @@ ArgumentParser::__printHelp(Stream& stream) const
   stream << HELP_MENU_OPTIONS_LABEL << std::endl;
   stream << std::endl;
 
-  for (const auto& pair : m_opts) {
+  for (const auto& pair : _opts) {
     const auto& name = pair.first;
     const auto& option = pair.second;
     const auto& defaultValue = option.defaultValue.value;
@@ -408,7 +408,7 @@ ArgumentParser::printHelp() const
 void
 ArgumentParser::__addPositionalParameter(std::string&& arg)
 {
-  m_positionalArgs.emplace_back(arg);
+  _positionalArgs.emplace_back(arg);
 }
 
 // -----------------------------------------------------------------------------
@@ -438,8 +438,8 @@ ArgumentParser::__parseArgs(int argc, char** argv)
         return false;
       }
       const char c = shorthand[0];
-      const auto iter = m_shorthandMap.find(c);
-      if (iter == m_shorthandMap.end()) {
+      const auto iter = _shorthandMap.find(c);
+      if (iter == _shorthandMap.end()) {
         return false;
       }
       std::string key = iter->second;
@@ -464,11 +464,11 @@ ArgumentParser::__registerCmdlOption(const std::string& key, int& argc,
   if (key.empty()) {
     return false;
   }
-  if (!m_opts.count(key)) {
+  if (!_opts.count(key)) {
     return false;
   }
   if (__definedBooleanOption(key)) {
-    m_opts[key].value.value = true;
+    _opts[key].value.value = true;
   } else {
     ADVANCE_ARGV;
     CHECK_ARGV;
@@ -485,8 +485,8 @@ ArgumentParser::__registerCmdlOption(const std::string& key, int& argc,
 bool
 ArgumentParser::__definedBooleanOption(const std::string& name) const
 {
-  auto itr = m_opts.find(name);
-  if (itr == m_opts.end()) {
+  auto itr = _opts.find(name);
+  if (itr == _opts.end()) {
     return false;
   }
   const auto& option = itr->second;
@@ -540,7 +540,7 @@ void
 ArgumentParser::__updateOptionValue(const std::string& key,
                                       const std::string& value)
 {
-  auto& option = m_opts.at(key);
+  auto& option = _opts.at(key);
   option.updateValue(value);
 }
 
@@ -549,7 +549,7 @@ ArgumentParser::__updateOptionValue(const std::string& key,
 void
 ArgumentParser::__assignValues()
 {
-  for (auto& pair : m_opts) {
+  for (auto& pair : _opts) {
     auto& option = pair.second;
     option.assignValueToDst();
   }
