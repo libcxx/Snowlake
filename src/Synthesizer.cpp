@@ -874,7 +874,6 @@ SynthesizerImpl::synthesizeEqualityOperator(const EqualityOperator oprt,
       break;
     default:
       SYNTHESIZER_ASSERT(0 && "Unsupported EqualityOperator value.");
-      break;
   }
   ofsRef << '<' << typeCls << '>' << CPP_OPEN_PAREN << CPP_CLOSE_PAREN;
 }
