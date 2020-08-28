@@ -55,7 +55,7 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # General compiler flags.
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "-std=c++17 -g")
+    set(CMAKE_CXX_FLAGS "-std=c++17 -g -w")
 else ()
     set(CMAKE_CXX_FLAGS "\
         -std=c++17 \
