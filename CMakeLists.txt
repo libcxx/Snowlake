@@ -65,6 +65,7 @@ set(CMAKE_CXX_FLAGS "\
 -Wno-c99-extensions \
 -Wno-extra-semi-stmt \
 -Wno-exit-time-destructors \
+-Wno-covered-switch-default \
 ")
 
 
