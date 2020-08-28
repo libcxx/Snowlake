@@ -505,10 +505,6 @@ struct CmdlOptionValueCast
   {
   }
 
-  ~CmdlOptionValueCast()
-  {
-  }
-
   template <typename T>
   T operator()(T&)
   {
@@ -566,10 +562,6 @@ struct CmdlOptionDestinationValueUpdate
                                    void* dst)
     : m_value(value)
     , m_dst(dst)
-  {
-  }
-
-  ~CmdlOptionDestinationValueUpdate()
   {
   }
 

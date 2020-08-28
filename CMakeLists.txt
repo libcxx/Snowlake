@@ -57,7 +57,20 @@ set(CMAKE_MACOSX_RPATH 1)
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "-std=c++17 -g -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++17 -g -Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-format-nonliteral -Wno-c99-extensions")
+    set(CMAKE_CXX_FLAGS "\
+        -std=c++17 \
+        -g \
+        -Wall \
+        -Wno-c++98-compat \
+        -Wno-padded \
+        -Wno-c++98-compat-pedantic \
+        -Wno-format-nonliteral \
+        -Wno-c99-extensions \
+        -Wno-extra-semi \
+        -Wno-exit-time-destructors \
+        -Wno-covered-switch-default \
+        "
+    )
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 
