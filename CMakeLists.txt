@@ -60,6 +60,7 @@ else ()
     set(CMAKE_CXX_FLAGS "\
         -std=c++17 \
         -g \
+        -Wall \
         -Wno-c++98-compat \
         -Wno-padded \
         -Wno-c++98-compat-pedantic \
