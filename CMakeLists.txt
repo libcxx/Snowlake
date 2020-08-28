@@ -57,17 +57,14 @@ set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_FLAGS "\
 -std=c++17 \
 -g \
--Weverything \
 -Wno-c++98-compat \
 -Wno-padded \
 -Wno-c++98-compat-pedantic \
 -Wno-format-nonliteral \
 -Wno-c99-extensions \
--Wno-extra-semi-stmt \
 -Wno-extra-semi \
 -Wno-exit-time-destructors \
 -Wno-covered-switch-default \
--Wno-unknown-warning-option \
 ")
 
 
