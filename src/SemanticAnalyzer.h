@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ASTVisitor.h"
 #include "ast_util.h"
+
 #include <unordered_set>
 #include <vector>
 
@@ -38,8 +39,7 @@ public:
     Error = 0x10
   };
 
-  struct Error
-  {
+  struct Error {
     ErrorCode code;
     std::string msg;
   };
@@ -47,8 +47,7 @@ public:
 public:
   typedef std::vector<Error> ErrorList;
 
-  struct Options
-  {
+  struct Options {
     bool bailOnFirstError;
     bool warningsAsErrors;
     bool verbose;
@@ -71,8 +70,7 @@ private:
 
   typedef std::unordered_set<std::string> SymbolSet;
 
-  struct InferenceDefnContext
-  {
+  struct InferenceDefnContext {
     const std::string& name;
     SymbolSet symbolSet;
     TargetTable targetTbl;
@@ -80,8 +78,7 @@ private:
 
   bool checkRequiredEnvDefns(const SymbolSet&);
 
-  bool recursivePremiseDefnCheck(const ASTPremiseDefn&,
-                                    InferenceDefnContext*);
+  bool recursivePremiseDefnCheck(const ASTPremiseDefn&, InferenceDefnContext*);
 
   template <typename T>
   bool recursivePremiseDefnCheck(const T&, InferenceDefnContext*);

@@ -28,10 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace sl {
 
 namespace {
-struct nullopt_t
-{
+struct nullopt_t {
 };
-}
+} // namespace
 
 /**
  * Simple implementation of an optional container.

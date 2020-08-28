@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "ast_fwd.h"
+
 #include <string>
 #include <unordered_map>
 
@@ -31,21 +32,19 @@ typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 
 std::string canonicalizeASTIdentifiable(const ASTIdentifiable&);
 
-bool areTargetsCompatible(const ASTDeductionTarget&,
-                            const ASTDeductionTarget&);
+bool areTargetsCompatible(const ASTDeductionTarget&, const ASTDeductionTarget&);
 
 bool areTargetsCompatible(const ASTDeductionTargetSingular&,
-                            const ASTDeductionTargetSingular&);
+                          const ASTDeductionTargetSingular&);
 
 bool areTargetsCompatible(const ASTDeductionTargetArray&,
-                            const ASTDeductionTargetArray&);
+                          const ASTDeductionTargetArray&);
 
 const std::string& getRootOfASTIdentifiable(const ASTIdentifiable&);
 
 void addTargetToTable(const ASTDeductionTarget&, TargetTable*);
 
-bool hasCompatibleTargetInTable(const ASTDeductionTarget&,
-                                    const TargetTable&);
+bool hasCompatibleTargetInTable(const ASTDeductionTarget&, const TargetTable&);
 
 bool hasIncompatibleTargetInTable(const ASTDeductionTarget&,
-                                      const TargetTable&);
+                                  const TargetTable&);

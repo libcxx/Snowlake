@@ -29,8 +29,7 @@ namespace variant {
 // -----------------------------------------------------------------------------
 
 template <typename R = void>
-struct static_visitor
-{
+struct static_visitor {
   using result_type = R;
 
 protected:

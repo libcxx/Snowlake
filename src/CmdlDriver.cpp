@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "CmdlDriver.h"
+
 #include "ArgumentParser.h"
 #include "version.h"
 
@@ -51,17 +52,17 @@ CmdlDriver::run(int argc, char** argv)
   argparser.setUsageString(SNOWLAKE_PROG_USAGE);
 
   argparser.addStringParameter("output", 'o', "Output path", true,
-                                 &_opts.outputPath);
+                               &_opts.outputPath);
   argparser.addBooleanParameter("errors", 'e', "Treat warnings as errors",
-                                  false, &_opts.warningsAsErrors, false);
+                                false, &_opts.warningsAsErrors, false);
   argparser.addBooleanParameter("bail", 'b', "Bail on first error", false,
-                                  &_opts.bailOnFirstError, false);
+                                &_opts.bailOnFirstError, false);
   argparser.addBooleanParameter("debug", 'd', "Debug mode", false,
-                                  &_opts.debugMode, false);
+                                &_opts.debugMode, false);
   argparser.addBooleanParameter("verbose", 'v', "Verbose mode", false,
-                                  &_opts.verbose, false);
+                                &_opts.verbose, false);
   argparser.addBooleanParameter("silent", 's', "Silent mode", false,
-                                  &_opts.silent, false);
+                                &_opts.silent, false);
   argparser.setMinimumPositionalArgsRequired(1);
 
   const bool res = argparser.parseArgs(argc, argv);

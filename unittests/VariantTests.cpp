@@ -20,16 +20,15 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <gtest/gtest.h>
-
 #include "variant.h"
 #include "variant_static_visitor.h"
 
 #include <cstdio>
+#include <gtest/gtest.h>
 #include <sstream>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 // -----------------------------------------------------------------------------
 
@@ -339,11 +338,11 @@ TEST_F(VariantTests, TestIncompleteSwap)
     ASSERT_EQ(sl::variant::impl::invalid_type_index, v.type_index());
   };
 
-  VariantType v0;   // v0 is incomplete
+  VariantType v0; // v0 is incomplete
 
   checkInvalid(v0);
 
-  VariantType v1;   // v1 is incomplete
+  VariantType v1; // v1 is incomplete
 
   checkInvalid(v1);
 
@@ -409,8 +408,7 @@ TEST_F(VariantTests, TestLessThanOperatorOnDifferentTypes)
 class VariantUnaryVisitationUnitTest : public VariantTests
 {
 protected:
-  struct tostring_visitor : public sl::variant::static_visitor<std::string>
-  {
+  struct tostring_visitor : public sl::variant::static_visitor<std::string> {
     std::string operator()(const int& val) const
     {
       return std::to_string(val);
@@ -476,8 +474,7 @@ TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
 class VariantBinaryVisitationUnitTest : public VariantTests
 {
 protected:
-  struct equality_visitor : public sl::variant::static_visitor<bool>
-  {
+  struct equality_visitor : public sl::variant::static_visitor<bool> {
     template <typename T>
     bool operator()(const T& lhs, const T& rhs) const
     {
@@ -549,7 +546,7 @@ TEST_F(VariantMemoryIntegrityUnitTest, TestWithAssociatedMap)
   {
     std::unordered_map<std::string, MyVariantType> m;
 
-    sl::variant::variant<_MyStruct, int> v( _MyStruct{ .name="Some name" } );
+    sl::variant::variant<_MyStruct, int> v(_MyStruct{.name = "Some name"});
 
     m[myName] = v;
   }
@@ -565,13 +562,13 @@ TEST_F(VariantMemoryIntegrityUnitTest, TestWithCopySemantics)
 
   using MyVariantType = sl::variant::variant<_MyStruct, int>;
 
-  MyVariantType v( _MyStruct{ .name=myName } );
+  MyVariantType v(_MyStruct{.name = myName});
 
   {
     std::vector<MyVariantType> vec;
     vec.reserve(16);
 
-    sl::variant::variant<_MyStruct, int> v2( v );
+    sl::variant::variant<_MyStruct, int> v2(v);
 
     vec.push_back(v2);
 

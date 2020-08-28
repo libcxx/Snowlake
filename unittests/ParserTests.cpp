@@ -47,9 +47,8 @@ TEST_F(ParserTests, TestDefaultInitialization)
 
 TEST_F(ParserTests, TestInitializationWithOptions)
 {
-  ParserDriver::Options opts{.traceLexer = true,
-                             .traceParser = true,
-                             .suppressErrorMessages = true};
+  ParserDriver::Options opts{
+      .traceLexer = true, .traceParser = true, .suppressErrorMessages = true};
   ParserDriver driver(opts);
 
   ASSERT_EQ(opts.traceLexer, driver.traceLexer());

@@ -23,10 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "macros.h"
+
 #include <stdexcept>
 #include <string>
-
-#include "macros.h"
 
 namespace sl {
 namespace variant {
@@ -40,8 +40,7 @@ struct dispatcher;
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R, typename T, typename... Types>
-struct dispatcher<F, V, R, T, Types...>
-{
+struct dispatcher<F, V, R, T, Types...> {
   using result_type = R;
 
   static result_type apply_const(V const& v, F f)
@@ -66,8 +65,7 @@ struct dispatcher<F, V, R, T, Types...>
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R>
-struct dispatcher<F, V, R>
-{
+struct dispatcher<F, V, R> {
   using result_type = R;
 
   static result_type apply_const(V const&, F)
@@ -90,8 +88,7 @@ struct binary_dispatcher_rhs;
 
 template <typename F, typename V, typename R, typename T0, typename T1,
           typename... Types>
-struct binary_dispatcher_rhs<F, V, R, T0, T1, Types...>
-{
+struct binary_dispatcher_rhs<F, V, R, T0, T1, Types...> {
   using result_type = R;
 
   static result_type apply_const(V const& lhs, V const& rhs, F f)
@@ -117,8 +114,7 @@ struct binary_dispatcher_rhs<F, V, R, T0, T1, Types...>
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R, typename T>
-struct binary_dispatcher_rhs<F, V, R, T>
-{
+struct binary_dispatcher_rhs<F, V, R, T> {
   using result_type = R;
 
   static result_type apply_const(V const&, V const&, F)
@@ -141,8 +137,7 @@ struct binary_dispatcher_lhs;
 
 template <typename F, typename V, typename R, typename T0, typename T1,
           typename... Types>
-struct binary_dispatcher_lhs<F, V, R, T0, T1, Types...>
-{
+struct binary_dispatcher_lhs<F, V, R, T0, T1, Types...> {
   using result_type = R;
 
   static result_type apply_const(V const& lhs, V const& rhs, F f)
@@ -168,8 +163,7 @@ struct binary_dispatcher_lhs<F, V, R, T0, T1, Types...>
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R, typename T>
-struct binary_dispatcher_lhs<F, V, R, T>
-{
+struct binary_dispatcher_lhs<F, V, R, T> {
   using result_type = R;
 
   static result_type apply_const(V const&, V const&, F)
@@ -191,8 +185,7 @@ struct binary_dispatcher;
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R, typename T, typename... Types>
-struct binary_dispatcher<F, V, R, T, Types...>
-{
+struct binary_dispatcher<F, V, R, T, Types...> {
   using result_type = R;
 
   static result_type apply_const(V const& v0, V const& v1, F f)
@@ -231,8 +224,7 @@ struct binary_dispatcher<F, V, R, T, Types...>
 // -----------------------------------------------------------------------------
 
 template <typename F, typename V, typename R>
-struct binary_dispatcher<F, V, R>
-{
+struct binary_dispatcher<F, V, R> {
   using result_type = R;
 
   static result_type apply_const(V const&, V const&, F)

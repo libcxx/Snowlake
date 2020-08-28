@@ -22,8 +22,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
 #include "ArgumentParser.h"
+
 #include "variant_static_visitor.h"
 #include "version.h"
+
 #include <sstream>
 #include <string>
 
@@ -125,16 +127,17 @@ ArgumentParser::ArgumentParser(const char* name, const char* version,
 template <typename T>
 void
 ArgumentParser::addParameter(const char* name, const char shorthand,
-                              const char* description, bool required, T* res,
-                              T defaultValue)
+                             const char* description, bool required, T* res,
+                             T defaultValue)
 {
-  CmdlOption opts{.shorthand = shorthand,
-                  .description = description,
-                  .required = required,
-                  .defaultValue = {defaultValue},
-                  .value = CmdlOptionValue(),
-                  .dst = reinterpret_cast<void*>(res),
-                };
+  CmdlOption opts{
+      .shorthand = shorthand,
+      .description = description,
+      .required = required,
+      .defaultValue = {defaultValue},
+      .value = CmdlOptionValue(),
+      .dst = reinterpret_cast<void*>(res),
+  };
   _shorthandMap[shorthand] = name;
   _opts[name] = opts;
 }
@@ -143,66 +146,65 @@ ArgumentParser::addParameter(const char* name, const char shorthand,
 
 void
 ArgumentParser::addStringParameter(const char* name, const char shorthand,
-                                     const char* description, bool required,
-                                     std::string* res, std::string defaultValue)
+                                   const char* description, bool required,
+                                   std::string* res, std::string defaultValue)
 {
   addParameter<std::string>(name, shorthand, description, required, res,
-                             defaultValue);
+                            defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::addUint32Parameter(const char* name, const char shorthand,
-                                     const char* description, bool required,
-                                     uint32_t* res, uint32_t defaultValue)
+                                   const char* description, bool required,
+                                   uint32_t* res, uint32_t defaultValue)
 {
   addParameter<uint32_t>(name, shorthand, description, required, res,
-                          defaultValue);
+                         defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::addUint64Parameter(const char* name, const char shorthand,
-                                     const char* description, bool required,
-                                     uint64_t* res, uint64_t defaultValue)
+                                   const char* description, bool required,
+                                   uint64_t* res, uint64_t defaultValue)
 {
   addParameter<uint64_t>(name, shorthand, description, required, res,
-                          defaultValue);
+                         defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::addFloatParameter(const char* name, const char shorthand,
-                                    const char* description, bool required,
-                                    float* res, float defaultValue)
+                                  const char* description, bool required,
+                                  float* res, float defaultValue)
 {
   addParameter<float>(name, shorthand, description, required, res,
-                       defaultValue);
+                      defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::addDoubleParameter(const char* name, const char shorthand,
-                                     const char* description, bool required,
-                                     double* res, double defaultValue)
+                                   const char* description, bool required,
+                                   double* res, double defaultValue)
 {
   addParameter<double>(name, shorthand, description, required, res,
-                        defaultValue);
+                       defaultValue);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 ArgumentParser::addBooleanParameter(const char* name, const char shorthand,
-                                      const char* description, bool required,
-                                      bool* res, bool defaultValue)
+                                    const char* description, bool required,
+                                    bool* res, bool defaultValue)
 {
-  addParameter<bool>(name, shorthand, description, required, res,
-                      defaultValue);
+  addParameter<bool>(name, shorthand, description, required, res, defaultValue);
 }
 
 // -----------------------------------------------------------------------------
@@ -337,7 +339,7 @@ ArgumentParser::__printHelp(Stream& stream) const
   }
   stream << std::endl;
 
-// Menu.
+  // Menu.
 
 #define HELP_MENU_DOUBLE_DASH "--"
 #define HELP_MENU_SINGLE_DASH '-'
@@ -459,7 +461,7 @@ ArgumentParser::__parseArgs(int argc, char** argv)
 
 bool
 ArgumentParser::__registerCmdlOption(const std::string& key, int& argc,
-                                       char**& argv)
+                                     char**& argv)
 {
   if (key.empty()) {
     return false;
@@ -496,8 +498,7 @@ ArgumentParser::__definedBooleanOption(const std::string& name) const
 // -----------------------------------------------------------------------------
 
 struct CmdlOptionValueCast
-    : public sl::variant::static_visitor<ArgumentParser::value_type>
-{
+  : public sl::variant::static_visitor<ArgumentParser::value_type> {
   explicit CmdlOptionValueCast(const std::string& raw_value)
     : m_raw_value(raw_value)
   {
@@ -538,7 +539,7 @@ ArgumentParser::CmdlOption::updateValue(const std::string& new_value)
 
 void
 ArgumentParser::__updateOptionValue(const std::string& key,
-                                      const std::string& value)
+                                    const std::string& value)
 {
   auto& option = _opts.at(key);
   option.updateValue(value);
@@ -558,8 +559,7 @@ ArgumentParser::__assignValues()
 // -----------------------------------------------------------------------------
 
 struct CmdlOptionDestinationValueUpdate
-    : public sl::variant::static_visitor<ArgumentParser::value_type>
-{
+  : public sl::variant::static_visitor<ArgumentParser::value_type> {
   CmdlOptionDestinationValueUpdate(const ArgumentParser::value_type& value,
                                    void* dst)
     : m_value(value)

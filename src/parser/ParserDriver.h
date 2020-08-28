@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ast.h"
 #include "location.hh"
 #include "parser.tab.hh"
+
 #include <string>
 
 // Tell Flex the lexer's prototype ...
@@ -37,8 +38,7 @@ YY_DECL;
 class ParserDriver
 {
 public:
-  struct Options
-  {
+  struct Options {
     bool traceLexer;
     bool traceParser;
     bool suppressErrorMessages;

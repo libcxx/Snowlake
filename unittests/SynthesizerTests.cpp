@@ -20,8 +20,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <gtest/gtest.h>
-
 #include "SemanticAnalyzer.h"
 #include "Synthesizer.h"
 #include "SynthesizerUtil.h"
@@ -30,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdio>
 #include <fstream>
+#include <gtest/gtest.h>
 #include <streambuf>
 #include <string>
 #include <tuple>
@@ -50,7 +49,8 @@ protected:
     ASSERT_TRUE(res);
 
     Synthesizer::Options opts{
-        .useException = false, .outputPath = outputPath,
+        .useException = false,
+        .outputPath = outputPath,
     };
     Synthesizer synthesizer(opts);
 
@@ -73,7 +73,7 @@ protected:
   }
 
   void assertOutputFileContent(const char* expected_res,
-                                  const char* filename) const
+                               const char* filename) const
   {
     char outputFilepath[32] = {0};
     snprintf(outputFilepath, sizeof(outputFilepath), "%s%s", outputPath,
@@ -264,7 +264,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     // clang-format on
 
     assertOutputFileContent(EXPECTED_EC_HEADER_RES,
-                               SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
+                            SYNTHESIZED_ERROR_CODE_HEADER_FILENAME);
   }
 
   // Check error code definition .cpp file content.
@@ -301,7 +301,7 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
     // clang-format on
 
     assertOutputFileContent(EXPECTED_EC_CPP_RES,
-                               SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
+                            SYNTHESIZED_ERROR_CODE_CPP_FILENAME);
   }
 }
 

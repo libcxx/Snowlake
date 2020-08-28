@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "variant.h"
+
 #include <cstddef>
 #include <string>
 #include <unordered_map>
@@ -49,24 +50,24 @@ public:
                           std::string* res, std::string defaultValue = "");
 
   void addUint32Parameter(const char* name, const char shorthand,
-                          const char* description, bool required,
-                          uint32_t* res, uint32_t defaultValue = 0);
+                          const char* description, bool required, uint32_t* res,
+                          uint32_t defaultValue = 0);
 
   void addUint64Parameter(const char* name, const char shorthand,
-                            const char* description, bool required,
-                            uint64_t* res, uint64_t defaultValue = 0);
+                          const char* description, bool required, uint64_t* res,
+                          uint64_t defaultValue = 0);
 
   void addFloatParameter(const char* name, const char shorthand,
-                           const char* description, bool required, float* res,
-                           float defaultValue = 0.0f);
+                         const char* description, bool required, float* res,
+                         float defaultValue = 0.0f);
 
   void addDoubleParameter(const char* name, const char shorthand,
-                            const char* description, bool required, double* res,
-                            double defaultValue = 0.0);
+                          const char* description, bool required, double* res,
+                          double defaultValue = 0.0);
 
   void addBooleanParameter(const char* name, const char shorthand,
-                             const char* description, bool required, bool* res,
-                             bool defaultValue = false);
+                           const char* description, bool required, bool* res,
+                           bool defaultValue = false);
 
   void setMinimumPositionalArgsRequired(size_t n);
 
@@ -108,17 +109,15 @@ private:
 
   template <typename T>
   void addParameter(const char* name, const char shorthand,
-                     const char* description, bool required, T* res,
-                     T defaultValue);
+                    const char* description, bool required, T* res,
+                    T defaultValue);
 
-  struct CmdlOptionValue
-  {
+  struct CmdlOptionValue {
     using value_type = ArgumentParser::value_type;
     value_type value;
   };
 
-  struct CmdlOption
-  {
+  struct CmdlOption {
     char shorthand;
     std::string description;
     bool required;

@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ParserDriver.h"
+
 #include "lex.yy.hh"
 #include "parser.tab.hh"
 
@@ -32,8 +33,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ParserDriver::ParserDriver()
   : _opts(ParserDriver::Options{.traceLexer = false,
-                                 .traceParser = false,
-                                 .suppressErrorMessages = false})
+                                .traceParser = false,
+                                .suppressErrorMessages = false})
   , _inputFile()
   , _module()
 {
