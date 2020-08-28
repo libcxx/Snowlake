@@ -31,20 +31,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <vector>
 
+// -----------------------------------------------------------------------------
+
 typedef std::string StringType;
 typedef uint64_t IntegerType;
 
-enum class EqualityOperator : uint8_t
-{
-  OPERATOR_EQ,
-  OPERATOR_NEQ,
-  OPERATOR_LT,
-  OPERATOR_LTE
-};
-
-class ASTNode
-{
-};
+// -----------------------------------------------------------------------------
 
 typedef std::vector<ASTIdentifier> ASTIdentifierList;
 typedef std::vector<ASTDeductionTarget> ASTDeductionTargetList;
@@ -54,6 +46,24 @@ typedef std::vector<ASTGlobalDecl> ASTGlobalDeclList;
 typedef std::vector<ASTEnvironmentDefn> ASTEnvironmentDefnList;
 typedef std::vector<ASTInferenceDefn> ASTInferenceDefnList;
 typedef std::vector<ASTInferenceGroup> ASTInferenceGroupList;
+
+// -----------------------------------------------------------------------------
+
+enum class EqualityOperator : uint8_t
+{
+  OPERATOR_EQ,
+  OPERATOR_NEQ,
+  OPERATOR_LT,
+  OPERATOR_LTE
+};
+
+// -----------------------------------------------------------------------------
+
+class ASTNode
+{
+};
+
+// -----------------------------------------------------------------------------
 
 class ASTIdentifier : public ASTNode
 {
@@ -76,6 +86,8 @@ public:
 private:
   StringType _value;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTIdentifiable : public ASTNode
 {
@@ -104,6 +116,8 @@ private:
   ASTIdentifierList _identifiers;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTDeductionTargetSingular
 {
 public:
@@ -125,6 +139,8 @@ public:
 private:
   StringType _name;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTDeductionTargetArray
 {
@@ -167,6 +183,8 @@ private:
   sl::optional<IntegerType> _arraySize;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTDeductionTargetComputed
 {
 public:
@@ -197,6 +215,8 @@ private:
   StringType _name;
   ASTDeductionTargetList _arguments;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTDeductionTarget : public ASTNode
 {
@@ -239,6 +259,8 @@ private:
       _value;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTPropositionDefn
 {
 public:
@@ -260,6 +282,8 @@ public:
 private:
   ASTDeductionTarget _target;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTRangeClause : public ASTNode
 {
@@ -299,6 +323,8 @@ private:
   IntegerType _rhsIdx;
   ASTDeductionTarget _deductionTarget;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTInferenceEqualityDefn
 {
@@ -359,6 +385,8 @@ private:
   sl::optional<ASTRangeClause> _rangeClause;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTWhileClause : public ASTNode
 {
 public:
@@ -380,6 +408,8 @@ public:
 private:
   ASTPremiseDefnList _premiseDefns;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTInferencePremiseDefn
 {
@@ -434,6 +464,8 @@ private:
   sl::optional<ASTWhileClause> _whileClause;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTPremiseDefn : public ASTNode
 {
 public:
@@ -469,6 +501,8 @@ private:
       _value;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTInferenceArgument : public ASTNode
 {
 public:
@@ -499,6 +533,8 @@ private:
   StringType _typeName;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTGlobalDecl : public ASTNode
 {
 public:
@@ -520,6 +556,8 @@ public:
 private:
   StringType _name;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTInferenceDefn : public ASTNode
 {
@@ -578,6 +616,8 @@ private:
   ASTPropositionDefn _propositionDefn;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTEnvironmentDefn : public ASTNode
 {
 public:
@@ -607,6 +647,8 @@ private:
   StringType _field;
   StringType _value;
 };
+
+// -----------------------------------------------------------------------------
 
 class ASTInferenceGroup : public ASTNode
 {
@@ -648,6 +690,8 @@ private:
   ASTInferenceDefnList _inferenceDefns;
 };
 
+// -----------------------------------------------------------------------------
+
 class ASTModule : public ASTNode
 {
 public:
@@ -674,3 +718,5 @@ public:
 private:
   ASTInferenceGroupList _inferenceGroups;
 };
+
+// -----------------------------------------------------------------------------
