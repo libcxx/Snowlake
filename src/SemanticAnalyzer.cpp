@@ -212,7 +212,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
   // Proposition.
   {
     const auto& proposition = inferenceDefn.propositionDefn();
-    if (!ASTUtils::hasCompatibleTargetInTable(proposition.target(),
+    if (!ASTUtils::HasCompatibleTargetInTable(proposition.target(),
                                               context.targetTbl)) {
       ON_ERROR("Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
@@ -258,7 +258,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
   // Handle source.
   {
     const auto& source = defn.source();
-    const auto& sourceRoot = ASTUtils::getRootOfASTIdentifiable(source);
+    const auto& sourceRoot = ASTUtils::GetRootOfASTIdentifiable(source);
     if (context->symbolSet.count(sourceRoot) == 0) {
       ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
                sourceRoot.c_str(), context->name.c_str());
@@ -268,11 +268,11 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
   // Handle target.
   {
     const auto& target = defn.deductionTarget();
-    if (ASTUtils::hasIncompatibleTargetInTable(target, context->targetTbl)) {
+    if (ASTUtils::HasIncompatibleTargetInTable(target, context->targetTbl)) {
       ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
     }
-    ASTUtils::addTargetToTable(target, &context->targetTbl);
+    ASTUtils::AddTargetToTable(target, &context->targetTbl);
   }
 
   // Handle while-clause.
@@ -300,7 +300,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   const auto& lhs = defn.lhs();
   const auto& rhs = defn.rhs();
 
-  if (!ASTUtils::areTargetsCompatible(lhs, rhs)) {
+  if (!ASTUtils::AreTargetsCompatible(lhs, rhs)) {
     ON_ERROR("Incompatible targets in expression in inference \"%s\".",
              context->name.c_str());
   }
@@ -314,7 +314,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
-      if (!ASTUtils::hasCompatibleTargetInTable(target, context->targetTbl)) {
+      if (!ASTUtils::HasCompatibleTargetInTable(target, context->targetTbl)) {
         ON_ERROR("Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }

@@ -33,24 +33,24 @@ typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
 class ASTUtils
 {
 public:
-  static std::string canonicalizeASTIdentifiable(const ASTIdentifiable&);
+  static std::string CanonicalizeASTIdentifiable(const ASTIdentifiable&);
 
-  static bool areTargetsCompatible(const ASTDeductionTarget&,
+  static bool AreTargetsCompatible(const ASTDeductionTarget&,
                                    const ASTDeductionTarget&);
 
-  static bool areTargetsCompatible(const ASTDeductionTargetSingular&,
+  static bool AreTargetsCompatible(const ASTDeductionTargetSingular&,
                                    const ASTDeductionTargetSingular&);
 
-  static bool areTargetsCompatible(const ASTDeductionTargetArray&,
+  static bool AreTargetsCompatible(const ASTDeductionTargetArray&,
                                    const ASTDeductionTargetArray&);
 
-  static const std::string& getRootOfASTIdentifiable(const ASTIdentifiable&);
+  static const std::string& GetRootOfASTIdentifiable(const ASTIdentifiable&);
 
-  static void addTargetToTable(const ASTDeductionTarget&, TargetTable*);
+  static void AddTargetToTable(const ASTDeductionTarget&, TargetTable*);
 
-  static bool hasCompatibleTargetInTable(const ASTDeductionTarget&,
+  static bool HasCompatibleTargetInTable(const ASTDeductionTarget&,
                                          const TargetTable&);
 
-  static bool hasIncompatibleTargetInTable(const ASTDeductionTarget&,
+  static bool HasIncompatibleTargetInTable(const ASTDeductionTarget&,
                                            const TargetTable&);
 };

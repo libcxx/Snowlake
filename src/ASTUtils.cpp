@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 std::string
-ASTUtils::canonicalizeASTIdentifiable(const ASTIdentifiable& identifiable)
+ASTUtils::CanonicalizeASTIdentifiable(const ASTIdentifiable& identifiable)
 {
   std::stringstream stream;
 
@@ -50,7 +50,7 @@ ASTUtils::canonicalizeASTIdentifiable(const ASTIdentifiable& identifiable)
 // -----------------------------------------------------------------------------
 
 bool
-ASTUtils::areTargetsCompatible(const ASTDeductionTarget& lhs,
+ASTUtils::AreTargetsCompatible(const ASTDeductionTarget& lhs,
                                const ASTDeductionTarget& rhs)
 {
   if (lhs.isType<ASTDeductionTargetSingular>() &&
@@ -59,14 +59,14 @@ ASTUtils::areTargetsCompatible(const ASTDeductionTarget& lhs,
         lhs.value<ASTDeductionTargetSingular>();
     const ASTDeductionTargetSingular& rhs_val =
         rhs.value<ASTDeductionTargetSingular>();
-    return areTargetsCompatible(lhs_val, rhs_val);
+    return AreTargetsCompatible(lhs_val, rhs_val);
   } else if (lhs.isType<ASTDeductionTargetArray>() &&
              rhs.isType<ASTDeductionTargetArray>()) {
     const ASTDeductionTargetArray& lhs_val =
         lhs.value<ASTDeductionTargetArray>();
     const ASTDeductionTargetArray& rhs_val =
         rhs.value<ASTDeductionTargetArray>();
-    return areTargetsCompatible(lhs_val, rhs_val);
+    return AreTargetsCompatible(lhs_val, rhs_val);
   } else if (lhs.isType<ASTDeductionTargetComputed>() ||
              rhs.isType<ASTDeductionTargetComputed>()) {
     // NOTE: here we consider if either is a computed deduction target,
@@ -91,7 +91,7 @@ ASTUtils::areTargetsCompatible(const ASTDeductionTarget& lhs,
 // -----------------------------------------------------------------------------
 
 bool
-ASTUtils::areTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
+ASTUtils::AreTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
                                const ASTDeductionTargetSingular& /* rhs */)
 {
   // Singular targets should be compatible.
@@ -101,7 +101,7 @@ ASTUtils::areTargetsCompatible(const ASTDeductionTargetSingular& /* lhs */,
 // -----------------------------------------------------------------------------
 
 bool
-ASTUtils::areTargetsCompatible(const ASTDeductionTargetArray& lhs,
+ASTUtils::AreTargetsCompatible(const ASTDeductionTargetArray& lhs,
                                const ASTDeductionTargetArray& rhs)
 {
   if (lhs.hasSizeLiteral() && rhs.hasSizeLiteral()) {
@@ -118,7 +118,7 @@ ASTUtils::areTargetsCompatible(const ASTDeductionTargetArray& lhs,
 // -----------------------------------------------------------------------------
 
 const std::string&
-ASTUtils::getRootOfASTIdentifiable(const ASTIdentifiable& identifiable)
+ASTUtils::GetRootOfASTIdentifiable(const ASTIdentifiable& identifiable)
 {
   static const std::string nullvalue;
 
@@ -133,7 +133,7 @@ ASTUtils::getRootOfASTIdentifiable(const ASTIdentifiable& identifiable)
 // -----------------------------------------------------------------------------
 
 void
-ASTUtils::addTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
+ASTUtils::AddTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
 {
   if (target.isType<ASTDeductionTargetSingular>()) {
     const auto& value = target.value<ASTDeductionTargetSingular>();
@@ -147,7 +147,7 @@ ASTUtils::addTargetToTable(const ASTDeductionTarget& target, TargetTable* tbl)
 // -----------------------------------------------------------------------------
 
 bool
-ASTUtils::hasCompatibleTargetInTable(const ASTDeductionTarget& target,
+ASTUtils::HasCompatibleTargetInTable(const ASTDeductionTarget& target,
                                      const TargetTable& tbl)
 {
   if (target.isType<ASTDeductionTargetSingular>()) {
@@ -193,7 +193,7 @@ ASTUtils::hasCompatibleTargetInTable(const ASTDeductionTarget& target,
 // -----------------------------------------------------------------------------
 
 bool
-ASTUtils::hasIncompatibleTargetInTable(const ASTDeductionTarget& target,
+ASTUtils::HasIncompatibleTargetInTable(const ASTDeductionTarget& target,
                                        const TargetTable& tbl)
 {
   if (target.isType<ASTDeductionTargetSingular>()) {
