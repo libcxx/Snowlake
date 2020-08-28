@@ -33,8 +33,8 @@ ADD_SUBDIRECTORY(${PARSER_SRC_DIR})
 
 # Add the necessary source files.
 set(sources
-    ast_util.cpp
     ASTVisitor.cpp
+    ASTUtils.cpp
     SemanticAnalyzer.cpp
     Synthesizer.cpp
     ArgumentParser.cpp

@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "ASTUtils.h"
 #include "ASTVisitor.h"
-#include "ast_util.h"
 
 #include <unordered_set>
 #include <vector>
