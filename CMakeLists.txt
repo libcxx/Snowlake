@@ -64,6 +64,7 @@ set(CMAKE_CXX_FLAGS "\
 -Wno-format-nonliteral \
 -Wno-c99-extensions \
 -Wno-extra-semi-stmt \
+-Wno-exit-time-destructors \
 ")
 
 
