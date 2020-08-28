@@ -64,8 +64,10 @@ set(CMAKE_CXX_FLAGS "\
 -Wno-format-nonliteral \
 -Wno-c99-extensions \
 -Wno-extra-semi-stmt \
+-Wno-extra-semi \
 -Wno-exit-time-destructors \
 -Wno-covered-switch-default \
+-Wno-unknown-warning-option \
 ")
 
 
