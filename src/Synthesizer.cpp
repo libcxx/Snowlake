@@ -164,7 +164,7 @@ private:
   void renderInferenceErrorCategory(std::ostream*) const;
 
   void renderTypeAnnotationSetupTeardownFixture(
-      const ASTInferencePremiseDefn& premise_defn,
+      const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream*) const;
 
   void renderErrorHandling() const;
@@ -256,9 +256,9 @@ SynthesizerImpl::run(const ASTModule& module)
 
 /* virtual */
 bool
-SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
+SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
 {
-  EnvDefnMap envDefnMap = getEnvnDefnMapFromInferenceGroup(inference_group);
+  EnvDefnMap envDefnMap = getEnvnDefnMapFromInferenceGroup(inferenceGroup);
 
   const auto clsName = getClassNameFromEnvDefn(envDefnMap);
 
@@ -573,11 +573,11 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
 
 EnvDefnMap
 SynthesizerImpl::getEnvnDefnMapFromInferenceGroup(
-    const ASTInferenceGroup& inference_group)
+    const ASTInferenceGroup& inferenceGroup)
 {
   EnvDefnMap envDefnMap;
 
-  for (const auto& envnDefn : inference_group.environmentDefns()) {
+  for (const auto& envnDefn : inferenceGroup.environmentDefns()) {
     envDefnMap[envnDefn.field()] = envnDefn.value();
   }
 
@@ -660,14 +660,14 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
 void
 SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
-    const ASTInferencePremiseDefn& premise_defn)
+    const ASTInferencePremiseDefn& premiseDefn)
 {
   const auto& proofMethodName =
       _context.envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
 
   auto& cppFileOfs = *(_context.cppFileOfs);
 
-  const auto& deductionTarget = premise_defn.deductionTarget();
+  const auto& deductionTarget = premiseDefn.deductionTarget();
 
   // Synthesize deduction.
   if (deductionTarget.isType<ASTDeductionTargetComputed>()) {
@@ -697,7 +697,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << typeCls << CPP_SPACE << name2 << CPP_SPACE << CPP_ASSIGN
                << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premise_defn.source(), _context.cppFileOfs.get());
+    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs.get());
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON << CPP_NEWLINE;
 
     renderIndentationInCppFile();
@@ -720,11 +720,11 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << CPP_NEWLINE;
   } else {
     renderIndentationInCppFile();
-    synthesizeDeductionTargetForDeclaration(premise_defn.deductionTarget(),
+    synthesizeDeductionTargetForDeclaration(premiseDefn.deductionTarget(),
                                             _context.cppFileOfs.get());
     cppFileOfs << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premise_defn.source(), _context.cppFileOfs.get());
+    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs.get());
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON;
   }
 
