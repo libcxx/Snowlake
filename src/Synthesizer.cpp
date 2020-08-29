@@ -362,12 +362,14 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
   }
 
   // Close and release header file stream.
+  if (_context->headerFileOfs)
   {
     _context->headerFileOfs->close();
     _context->headerFileOfs.release();
   }
 
   // Close and release .cpp file stream.
+  if (_context->cppFileOfs)
   {
     _context->cppFileOfs->close();
     _context->cppFileOfs.release();
