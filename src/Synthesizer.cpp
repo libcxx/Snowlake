@@ -32,7 +32,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <array>
 #include <cstdio>
 #include <fstream>
-#include <memory>
 #include <numeric>
 #include <unordered_map>
 #include <vector>
@@ -61,8 +60,8 @@ struct InferenceGroupSynthesisContext
   std::string clsName;
   std::string typeCls;
   EnvDefnMap envDefnMap;
-  std::unique_ptr<std::ofstream> headerFileOfs;
-  std::unique_ptr<std::ofstream> cppFileOfs;
+  std::ofstream headerFileOfs;
+  std::ofstream cppFileOfs;
   size_t headerFileIndentLvl;
   size_t cppFileIndentLvl;
   uint32_t nameId;
@@ -133,47 +132,46 @@ private:
   void synthesizeInferencePremiseDefnWithoutWhileClause(
       const ASTInferencePremiseDefn&);
 
-  void synthesizeArgumentList(const ASTInferenceArgumentList&,
-                              std::ostream*) const;
+  void synthesizeArgumentList(const ASTInferenceArgumentList&, std::ostream&);
 
   void synthesizeDeductionTarget(const ASTDeductionTarget&,
                                  const DeductionTargetArraySynthesisMode,
-                                 std::ostream*) const;
+                                 std::ostream&);
 
   void synthesizeDeductionTargetForDeclaration(const ASTDeductionTarget&,
-                                               std::ostream*) const;
+                                               std::ostream&);
 
-  void synthesizeIdentifiable(const ASTIdentifiable&, std::ostream*) const;
+  void synthesizeIdentifiable(const ASTIdentifiable&, std::ostream&);
 
-  void synthesizeEqualityOperator(const EqualityOperator, std::ostream*) const;
+  void synthesizeEqualityOperator(const EqualityOperator, std::ostream&);
 
-  void renderIndentation(const size_t, std::ostream*) const;
+  void renderIndentation(const size_t, std::ostream&);
 
-  void renderIndentationInHeaderFile() const;
+  void renderIndentationInHeaderFile();
 
-  void renderIndentationInCppFile() const;
+  void renderIndentationInCppFile();
 
-  void renderCustomInclude(const char*, std::ostream*) const;
+  void renderCustomInclude(const char*, std::ostream&);
 
-  void renderSystemHeaderIncludes(std::ostream*) const;
+  void renderSystemHeaderIncludes(std::ostream&);
 
   template <typename Iterator>
   void __renderSystemHeaderIncludes(Iterator first, Iterator last,
-                                    std::ostream*) const;
+                                    std::ostream&);
 
-  void renderInferenceErrorCategory(std::ostream*) const;
+  void renderInferenceErrorCategory(std::ostream&);
 
   void renderTypeAnnotationSetupTeardownFixture(
       const ASTInferencePremiseDefn& premiseDefn,
-      const std::string& method_name, std::ostream*) const;
+      const std::string& method_name, std::ostream&);
 
-  void renderErrorHandling() const;
+  void renderErrorHandling();
 
   void indentCppFile();
 
   void dedentCppFile();
 
-  bool initializeAndSynthesizeErrorCodeFiles() const;
+  bool initializeAndSynthesizeErrorCodeFiles();
 
   std::string __getNextVarName();
 
@@ -223,14 +221,8 @@ InferenceGroupSynthesisContext::InferenceGroupSynthesisContext()
 
 InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 {
-  if (headerFileOfs) {
-    headerFileOfs->close();
-    headerFileOfs.release();
-  }
-  if (cppFileOfs) {
-    cppFileOfs->close();
-    cppFileOfs.release();
-  }
+  headerFileOfs.close();
+  cppFileOfs.close();
 }
 
 // -----------------------------------------------------------------------------
@@ -273,13 +265,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
   headerFilepath.append(clsName);
   headerFilepath.append(HEADER_FILE_EXT);
 
-  std::unique_ptr<std::ofstream> headerFileOfs(
-      std::make_unique<std::ofstream>(headerFilepath, std::ofstream::out));
-  if (!headerFileOfs) {
-    return false;
-  }
-  if (!headerFileOfs->good()) {
-    headerFileOfs.release();
+  _context.headerFileOfs.open(headerFilepath, std::ofstream::out);
+  if (!_context.headerFileOfs.good()) {
     return false;
   }
 
@@ -291,33 +278,24 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
   cppFilepath.append(clsName);
   cppFilepath.append(CPP_FILE_EXT);
 
-  std::unique_ptr<std::ofstream> cppFileOfs(
-      std::make_unique<std::ofstream>(cppFilepath, std::ofstream::out));
-  if (!cppFileOfs) {
-    headerFileOfs.release();
-    return false;
-  }
-  if (!cppFileOfs->good()) {
-    headerFileOfs.release();
-    cppFileOfs.release();
+  _context.cppFileOfs.open(cppFilepath, std::ofstream::out);
+  if (!_context.cppFileOfs.good()) {
     return false;
   }
 
-  _context.headerFileOfs = std::move(headerFileOfs);
-  _context.cppFileOfs = std::move(cppFileOfs);
   _context.clsName = std::move(clsName);
   _context.typeCls = std::move(typeCls);
   _context.envDefnMap = std::move(envDefnMap);
 
   // Write to header file.
   {
-    auto& headerFileOfsRef = *(_context.headerFileOfs);
+    auto& headerFileOfsRef = _context.headerFileOfs;
     headerFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_PRAGMA_ONCE << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
-    renderSystemHeaderIncludes(_context.headerFileOfs.get());
+    renderSystemHeaderIncludes(_context.headerFileOfs);
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_CLASS_KEYWORD << ' ';
     headerFileOfsRef << _context.clsName;
@@ -330,12 +308,12 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
 
   // Write to .cpp file.
   {
-    auto& cppFileOfsRef = *(_context.cppFileOfs);
+    auto& cppFileOfsRef = _context.cppFileOfs;
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     cppFileOfsRef << CPP_NEWLINE;
-    renderCustomInclude(_context.clsName.c_str(), _context.cppFileOfs.get());
+    renderCustomInclude(_context.clsName.c_str(), _context.cppFileOfs);
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
-                        _context.cppFileOfs.get());
+                        _context.cppFileOfs);
   }
 
   return true;
@@ -347,27 +325,22 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
 bool
 SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 {
-  SYNTHESIZER_ASSERT(_context.headerFileOfs);
-  SYNTHESIZER_ASSERT(_context.cppFileOfs);
-
   // Write closing };
   {
-    auto& headerFileOfs = *(_context.headerFileOfs);
+    auto& headerFileOfs = _context.headerFileOfs;
     headerFileOfs << CPP_CLOSE_BRACE;
     headerFileOfs << CPP_SEMICOLON;
     headerFileOfs << CPP_NEWLINE;
   }
 
   // Close and release header file stream.
-  if (_context.headerFileOfs) {
-    _context.headerFileOfs->close();
-    _context.headerFileOfs.release();
+  if (_context.headerFileOfs.good()) {
+    _context.headerFileOfs.close();
   }
 
   // Close and release .cpp file stream.
-  if (_context.cppFileOfs) {
-    _context.cppFileOfs->close();
-    _context.cppFileOfs.release();
+  if (_context.cppFileOfs.good()) {
+    _context.cppFileOfs.close();
   }
 
   return true;
@@ -379,20 +352,16 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
 bool
 SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 {
-  SYNTHESIZER_ASSERT(_context.headerFileOfs);
-  SYNTHESIZER_ASSERT(_context.cppFileOfs);
-
   // Synthesize member function declaration.
   {
     ScopedIndentationGuard scopedIndentation(_context.headerFileIndentLvl);
     renderIndentationInHeaderFile();
 
-    auto& headerFileOfs = *(_context.headerFileOfs);
+    auto& headerFileOfs = _context.headerFileOfs;
     headerFileOfs << _context.typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
     headerFileOfs << CPP_OPEN_PAREN;
-    synthesizeArgumentList(inferenceDefn.arguments(),
-                           _context.headerFileOfs.get());
+    synthesizeArgumentList(inferenceDefn.arguments(), _context.headerFileOfs);
     if (!_opts.useException) {
       headerFileOfs << CPP_COMA << CPP_SPACE;
       headerFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
@@ -404,15 +373,14 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 
   // Synthesize member function definition.
   {
-    auto& cppFileOfs = *(_context.cppFileOfs);
+    auto& cppFileOfs = _context.cppFileOfs;
     cppFileOfs << CPP_NEWLINE;
     cppFileOfs << _context.typeCls << CPP_NEWLINE;
     cppFileOfs << _context.clsName;
     cppFileOfs << CPP_COLON << CPP_COLON;
     cppFileOfs << inferenceDefn.name();
     cppFileOfs << CPP_OPEN_PAREN;
-    synthesizeArgumentList(inferenceDefn.arguments(),
-                           _context.cppFileOfs.get());
+    synthesizeArgumentList(inferenceDefn.arguments(), _context.cppFileOfs);
     if (!_opts.useException) {
       cppFileOfs << CPP_COMA << CPP_SPACE;
       cppFileOfs << CPP_STD_ERROR_CODE << CPP_STAR;
@@ -436,11 +404,9 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
 bool
 SynthesizerImpl::postvisit(const ASTInferenceDefn&)
 {
-  SYNTHESIZER_ASSERT(_context.cppFileOfs);
-
   dedentCppFile();
 
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
   cppFileOfs << CPP_CLOSE_BRACE;
   cppFileOfs << CPP_NEWLINE;
 
@@ -478,7 +444,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
   static const char var1 = 'i';
   static const char var2 = 'j';
 
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
 
   if (hasRangeClause) {
     const auto& rangeClause = premiseDefn.rangeClause();
@@ -502,7 +468,7 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
       cppFileOfs << var1 << CPP_SPACE << CPP_LESS_THAN << CPP_SPACE;
       synthesizeDeductionTarget(rangeClause.deductionTarget(),
                                 DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                                _context.cppFileOfs.get());
+                                _context.cppFileOfs);
       cppFileOfs << CPP_DOT_SIZE << CPP_SEMICOLON << CPP_SPACE;
     }
 
@@ -529,19 +495,19 @@ SynthesizerImpl::previsit(const ASTInferenceEqualityDefn& premiseDefn)
     cppFileOfs << typeCmpMethodName << CPP_OPEN_PAREN;
     synthesizeDeductionTarget(premiseDefn.lhs(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              _context.cppFileOfs.get());
+                              _context.cppFileOfs);
     if (hasRangeClause) {
-      *(_context.cppFileOfs) << CPP_OPEN_BRACKET << var1 << CPP_CLOSE_BRACKET;
+      _context.cppFileOfs << CPP_OPEN_BRACKET << var1 << CPP_CLOSE_BRACKET;
     }
     cppFileOfs << CPP_COMA << CPP_SPACE;
     synthesizeDeductionTarget(premiseDefn.rhs(),
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              _context.cppFileOfs.get());
+                              _context.cppFileOfs);
     if (hasRangeClause) {
-      *(_context.cppFileOfs) << CPP_OPEN_BRACKET << var2 << CPP_CLOSE_BRACKET;
+      _context.cppFileOfs << CPP_OPEN_BRACKET << var2 << CPP_CLOSE_BRACKET;
     }
     cppFileOfs << CPP_COMA << CPP_SPACE;
-    synthesizeEqualityOperator(premiseDefn.oprt(), _context.cppFileOfs.get());
+    synthesizeEqualityOperator(premiseDefn.oprt(), _context.cppFileOfs);
     cppFileOfs << CPP_CLOSE_PAREN;
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SPACE << CPP_OPEN_BRACE;
     cppFileOfs << CPP_NEWLINE;
@@ -607,7 +573,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 {
   SYNTHESIZER_ASSERT(premiseDefn.hasWhileClause());
 
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
 
   // Type annotation setup fixture.
   {
@@ -622,7 +588,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
     // Synthesize type annotation setup code.
     renderTypeAnnotationSetupTeardownFixture(
-        premiseDefn, typeAnnotationSetupMethod, _context.cppFileOfs.get());
+        premiseDefn, typeAnnotationSetupMethod, _context.cppFileOfs);
 
     cppFileOfs << CPP_NEWLINE;
   }
@@ -650,7 +616,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
     // Synthesize type annotation teardown code.
     renderTypeAnnotationSetupTeardownFixture(
-        premiseDefn, typeAnnotationTeardownMethod, _context.cppFileOfs.get());
+        premiseDefn, typeAnnotationTeardownMethod, _context.cppFileOfs);
   }
 
   cppFileOfs << CPP_NEWLINE;
@@ -665,7 +631,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
   const auto& proofMethodName =
       _context.envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD);
 
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
 
   const auto& deductionTarget = premiseDefn.deductionTarget();
 
@@ -689,7 +655,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
                << CPP_SPACE;
     synthesizeDeductionTarget(deductionTarget,
                               DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                              _context.cppFileOfs.get());
+                              _context.cppFileOfs);
     cppFileOfs << CPP_SEMICOLON << CPP_NEWLINE;
 
     const auto name2 = __getNextVarName();
@@ -697,7 +663,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << typeCls << CPP_SPACE << name2 << CPP_SPACE << CPP_ASSIGN
                << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs.get());
+    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs);
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON << CPP_NEWLINE;
 
     renderIndentationInCppFile();
@@ -721,10 +687,10 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
   } else {
     renderIndentationInCppFile();
     synthesizeDeductionTargetForDeclaration(premiseDefn.deductionTarget(),
-                                            _context.cppFileOfs.get());
+                                            _context.cppFileOfs);
     cppFileOfs << CPP_SPACE << CPP_ASSIGN << CPP_SPACE;
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
-    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs.get());
+    synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs);
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON;
   }
 
@@ -735,10 +701,8 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
 
 void
 SynthesizerImpl::synthesizeArgumentList(const ASTInferenceArgumentList& args,
-                                        std::ostream* ofs) const
+                                        std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
-
   for (size_t i = 0; i < args.size(); ++i) {
     const auto& arg = args[i];
     ofsRef << CPP_CONST_KEYWORD << CPP_SPACE << arg.typeName() << CPP_AMPERSAND
@@ -754,10 +718,8 @@ SynthesizerImpl::synthesizeArgumentList(const ASTInferenceArgumentList& args,
 void
 SynthesizerImpl::synthesizeDeductionTarget(
     const ASTDeductionTarget& deductionTarget,
-    const DeductionTargetArraySynthesisMode arrayMode, std::ostream* ofs) const
+    const DeductionTargetArraySynthesisMode arrayMode, std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
-
   if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     const auto& value = deductionTarget.value<ASTDeductionTargetSingular>();
     ofsRef << value.name();
@@ -808,7 +770,7 @@ SynthesizerImpl::synthesizeDeductionTarget(
     const auto& arguments = value.arguments();
     for (size_t i = 0; i < arguments.size(); ++i) {
       synthesizeDeductionTarget(
-          arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofs);
+          arguments[i], DeductionTargetArraySynthesisMode::AS_SINGULAR, ofsRef);
       if (i + 1 < arguments.size()) {
         ofsRef << CPP_COMA << CPP_SPACE;
       }
@@ -823,19 +785,19 @@ SynthesizerImpl::synthesizeDeductionTarget(
 
 void
 SynthesizerImpl::synthesizeDeductionTargetForDeclaration(
-    const ASTDeductionTarget& deductionTarget, std::ostream* ofs) const
+    const ASTDeductionTarget& deductionTarget, std::ostream& ofsRef)
 {
   const auto& typeCls = _context.typeCls;
 
-  auto& ofsRef = *ofs;
-
   if (deductionTarget.isType<ASTDeductionTargetSingular>()) {
     ofsRef << typeCls << CPP_SPACE;
-    synthesizeDeductionTarget(
-        deductionTarget, DeductionTargetArraySynthesisMode::AS_STD_VECTOR, ofs);
+    synthesizeDeductionTarget(deductionTarget,
+                              DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
+                              ofsRef);
   } else if (deductionTarget.isType<ASTDeductionTargetArray>()) {
-    synthesizeDeductionTarget(
-        deductionTarget, DeductionTargetArraySynthesisMode::AS_STD_VECTOR, ofs);
+    synthesizeDeductionTarget(deductionTarget,
+                              DeductionTargetArraySynthesisMode::AS_STD_VECTOR,
+                              ofsRef);
   } else {
     SYNTHESIZER_ASSERT(0 && "Unsupported deduction target.");
   }
@@ -845,9 +807,8 @@ SynthesizerImpl::synthesizeDeductionTargetForDeclaration(
 
 void
 SynthesizerImpl::synthesizeIdentifiable(const ASTIdentifiable& identifiable,
-                                        std::ostream* ofs) const
+                                        std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   const auto& identifiers = identifiable.identifiers();
   for (size_t i = 0; i < identifiers.size(); ++i) {
     ofsRef << identifiers[i].value();
@@ -861,9 +822,8 @@ SynthesizerImpl::synthesizeIdentifiable(const ASTIdentifiable& identifiable,
 
 void
 SynthesizerImpl::synthesizeEqualityOperator(const EqualityOperator oprt,
-                                            std::ostream* ofs) const
+                                            std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   const auto& typeCls = _context.typeCls;
   switch (oprt) {
     case EqualityOperator::OPERATOR_EQ:
@@ -891,11 +851,11 @@ bool
 SynthesizerImpl::previsit(const ASTPropositionDefn& propositionDefn)
 {
   renderIndentationInCppFile();
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
   cppFileOfs << CPP_RETURN_KEYWORD << CPP_SPACE;
   synthesizeDeductionTarget(propositionDefn.target(),
                             DeductionTargetArraySynthesisMode::AS_ARRAY,
-                            _context.cppFileOfs.get());
+                            _context.cppFileOfs);
   cppFileOfs << CPP_SEMICOLON << CPP_NEWLINE;
 
   return true;
@@ -904,10 +864,8 @@ SynthesizerImpl::previsit(const ASTPropositionDefn& propositionDefn)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderIndentation(const size_t indentLvl,
-                                   std::ostream* ofs) const
+SynthesizerImpl::renderIndentation(const size_t indentLvl, std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   for (size_t i = 0; i < indentLvl; ++i) {
     ofsRef << CPP_INDENTATION;
   }
@@ -916,17 +874,17 @@ SynthesizerImpl::renderIndentation(const size_t indentLvl,
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderIndentationInHeaderFile() const
+SynthesizerImpl::renderIndentationInHeaderFile()
 {
-  renderIndentation(_context.headerFileIndentLvl, _context.headerFileOfs.get());
+  renderIndentation(_context.headerFileIndentLvl, _context.headerFileOfs);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderIndentationInCppFile() const
+SynthesizerImpl::renderIndentationInCppFile()
 {
-  renderIndentation(_context.cppFileIndentLvl, _context.cppFileOfs.get());
+  renderIndentation(_context.cppFileIndentLvl, _context.cppFileOfs);
 }
 
 // -----------------------------------------------------------------------------
@@ -952,9 +910,8 @@ SynthesizerImpl::dedentCppFile()
 
 void
 SynthesizerImpl::renderCustomInclude(const char* headerName,
-                                     std::ostream* ofs) const
+                                     std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   ofsRef << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE << headerName
          << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << CPP_NEWLINE;
 }
@@ -962,7 +919,7 @@ SynthesizerImpl::renderCustomInclude(const char* headerName,
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
+SynthesizerImpl::renderSystemHeaderIncludes(std::ostream& ofsRef)
 {
   std::vector<const char*> systemHeaders{"cstdlib", "cstddef", "vector"};
   if (_opts.useException) {
@@ -971,7 +928,8 @@ SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
     systemHeaders.push_back("system_error");
   }
 
-  __renderSystemHeaderIncludes(systemHeaders.begin(), systemHeaders.end(), ofs);
+  __renderSystemHeaderIncludes(systemHeaders.begin(), systemHeaders.end(),
+                               ofsRef);
 }
 
 // -----------------------------------------------------------------------------
@@ -979,9 +937,8 @@ SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
 template <typename Iterator>
 void
 SynthesizerImpl::__renderSystemHeaderIncludes(Iterator first, Iterator last,
-                                              std::ostream* ofs) const
+                                              std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   for (auto it = first; it != last; ++it) {
     ofsRef << CPP_INCLUDE_DIRECTIVE_PREFIX << (*it) << '>' << CPP_NEWLINE;
   }
@@ -990,9 +947,8 @@ SynthesizerImpl::__renderSystemHeaderIncludes(Iterator first, Iterator last,
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderInferenceErrorCategory(std::ostream* ofs) const
+SynthesizerImpl::renderInferenceErrorCategory(std::ostream& ofsRef)
 {
-  auto& ofsRef = *ofs;
   ofsRef << CPP_NEWLINE;
   ofsRef << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION;
   ofsRef << CPP_NEWLINE;
@@ -1003,20 +959,19 @@ SynthesizerImpl::renderInferenceErrorCategory(std::ostream* ofs) const
 void
 SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
     const ASTInferencePremiseDefn& premiseDefn, const std::string& methodName,
-    std::ostream* ofs) const
+    std::ostream& ofsRef)
 {
   // Synthesize type annotation setup code.
   renderIndentationInCppFile();
-  auto& ofsRef = *ofs;
   ofsRef << methodName << CPP_OPEN_PAREN;
-  synthesizeIdentifiable(premiseDefn.source(), ofs);
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  synthesizeIdentifiable(premiseDefn.source(), ofsRef);
+  auto& cppFileOfs = _context.cppFileOfs;
   cppFileOfs << CPP_COMA << CPP_SPACE;
   // Should assert that this deduction target here is singular form only.
   // [SNOWLAKE-17] Optimize and refine code synthesis pipeline
   synthesizeDeductionTarget(premiseDefn.deductionTarget(),
                             DeductionTargetArraySynthesisMode::AS_SINGULAR,
-                            ofs);
+                            ofsRef);
   ofsRef << CPP_CLOSE_PAREN << CPP_SEMICOLON;
   ofsRef << CPP_NEWLINE;
 }
@@ -1024,12 +979,12 @@ SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderErrorHandling() const
+SynthesizerImpl::renderErrorHandling()
 {
   const auto typeCls =
       _context.envDefnMap.at(SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS);
 
-  auto& cppFileOfs = *(_context.cppFileOfs);
+  auto& cppFileOfs = _context.cppFileOfs;
 
   // Assign to output error parameter.
   renderIndentationInCppFile();
@@ -1048,7 +1003,7 @@ SynthesizerImpl::renderErrorHandling() const
 // -----------------------------------------------------------------------------
 
 bool
-SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
+SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
 {
   // Initialize header file.
   std::string ecHeaderFilepath(_opts.outputPath);
@@ -1087,11 +1042,11 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
   {
     ecCppFileOfs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << CPP_NEWLINE;
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
-                        &ecCppFileOfs);
+                        ecCppFileOfs);
     static const std::array<const char*, 2> system_headers{"string",
                                                            "system_error"};
     __renderSystemHeaderIncludes(system_headers.begin(), system_headers.end(),
-                                 &ecCppFileOfs);
+                                 ecCppFileOfs);
     ecCppFileOfs << CPP_NEWLINE;
     ecCppFileOfs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << CPP_NEWLINE;
     ecCppFileOfs.close();
