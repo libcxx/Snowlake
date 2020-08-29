@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdio>
 #include <fstream>
 #include <memory>
+#include <numeric>
 #include <unordered_map>
 #include <vector>
 
@@ -76,8 +77,10 @@ template <typename T>
 struct ScopedIndentationGuard
 {
   explicit ScopedIndentationGuard(T& indentLvl)
-    : _indentLvl(++indentLvl)
+    : _indentLvl(indentLvl)
   {
+	  ASSERT(_indentLvl < std::numeric_limits<T>::max());
+	  ++_indentLvl;
   }
 
   ~ScopedIndentationGuard()
@@ -947,6 +950,7 @@ SynthesizerImpl::renderIndentationInCppFile() const
 void
 SynthesizerImpl::indentCppFile() const
 {
+ASSERT(_context->cppFileIndentLvl < std::numeric_limits<decltype(_context->cppFileIndentLvl)>::max());
   ++_context->cppFileIndentLvl;
 }
 
@@ -955,6 +959,7 @@ SynthesizerImpl::indentCppFile() const
 void
 SynthesizerImpl::dedentCppFile() const
 {
+  ASSERT(_context->cppFileIndentLvl >= 1);
   --_context->cppFileIndentLvl;
 }
 
