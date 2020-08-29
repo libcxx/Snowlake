@@ -79,8 +79,8 @@ struct ScopedIndentationGuard
   explicit ScopedIndentationGuard(T& indentLvl)
     : _indentLvl(indentLvl)
   {
-	  ASSERT(_indentLvl < std::numeric_limits<T>::max());
-	  ++_indentLvl;
+    ASSERT(_indentLvl < std::numeric_limits<T>::max());
+    ++_indentLvl;
   }
 
   ~ScopedIndentationGuard()
@@ -157,9 +157,8 @@ private:
   void renderSystemHeaderIncludes(std::ostream*) const;
 
   template <typename Iterator>
-  void
-  __renderSystemHeaderIncludes(Iterator first, Iterator last,
-                               std::ostream*) const;
+  void __renderSystemHeaderIncludes(Iterator first, Iterator last,
+                                    std::ostream*) const;
 
   void renderInferenceErrorCategory(std::ostream*) const;
 
@@ -365,15 +364,13 @@ SynthesizerImpl::postvisit(const ASTInferenceGroup&)
   }
 
   // Close and release header file stream.
-  if (_context->headerFileOfs)
-  {
+  if (_context->headerFileOfs) {
     _context->headerFileOfs->close();
     _context->headerFileOfs.release();
   }
 
   // Close and release .cpp file stream.
-  if (_context->cppFileOfs)
-  {
+  if (_context->cppFileOfs) {
     _context->cppFileOfs->close();
     _context->cppFileOfs.release();
   }
@@ -950,7 +947,8 @@ SynthesizerImpl::renderIndentationInCppFile() const
 void
 SynthesizerImpl::indentCppFile() const
 {
-ASSERT(_context->cppFileIndentLvl < std::numeric_limits<decltype(_context->cppFileIndentLvl)>::max());
+  ASSERT(_context->cppFileIndentLvl <
+         std::numeric_limits<decltype(_context->cppFileIndentLvl)>::max());
   ++_context->cppFileIndentLvl;
 }
 
@@ -970,8 +968,8 @@ SynthesizerImpl::renderCustomInclude(const char* headerName,
                                      std::ostream* ofs) const
 {
   auto& ofsRef = *ofs;
-  ofsRef << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
-         << headerName << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << CPP_NEWLINE;
+  ofsRef << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE << headerName
+         << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << CPP_NEWLINE;
 }
 
 // -----------------------------------------------------------------------------
@@ -993,8 +991,8 @@ SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
 
 template <typename Iterator>
 void
-SynthesizerImpl::__renderSystemHeaderIncludes(
-    Iterator first, Iterator last, std::ostream* ofs) const
+SynthesizerImpl::__renderSystemHeaderIncludes(Iterator first, Iterator last,
+                                              std::ostream* ofs) const
 {
   auto& ofsRef = *ofs;
   for (auto it = first; it != last; ++it) {
@@ -1104,8 +1102,9 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
                         &ecCppFileOfs);
     static const std::array<const char*, 2> system_headers{"string",
-                                                         "system_error"};
-    __renderSystemHeaderIncludes(system_headers.begin(), system_headers.end(), &ecCppFileOfs);
+                                                           "system_error"};
+    __renderSystemHeaderIncludes(system_headers.begin(), system_headers.end(),
+                                 &ecCppFileOfs);
     ecCppFileOfs << CPP_NEWLINE;
     ecCppFileOfs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << CPP_NEWLINE;
     ecCppFileOfs.close();
