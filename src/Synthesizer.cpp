@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <array>
 #include <cstdio>
 #include <fstream>
-#include <numeric>
+#include <limits>
 #include <unordered_map>
 #include <vector>
 
