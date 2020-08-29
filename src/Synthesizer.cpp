@@ -270,7 +270,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   headerFilepath.append(HEADER_FILE_EXT);
 
   std::unique_ptr<std::ofstream> headerFileOfs(
-      new std::ofstream(headerFilepath, std::ofstream::out));
+      std::make_unique<std::ofstream>(headerFilepath, std::ofstream::out));
   if (!headerFileOfs) {
     return false;
   }
@@ -288,7 +288,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inference_group)
   cppFilepath.append(CPP_FILE_EXT);
 
   std::unique_ptr<std::ofstream> cppFileOfs(
-      new std::ofstream(cppFilepath, std::ofstream::out));
+      std::make_unique<std::ofstream>(cppFilepath, std::ofstream::out));
   if (!cppFileOfs) {
     headerFileOfs.release();
     return false;
