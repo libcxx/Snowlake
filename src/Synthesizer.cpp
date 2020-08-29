@@ -959,12 +959,12 @@ SynthesizerImpl::dedentCppFile() const
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderCustomInclude(const char* header_name,
+SynthesizerImpl::renderCustomInclude(const char* headerName,
                                      std::ostream* ofs) const
 {
   auto& ofsRef = *ofs;
   ofsRef << CPP_INCLUDE_DIRECTIVE << CPP_SPACE << CPP_DOUBLE_QUOTE
-         << header_name << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << std::endl;
+         << headerName << HEADER_FILE_EXT << CPP_DOUBLE_QUOTE << std::endl;
 }
 
 // -----------------------------------------------------------------------------
