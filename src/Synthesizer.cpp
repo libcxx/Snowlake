@@ -116,6 +116,7 @@ private:
   virtual bool previsit(const ASTPropositionDefn&);
 
   EnvDefnMap getEnvnDefnMapFromInferenceGroup(const ASTInferenceGroup&);
+
   std::string getClassNameFromEnvDefn(const EnvDefnMap&);
 
   enum class DeductionTargetArraySynthesisMode : uint32_t
@@ -176,6 +177,7 @@ private:
 
   std::string __getNextVarName() const;
 
+private:
   const Synthesizer::Options& _opts;
   std::unique_ptr<InferenceGroupSynthesisContext> _context;
 };
