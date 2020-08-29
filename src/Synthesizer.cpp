@@ -29,10 +29,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "format_defn.h"
 #include "macros.h"
 
+#include <array>
 #include <cstdio>
 #include <fstream>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 // -----------------------------------------------------------------------------
 
@@ -151,8 +153,9 @@ private:
 
   void renderSystemHeaderIncludes(std::ostream*) const;
 
+  template <typename Iterator>
   void
-  __renderSystemHeaderIncludes(const std::vector<const char*>& system_headers,
+  __renderSystemHeaderIncludes(Iterator first, Iterator last,
                                std::ostream*) const;
 
   void renderInferenceErrorCategory(std::ostream*) const;
@@ -976,18 +979,19 @@ SynthesizerImpl::renderSystemHeaderIncludes(std::ostream* ofs) const
     systemHeaders.push_back("system_error");
   }
 
-  __renderSystemHeaderIncludes(systemHeaders, ofs);
+  __renderSystemHeaderIncludes(systemHeaders.begin(), systemHeaders.end(), ofs);
 }
 
 // -----------------------------------------------------------------------------
 
+template <typename Iterator>
 void
 SynthesizerImpl::__renderSystemHeaderIncludes(
-    const std::vector<const char*>& systemHeaders, std::ostream* ofs) const
+    Iterator first, Iterator last, std::ostream* ofs) const
 {
   auto& ofsRef = *ofs;
-  for (const auto& header : systemHeaders) {
-    ofsRef << CPP_INCLUDE_DIRECTIVE_PREFIX << header << '>' << std::endl;
+  for (auto it = first; it != last; ++it) {
+    ofsRef << CPP_INCLUDE_DIRECTIVE_PREFIX << (*it) << '>' << std::endl;
   }
 }
 
@@ -1092,9 +1096,9 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles() const
     ecCppFileOfs << SYNTHESIZED_AUTHORING_COMMENT_BLOCK << std::endl;
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
                         &ecCppFileOfs);
-    static const std::vector<const char*> system_headers{"string",
+    static const std::array<const char*, 2> system_headers{"string",
                                                          "system_error"};
-    __renderSystemHeaderIncludes(system_headers, &ecCppFileOfs);
+    __renderSystemHeaderIncludes(system_headers.begin(), system_headers.end(), &ecCppFileOfs);
     ecCppFileOfs << std::endl;
     ecCppFileOfs << SYNTHESIZED_CUSTOM_ERROR_CATEGORY_DEFINITION << std::endl;
     ecCppFileOfs.close();
