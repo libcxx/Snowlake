@@ -256,10 +256,12 @@ class TestRunner(object):
         if not expected_errors:
             return ''
 
+        pedantic = 'error' if len(expected_errors) == 1 else 'errors'
+
         return '\n'.join([
             f'{input_path}: error: {error_msg}'
             for error_msg in expected_errors
-        ]) + '\n\n' + f'{len(expected_errors)} errors generated.\n'
+        ]) + '\n\n' + f'{len(expected_errors)} {pedantic} generated.\n'
 
     def __log_msg(self, msg, color=None):
         if color:
