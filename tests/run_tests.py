@@ -237,6 +237,7 @@ class TestRunner(object):
 
         if formatted_stderr != stderr_str:
             self.console_logger.error(f'Expected errors: {formatted_stderr}, but got {stderr_str}')
+            err = self.StatusCode.ERROR
 
         if err == self.StatusCode.SUCCESS:
             self.__log_success('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
