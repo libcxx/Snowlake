@@ -239,7 +239,7 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& envDefns)
 {
   INIT_RES;
 
-  std::array<const char*, 4> mandatoryEnvDefns = {
+  static const std::array<const char*, 4> mandatoryEnvDefns = {
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
