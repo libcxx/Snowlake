@@ -56,7 +56,9 @@ gtest:
 	git submodule update --init
 	mkdir -p $(GTEST_BUILD)
 	#cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
-	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) $(ROOT_DIR)/$(GTEST_DIR)
+	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) -DCMAKE_CXX_STANDARD=14 $(ROOT_DIR)/$(GTEST_DIR)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && VERBOSE=1 $(MAKE)
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
 	sudo cp $(GTEST_STATIC_LIB_FILEPATHS) $(GTEST_STATIC_LIB_TARGET_DIR)
+	echo 'Installed gtest headers to $(GTEST_INCLUDE_TARGET_DIR) ..'
+	echo 'Installed gtest libs to $(GTEST_STATIC_LIB_TARGET_DIR) ..'
