@@ -1,5 +1,8 @@
 {
   "name": "Test invalid range clause",
   "input_path": "./fixtures/invalid_range_clause.sl",
-  "expected_exit": 1
+  "expected_exit": 1,
+  "expected_errors": [
+    "Invalid target in range clause in inference \"MethodStaticDispatch\"."
+  ]
 }

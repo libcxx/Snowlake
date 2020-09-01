@@ -21,6 +21,8 @@ jobs:
       run: gcc --version
     - name: identify-clang
       run: clang --version
+    - name: identify-python
+      run: python3 --version
     - name: prebuild
       run: make -C libs
     - name: build

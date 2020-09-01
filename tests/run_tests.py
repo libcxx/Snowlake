@@ -213,6 +213,7 @@ class TestRunner(object):
         testcase_name = testcase[REQUIRED_TESTCASE_FIELD_NAME]
         testcase_inputpath = testcase[REQUIRED_TESTCASE_FIELD_INPUT_PATH]
         testcase_expected_exit = testcase[REQUIRED_TESTCASE_FIELD_EXPECTED_EXIT]
+        testcase_expected_errors = testcase.get('expected_errors', [])
 
         testcase_inputpath = os.path.join(self.input_path, testcase_inputpath)
 
@@ -220,13 +221,26 @@ class TestRunner(object):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
 
-        cmd = '{executable} --silent --output ./ {input_path}'.format(
+        cmd = '{executable} --errors --output ./ {input_path}'.format(
             executable=self.executable_invoke_name,
             input_path=testcase_inputpath)
 
-        return_code = subprocess.call(cmd, shell=True)
+        completed_process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        return_code = completed_process.returncode
+
+        stderr_str = completed_process.stdout.decode('utf-8')
 
         err = self.StatusCode.SUCCESS if return_code == testcase_expected_exit else self.StatusCode.FAILURE
+
+        formatted_stderr = self.__formatted_errors(testcase_inputpath, testcase_expected_errors)
+
+        if formatted_stderr != stderr_str:
+            self.console_logger.error('Expected errors: {formatted_stderr}, but got {stderr_str}'.format(
+                formatted_str=formatted_str,
+                stderr_str=stderr_str
+            ))
+            err = self.StatusCode.ERROR
 
         if err == self.StatusCode.SUCCESS:
             self.__log_success('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
@@ -241,6 +255,21 @@ class TestRunner(object):
                     testcase_inputpath=testcase_inputpath))
 
         return err
+
+    def __formatted_errors(self, input_path, expected_errors):
+        if not expected_errors:
+            return ''
+
+        pedantic = 'error' if len(expected_errors) == 1 else 'errors'
+
+        tail = '{num_expected_errors} {pedantic} generated.\n'.format(
+            num_expected_errors=len(expected_errors),
+            pedantic=pedantic)
+
+        return '\n'.join([
+            '{input_path}: error: {error_msg}'.format(input_path=input_path, error_msg=error_msg)
+            for error_msg in expected_errors
+        ]) + '\n\n' + tail
 
     def __log_msg(self, msg, color=None):
         if color:
