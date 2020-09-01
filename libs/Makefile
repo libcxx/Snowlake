@@ -31,7 +31,7 @@ BUILD=./build
 ROOT_DIR=$(shell pwd)
 
 GTEST=gtest
-GTEST_SHA=c99458533a9b4c743ed51537e25989ea55944908 # googletest 1.7.0
+GTEST_SHA=703bd9c #googletest 1.10.0
 GTEST_DIR=./googletest
 GTEST_BUILD=./$(BUILD)/$(GTEST)
 GTEST_INCLUDE_DIR=$(GTEST_DIR)/include/gtest
@@ -54,7 +54,7 @@ gtest:
 	git submodule sync
 	git submodule update --init
 	mkdir -p $(GTEST_BUILD)
-	#cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
+	cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) $(ROOT_DIR)/$(GTEST_DIR)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(MAKE)
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
