@@ -28,8 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdio>
 #include <string>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 class SemanticAnalyzer : public ASTVisitor
 {
