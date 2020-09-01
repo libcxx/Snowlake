@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ast.h"
 #include "format_defn.h"
 
+#include <array>
+
 // -----------------------------------------------------------------------------
 
 #define INIT_RES bool res = true
@@ -237,15 +239,14 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& envDefns)
 {
   INIT_RES;
 
-  static const char* mandatoryEnvDefns[]{
+  std::array<const char*, 4> mandatoryEnvDefns = {
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CLASS,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_PROOF_METHOD,
       SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_CMP_METHOD,
   };
 
-  for (size_t i = 0; i < sizeof(mandatoryEnvDefns) / sizeof(char*); ++i) {
-    const char* defn = mandatoryEnvDefns[i];
+  for (auto defn : mandatoryEnvDefns) {
     if (envDefns.count(defn) == 0) {
       ON_ERROR("Missing required environment definition field \"%s\".", defn);
     }
