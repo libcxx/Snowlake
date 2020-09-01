@@ -97,7 +97,7 @@ else()
 endif()
 
 
-add_library(Parser SHARED ${parser_sources})
+add_library(Parser STATIC ${parser_sources})
 
 
 # Auto-generated code from Flex and Bison have a lot of warnings.

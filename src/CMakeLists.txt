@@ -44,7 +44,7 @@ set(sources
 
 
 # Library `snowlake`.
-add_library(snowlake SHARED ${sources})
+add_library(snowlake STATIC ${sources})
 
 
 # Additional compiler flags.
