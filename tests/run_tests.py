@@ -220,11 +220,15 @@ class TestRunner(object):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
 
-        cmd = '{executable} --silent --output ./ {input_path}'.format(
+        cmd = '{executable} --errors --output ./ {input_path}'.format(
             executable=self.executable_invoke_name,
             input_path=testcase_inputpath)
 
-        return_code = subprocess.call(cmd, shell=True)
+        completed_process = subprocess.run(cmd, shell=True, capture_output=True)
+
+        return_code = completed_process.returncode
+
+        print(f'stderr={completed_process.stdout}')
 
         err = self.StatusCode.SUCCESS if return_code == testcase_expected_exit else self.StatusCode.FAILURE
 
