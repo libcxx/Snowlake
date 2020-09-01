@@ -236,7 +236,10 @@ class TestRunner(object):
         formatted_stderr = self.__formatted_errors(testcase_inputpath, testcase_expected_errors)
 
         if formatted_stderr != stderr_str:
-            self.console_logger.error(f'Expected errors: {formatted_stderr}, but got {stderr_str}')
+            self.console_logger.error('Expected errors: {formatted_stderr}, but got {stderr_str}'.format(
+                formatted_str=formatted_str,
+                stderr_str=stderr_str
+            ))
             err = self.StatusCode.ERROR
 
         if err == self.StatusCode.SUCCESS:
@@ -259,10 +262,14 @@ class TestRunner(object):
 
         pedantic = 'error' if len(expected_errors) == 1 else 'errors'
 
+        tail = '{num_expected_errors} {pedantic} generated.\n'.format(
+            num_expected_errors=len(expected_errors),
+            pedantic=pedantic)
+
         return '\n'.join([
-            f'{input_path}: error: {error_msg}'
+            '{input_path}: error: {error_msg}'.format(input_path=input_path, error_msg=error_msg)
             for error_msg in expected_errors
-        ]) + '\n\n' + f'{len(expected_errors)} {pedantic} generated.\n'
+        ]) + '\n\n' + tail
 
     def __log_msg(self, msg, color=None):
         if color:
