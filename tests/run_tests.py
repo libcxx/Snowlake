@@ -225,7 +225,7 @@ class TestRunner(object):
             executable=self.executable_invoke_name,
             input_path=testcase_inputpath)
 
-        completed_process = subprocess.run(cmd, shell=True, capture_output=True)
+        completed_process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         return_code = completed_process.returncode
 
