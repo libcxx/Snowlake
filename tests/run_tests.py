@@ -213,6 +213,7 @@ class TestRunner(object):
         testcase_name = testcase[REQUIRED_TESTCASE_FIELD_NAME]
         testcase_inputpath = testcase[REQUIRED_TESTCASE_FIELD_INPUT_PATH]
         testcase_expected_exit = testcase[REQUIRED_TESTCASE_FIELD_EXPECTED_EXIT]
+        testcase_expected_errors = testcase.get('expected_errors', [])
 
         testcase_inputpath = os.path.join(self.input_path, testcase_inputpath)
 
@@ -228,9 +229,14 @@ class TestRunner(object):
 
         return_code = completed_process.returncode
 
-        print(f'stderr={completed_process.stdout}')
+        stderr_str = completed_process.stdout.decode('utf-8')
 
         err = self.StatusCode.SUCCESS if return_code == testcase_expected_exit else self.StatusCode.FAILURE
+
+        formatted_stderr = self.__formatted_errors(testcase_inputpath, testcase_expected_errors)
+
+        if formatted_stderr != stderr_str:
+            self.console_logger.error(f'Expected errors: {formatted_stderr}, but got {stderr_str}')
 
         if err == self.StatusCode.SUCCESS:
             self.__log_success('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
@@ -245,6 +251,15 @@ class TestRunner(object):
                     testcase_inputpath=testcase_inputpath))
 
         return err
+
+    def __formatted_errors(self, input_path, expected_errors):
+        if not expected_errors:
+            return ''
+
+        return '\n'.join([
+            f'{input_path}: error: {error_msg}'
+            for error_msg in expected_errors
+        ]) + '\n\n' + f'{len(expected_errors)} errors generated.\n'
 
     def __log_msg(self, msg, color=None):
         if color:
