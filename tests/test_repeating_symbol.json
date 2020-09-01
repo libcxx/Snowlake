@@ -1,5 +1,9 @@
 {
   "name": "Test repeating symbol",
   "input_path": "./fixtures/repeating_symbol.sl",
-  "expected_exit": 1
+  "expected_exit": 1,
+  "expected_errors": [
+    "Found duplicate symbol (argument) with name \"Arg1\".",
+    "Invalid proposition target type in inference \"MyInference\"."
+  ]
 }

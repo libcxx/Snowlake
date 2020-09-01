@@ -1,5 +1,8 @@
 {
   "name": "Test invalid proposition",
   "input_path": "./fixtures/invalid_proposition.sl",
-  "expected_exit": 1
+  "expected_exit": 1,
+  "expected_errors": [
+    "Invalid proposition target type in inference \"MethodStaticDispatch\"."
+  ]
 }

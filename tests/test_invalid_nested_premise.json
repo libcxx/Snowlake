@@ -1,5 +1,9 @@
 {
   "name": "Test invalid premise nested in while clause",
   "input_path": "./fixtures/invalid_nested_premise.sl",
-  "expected_exit": 1
+  "expected_exit": 1,
+  "expected_errors": [
+    "Incompatible targets in expression in inference \"MethodStaticDispatch\".",
+    "Invalid target in range clause in inference \"MethodStaticDispatch\""
+  ]
 }
