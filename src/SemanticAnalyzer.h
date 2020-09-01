@@ -100,7 +100,7 @@ private:
     if (_opts.warningsAsErrors) {
       addError(msg, args...);
     } else {
-      char buffer[MAX_MSG_LEN];
+      char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
       _errors.emplace_back(Error{ErrorCode::Warning, buffer});
     }
@@ -109,7 +109,7 @@ private:
   template <typename U, typename... Args>
   void addError(const U& msg, Args... args)
   {
-    char buffer[MAX_MSG_LEN];
+    char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
     _errors.emplace_back(Error{ErrorCode::Error, buffer});
   }
