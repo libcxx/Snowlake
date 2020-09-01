@@ -57,5 +57,6 @@ gtest:
 	cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) $(ROOT_DIR)/$(GTEST_DIR)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(MAKE)
+	pwd
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
 	sudo cp $(GTEST_STATIC_LIB_PATH) $(GTEST_STATIC_LIB_TARGET_DIR)
