@@ -56,6 +56,11 @@ gtest:
 	git submodule update --init
 	mkdir -p $(GTEST_BUILD)
 	#cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
+	##
+	# NOTE:
+	# Need to pass in `-DCMAKE_CXX_STANDARD=14` due to issue #3000 reported at
+	# https://github.com/google/googletest/issues/3000
+	##
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) -DCMAKE_CXX_STANDARD=14 $(ROOT_DIR)/$(GTEST_DIR)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && VERBOSE=1 $(MAKE)
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
