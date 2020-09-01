@@ -31,7 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define INIT_RES bool res = true
 
+// -----------------------------------------------------------------------------
+
 #define DEFAULT_RETURN return res
+
+// -----------------------------------------------------------------------------
 
 #define ON_WARNING(msg, ...)                                                   \
   do {                                                                         \
@@ -44,6 +48,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }                                                                          \
   } while (0)
 
+// -----------------------------------------------------------------------------
+
 #define ON_ERROR(msg, ...)                                                     \
   do {                                                                         \
     res = false;                                                               \
@@ -52,6 +58,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       return res;                                                              \
     }                                                                          \
   } while (0)
+
+// -----------------------------------------------------------------------------
 
 #define RETURN_ON_FAILURE(expr)                                                \
   if (!(expr))                                                                 \
