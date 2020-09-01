@@ -26,8 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ASTUtils.h"
 #include "ASTVisitor.h"
 
-#include <unordered_set>
+#include <cstdio>
+#include <string>
 #include <vector>
+#include <unordered_set>
 
 class SemanticAnalyzer : public ASTVisitor
 {
