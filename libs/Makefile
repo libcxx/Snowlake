@@ -31,13 +31,14 @@ BUILD=./build
 ROOT_DIR=$(shell pwd)
 
 GTEST=gtest
-GTEST_SHA=c99458533a9b4c743ed51537e25989ea55944908 # googletest 1.7.0
-GTEST_DIR=./googletest
+GTEST_SHA=703bd9c #googletest 1.10.0
+GTEST_BASE_DIR=./googletest
+GTEST_DIR=$(GTEST_BASE_DIR)/googletest
 GTEST_BUILD=./$(BUILD)/$(GTEST)
 GTEST_INCLUDE_DIR=$(GTEST_DIR)/include/gtest
 GTEST_INCLUDE_TARGET_DIR=/usr/local/include/
-GTEST_STATIC_LIB=libgtest.a
-GTEST_STATIC_LIB_PATH=$(GTEST_BUILD)/$(GTEST_STATIC_LIB)
+GTEST_STATIC_LIB_PATH=$(GTEST_BUILD)/lib
+GTEST_STATIC_LIB_FILEPATHS=$(GTEST_STATIC_LIB_PATH)/*.a
 GTEST_STATIC_LIB_TARGET_DIR=/usr/local/lib
 
 CMAKE=`which cmake`
@@ -54,8 +55,15 @@ gtest:
 	git submodule sync
 	git submodule update --init
 	mkdir -p $(GTEST_BUILD)
-	cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
-	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) $(ROOT_DIR)/$(GTEST_DIR)
-	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(MAKE)
+	#cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
+	##
+	# NOTE:
+	# Need to pass in `-DCMAKE_CXX_STANDARD=14` due to issue #3000 reported at
+	# https://github.com/google/googletest/issues/3000
+	##
+	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) -DCMAKE_CXX_STANDARD=14 $(ROOT_DIR)/$(GTEST_DIR)
+	cd $(ROOT_DIR)/$(GTEST_BUILD) && VERBOSE=1 $(MAKE)
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
-	sudo cp $(GTEST_STATIC_LIB_PATH) $(GTEST_STATIC_LIB_TARGET_DIR)
+	sudo cp $(GTEST_STATIC_LIB_FILEPATHS) $(GTEST_STATIC_LIB_TARGET_DIR)
+	echo 'Installed gtest headers to $(GTEST_INCLUDE_TARGET_DIR) ..'
+	echo 'Installed gtest libs to $(GTEST_STATIC_LIB_TARGET_DIR) ..'
