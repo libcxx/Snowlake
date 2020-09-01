@@ -54,7 +54,7 @@ gtest:
 	git submodule sync
 	git submodule update --init
 	mkdir -p $(GTEST_BUILD)
-	cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
+	#cd $(ROOT_DIR)/$(GTEST_DIR) && git fetch origin && git checkout $(GTEST_SHA)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(CMAKE) $(ROOT_DIR)/$(GTEST_DIR)
 	cd $(ROOT_DIR)/$(GTEST_BUILD) && $(MAKE)
 	sudo cp -rf $(GTEST_INCLUDE_DIR) $(GTEST_INCLUDE_TARGET_DIR)
