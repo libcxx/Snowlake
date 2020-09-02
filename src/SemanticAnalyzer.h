@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ASTUtils.h"
 #include "ASTVisitor.h"
+#include "Error.h"
 
 #include <cstdio>
 #include <string>
@@ -33,20 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class SemanticAnalyzer : public ASTVisitor
 {
-public:
-  enum class ErrorCode
-  {
-    NoError = 0x00,
-    Warning = 0x01,
-    Error = 0x10
-  };
-
-  struct Error
-  {
-    ErrorCode code;
-    std::string msg;
-  };
-
 public:
   typedef std::vector<Error> ErrorList;
 
@@ -102,7 +89,7 @@ private:
     } else {
       char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
-      _errors.emplace_back(Error{ErrorCode::Warning, buffer});
+      _errors.emplace_back(Error{Error::ErrorCode::Warning, buffer});
     }
   }
 
@@ -111,7 +98,7 @@ private:
   {
     char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
-    _errors.emplace_back(Error{ErrorCode::Error, buffer});
+    _errors.emplace_back(Error{Error::ErrorCode::Error, buffer});
   }
 
   std::vector<Error> _errors;
