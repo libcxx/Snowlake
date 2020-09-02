@@ -47,7 +47,9 @@ struct ErrorPrinter
 
   ~ErrorPrinter()
   {
-    _out << '\n';
+    if (_warningsCount || _errorsCount) {
+      _out << '\n';
+    }
     if (_warningsCount) {
       _out << _warningsCount;
       _out << " warning";
