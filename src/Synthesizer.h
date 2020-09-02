@@ -40,7 +40,7 @@ public:
 
   explicit Synthesizer(const Options&);
 
-  bool run(const ASTModule&);
+  bool run(const ASTModule&) const;
 
 private:
   Options _opts;
