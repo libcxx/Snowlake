@@ -38,6 +38,7 @@ ParserDriver::ParserDriver()
                                 .suppressErrorMessages = false})
   , _inputFile()
   , _module()
+  , _errorMsg()
 {
 }
 
@@ -47,6 +48,7 @@ ParserDriver::ParserDriver(Options opts)
   : _opts(opts)
   , _inputFile()
   , _module()
+  , _errorMsg()
 {
 }
 
@@ -107,7 +109,7 @@ ParserDriver::setSuppressErrorMessages(bool val)
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parseFromFile(const std::string& filepath)
+ParserDriver::parseFromFile(const std::string& filepath, Error* err)
 {
   _inputFile.assign(filepath);
   std::ifstream infile(filepath.c_str());
@@ -117,13 +119,13 @@ ParserDriver::parseFromFile(const std::string& filepath)
   std::string fileContent((std::istreambuf_iterator<char>(infile)),
                           std::istreambuf_iterator<char>());
   infile.close();
-  return parseFromString(fileContent.c_str());
+  return parseFromString(fileContent.c_str(), err);
 }
 
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parseFromString(const char* input)
+ParserDriver::parseFromString(const char* input, Error* err)
 {
   YY_BUFFER_STATE buf;
   buf = yy_scan_string(input);
@@ -142,6 +144,10 @@ ParserDriver::parseFromString(const char* input)
   {
     yy_delete_buffer(buf);
     yylex_destroy();
+  }
+
+  if (!_errorMsg.empty()) {
+    *err = Error{.code = Error::ErrorCode::Error, .msg = _errorMsg};
   }
 
   return res;
@@ -187,7 +193,10 @@ ParserDriver::error(const yy::location& l, const std::string& m)
   if (!suppressErrorMessages()) {
     std::stringstream ss;
     ss << l;
-    fprintf(stderr, "Parser error: %s [%s]\n", m.c_str(), ss.str().c_str());
+    char buf[1024] = {0};
+    snprintf(buf, sizeof(buf), "Parser error: %s [%s]", m.c_str(),
+             ss.str().c_str());
+    _errorMsg.assign(buf);
   }
 }
 
@@ -197,7 +206,9 @@ void
 ParserDriver::error(const std::string& m)
 {
   if (!suppressErrorMessages()) {
-    fprintf(stderr, "Parser error: %s\n", m.c_str());
+    char buf[1024] = {0};
+    snprintf(buf, sizeof(buf), "Parser error: %s", m.c_str());
+    _errorMsg.assign(buf);
   }
 }
 

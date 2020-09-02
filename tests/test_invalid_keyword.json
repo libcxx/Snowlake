@@ -2,5 +2,7 @@
   "name": "Test invalid keyword",
   "input_path": "./fixtures/invalid_keyword.sl",
   "expected_exit": 1,
-  "expected_errors": []
+  "expected_errors": [
+    "Parser error: syntax error, unexpected IDENTIFIER, expecting KEYWORD_WHILE or SEMICOLON [12.67-68]"
+  ]
 }

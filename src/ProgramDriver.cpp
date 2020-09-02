@@ -29,23 +29,69 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ast_fwd.h"
 #include "parser/ParserDriver.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 
 // -----------------------------------------------------------------------------
 
-static void __printSemanticAnalyzerErrors(const std::string&,
-                                          const SemanticAnalyzer&,
-                                          std::ostream&);
+struct ErrorPrinter
+{
+  ErrorPrinter(const std::string& inputFilepath, std::ostream& stream)
+    : _inputFilepath(inputFilepath)
+    , _out(stream)
+    , _errorsCount(0)
+    , _warningsCount(0)
+  {
+  }
 
-// -----------------------------------------------------------------------------
+  ~ErrorPrinter()
+  {
+    if (_warningsCount || _errorsCount) {
+      _out << '\n';
+    }
+    if (_warningsCount) {
+      _out << _warningsCount;
+      _out << " warning";
+      if (_warningsCount > 1) {
+        _out << 's';
+      }
+      _out << " generated." << std::endl;
+    }
+    if (_errorsCount) {
+      _out << _errorsCount;
+      _out << " error";
+      if (_errorsCount > 1) {
+        _out << 's';
+      }
+      _out << " generated." << std::endl;
+    }
+    _out.flush();
+  }
 
-#define PRINT_VERBOSE_MSG(msg)                                                 \
-  do {                                                                         \
-    if (cmdlOpts.verbose && !cmdlOpts.silent) {                                \
-      std::cerr << (msg) << std::endl;                                         \
-    }                                                                          \
-  } while (0)
+  template <typename Iterator>
+  void printErrors(Iterator first, Iterator last)
+  {
+    std::for_each(first, last, [&](const auto& error) { printError(error); });
+  }
+
+  void printError(const Error& error)
+  {
+    if (error.code == Error::ErrorCode::Error) {
+      ++_errorsCount;
+      _out << _inputFilepath << ": error: ";
+    } else if (error.code == Error::ErrorCode::Warning) {
+      ++_warningsCount;
+      _out << _inputFilepath << ": warning: ";
+    }
+    _out << error.msg << '\n';
+  }
+
+  const std::string& _inputFilepath;
+  std::ostream& _out;
+  uint32_t _errorsCount;
+  uint32_t _warningsCount;
+};
 
 // -----------------------------------------------------------------------------
 
@@ -78,15 +124,20 @@ ProgramDriver::run(int argc, char** argv)
     std::cout << std::endl;
   }
 
+  ErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
+
   // Parsing.
   ParserDriver::Options parserOpts{.traceLexer = cmdlOpts.debugMode,
                                    .traceParser = cmdlOpts.debugMode,
                                    .suppressErrorMessages = false};
 
+  Error parserError;
+  parserError.code = Error::ErrorCode::NoError;
+
   ParserDriver parser(parserOpts);
-  res = parser.parseFromFile(cmdlOpts.inputPath);
+  res = parser.parseFromFile(cmdlOpts.inputPath, &parserError);
   if (res != 0) {
-    PRINT_VERBOSE_MSG("Failed: parsing error");
+    errorPrinter.printError(parserError);
     return EXIT_FAILURE;
   }
 
@@ -101,8 +152,8 @@ ProgramDriver::run(int argc, char** argv)
   res = semaAnalyzer.run(module);
   if (!res) {
     if (!cmdlOpts.silent) {
-      __printSemanticAnalyzerErrors(cmdlOpts.inputPath, semaAnalyzer,
-                                    std::cout);
+      auto& semaErrors = semaAnalyzer.errors();
+      errorPrinter.printErrors(std::begin(semaErrors), std::end(semaErrors));
     }
     return EXIT_FAILURE;
   }
@@ -114,55 +165,17 @@ ProgramDriver::run(int argc, char** argv)
   res = synthesizer.run(module);
   if (!res) {
     if (!cmdlOpts.silent) {
-      std::cerr << "Error: Failed to synthesize output to: "
-                << cmdlOpts.outputPath;
+      char buf[2048] = {0};
+      snprintf(buf, sizeof(buf), "Error: Failed to synthesize output to: %s",
+               cmdlOpts.outputPath.c_str());
+      errorPrinter.printError(
+          Error{.code = Error::ErrorCode::Error, .msg = buf});
     }
     return EXIT_FAILURE;
   }
 
-  PRINT_VERBOSE_MSG("- SUCCESS -");
-
   // SUCCESS.
   return EXIT_SUCCESS;
-}
-
-// -----------------------------------------------------------------------------
-
-static void
-__printSemanticAnalyzerErrors(const std::string& inputPath,
-                              const SemanticAnalyzer& semaAnalyzer,
-                              std::ostream& out)
-{
-  size_t errorsCount = 0;
-  size_t warningsCount = 0;
-  for (const auto& error : semaAnalyzer.errors()) {
-    if (error.code == SemanticAnalyzer::ErrorCode::Error) {
-      ++errorsCount;
-      out << inputPath << ": error: ";
-    } else if (error.code == SemanticAnalyzer::ErrorCode::Warning) {
-      ++warningsCount;
-      out << inputPath << ": warning: ";
-    }
-    out << error.msg << std::endl;
-  }
-
-  out << std::endl;
-  if (warningsCount) {
-    out << warningsCount;
-    out << " warning";
-    if (warningsCount > 1) {
-      out << 's';
-    }
-    out << " generated." << std::endl;
-  }
-  if (errorsCount) {
-    out << errorsCount;
-    out << " error";
-    if (errorsCount > 1) {
-      out << 's';
-    }
-    out << " generated." << std::endl;
-  }
 }
 
 // -----------------------------------------------------------------------------

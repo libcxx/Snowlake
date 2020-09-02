@@ -99,8 +99,12 @@ TEST_F(ParserTests, TestParsingSuccessful)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(VALID_INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(VALID_INPUT, &err);
   ASSERT_EQ(0, res);
+  ASSERT_EQ(Error::ErrorCode::NoError, err.code);
 }
 
 // -----------------------------------------------------------------------------
@@ -108,7 +112,6 @@ TEST_F(ParserTests, TestParsingSuccessful)
 TEST_F(ParserTests, TestParsingInvalidInput)
 {
   ParserDriver driver;
-  driver.setSuppressErrorMessages(true);
 
   // clang-format off
   const char* INVALID_INPUT =
@@ -133,8 +136,12 @@ TEST_F(ParserTests, TestParsingInvalidInput)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INVALID_INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(INVALID_INPUT, &err);
   ASSERT_EQ(1, res);
+  ASSERT_EQ(Error::ErrorCode::Error, err.code);
 }
 
 // -----------------------------------------------------------------------------
@@ -167,8 +174,12 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
+  ASSERT_EQ(Error::ErrorCode::NoError, err.code);
 }
 
 // -----------------------------------------------------------------------------
@@ -201,8 +212,12 @@ TEST_F(ParserTests, TestParsingPremiseDefnWithRangeClause)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
+  ASSERT_EQ(Error::ErrorCode::NoError, err.code);
 }
 
 // -----------------------------------------------------------------------------
@@ -247,8 +262,12 @@ TEST_F(ParserTests, TestParsingCoolDispathWithSelfTypeChecking)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
+  ASSERT_EQ(Error::ErrorCode::NoError, err.code);
 }
 
 // -----------------------------------------------------------------------------
@@ -290,8 +309,13 @@ TEST_F(ParserTests, TestParsingAndASTConstruction)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err = {.code = Error::ErrorCode::NoError};
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
+
   ASSERT_EQ(0, res);
+  ASSERT_EQ(Error::ErrorCode::NoError, err.code);
 
   // Validate the AST.
   {

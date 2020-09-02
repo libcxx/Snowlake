@@ -65,7 +65,8 @@ private:
   std::tuple<ASTModule, bool> parseFromString(const char* input) const
   {
     ParserDriver parser;
-    int res = parser.parseFromString(input);
+    Error parserError;
+    int res = parser.parseFromString(input, &parserError);
     return std::make_tuple(parser.module(), res);
   }
 };
