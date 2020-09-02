@@ -87,12 +87,11 @@ ProgramDriver::run(int argc, char** argv)
       .warningsAsErrors = cmdlOpts.warningsAsErrors,
       .verbose = cmdlOpts.debugMode};
   SemanticAnalyzer semaAnalyzer(semaOpts);
+  if (!cmdlOpts.silent) {
+    semaAnalyzer.setErrorPrinter(&errorPrinter);
+  }
   res = semaAnalyzer.run(module);
   if (!res) {
-    if (!cmdlOpts.silent) {
-      auto& semaErrors = semaAnalyzer.errors();
-      errorPrinter.printErrors(std::begin(semaErrors), std::end(semaErrors));
-    }
     return EXIT_FAILURE;
   }
 
