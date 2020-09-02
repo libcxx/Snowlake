@@ -105,4 +105,10 @@ add_library(Parser STATIC ${parser_sources})
 set_target_properties(Parser PROPERTIES COMPILE_FLAGS "-Wno-everything")
 
 
+# Post-build command.
+add_custom_command(TARGET Parser
+    POST_BUILD COMMAND ls -al $<TARGET_FILE:Parser>
+    )
+
+
 ### THE END ###
