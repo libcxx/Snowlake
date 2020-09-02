@@ -32,6 +32,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unordered_set>
 #include <vector>
 
+struct InferenceDefnContext;
+
+typedef struct InferenceDefnContext* InferenceDefnContextRef;
+
+typedef std::unordered_set<std::string> SymbolSet;
+
 class SemanticAnalyzer : public ASTVisitor
 {
 public:
@@ -59,21 +65,13 @@ private:
   virtual bool previsit(const ASTInferenceGroup&) override;
   virtual bool previsit(const ASTInferenceDefn&) override;
 
-  typedef std::unordered_set<std::string> SymbolSet;
-
-  struct InferenceDefnContext
-  {
-    const std::string& name;
-    SymbolSet symbolSet;
-    TargetTable targetTbl;
-  };
 
   bool checkRequiredEnvDefns(const SymbolSet&);
 
-  bool recursivePremiseDefnCheck(const ASTPremiseDefn&, InferenceDefnContext*);
+  bool recursivePremiseDefnCheck(const ASTPremiseDefn&, InferenceDefnContextRef);
 
   template <typename T>
-  bool recursivePremiseDefnCheck(const T&, InferenceDefnContext*);
+  bool recursivePremiseDefnCheck(const T&, InferenceDefnContextRef);
 
 private:
   enum

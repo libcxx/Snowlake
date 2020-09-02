@@ -69,6 +69,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+struct InferenceDefnContext
+  {
+    const std::string& name;
+    SymbolSet symbolSet;
+    TargetTable targetTbl;
+  };
+
+
+// -----------------------------------------------------------------------------
+
 SemanticAnalyzer::SemanticAnalyzer()
   : ASTVisitor()
   , _errors()
