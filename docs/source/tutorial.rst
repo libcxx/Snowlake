@@ -628,7 +628,7 @@ command on the Snowlake compiler:
 
 ::
 
-    snowlake --errors --verbose --output ./ SampleProject.sl
+    snowlakec --errors --verbose --output ./ SampleProject.sl
 
 This will synthesize the C++ output into `SampleProjectTypeChecker.h` and
 `SampleProjectTypeChecker.cpp`. For the curious bunch, below is the
@@ -708,11 +708,11 @@ Invoking Snowlake compiler
 ##########################
 
 Once the Snowlake project is built, invoking the Snowlake compiler, namely
-`snowlake`, is fairly trivial. Below is the command-line interface:
+`snowlakec`, is fairly trivial. Below is the command-line interface:
 
 ::
 
-  snowlake (version 0.0.1)
+  snowlakec (version 0.0.1)
 
   Snowlake compiler.
 
@@ -723,7 +723,7 @@ Once the Snowlake project is built, invoking the Snowlake compiler, namely
   static type checking, typically used for semantic analysis
   in language compilers.
 
-  Usage: snowlake [OPTION]... INPUT
+  Usage: snowlakec [OPTION]... INPUT
 
 
   OPTIONS:

@@ -73,33 +73,33 @@ set(exec_sources
     )
 
 
-# Main executable `snowlake_exec`.
-add_executable(snowlake_exec
+# Main executable `snowlake_compiler_exec`.
+add_executable(snowlake_compiler_exec
     ${exec_sources}
     )
 
 
 # Add the necessary dependencies.
-add_dependencies(snowlake_exec Parser)
-add_dependencies(snowlake_exec snowlake)
+add_dependencies(snowlake_compiler_exec Parser)
+add_dependencies(snowlake_compiler_exec snowlake)
 
 
 # Link with the necessary libraries.
-target_link_libraries(snowlake_exec
+target_link_libraries(snowlake_compiler_exec
     PRIVATE Parser
     PRIVATE snowlake
     )
 
 
 # Additional compiler flags.
-set_target_properties(snowlake_exec
-    PROPERTIES OUTPUT_NAME "snowlake"
+set_target_properties(snowlake_compiler_exec
+    PROPERTIES OUTPUT_NAME "snowlakec"
     )
 
 
 # Post-build command.
-add_custom_command(TARGET snowlake_exec
-    POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake>
+add_custom_command(TARGET snowlake_compiler_exec
+    POST_BUILD COMMAND ls -al $<TARGET_FILE:snowlake_compiler_exec>
     )
 
 

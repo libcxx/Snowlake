@@ -36,7 +36,7 @@ import sys
 
 JSON_EXT = '.json'
 PROG_TITLE = 'Snowlake integration test.'
-SNOWLAKE_COMPILER_EXECUTABLE = 'snowlake'
+SNOWLAKE_COMPILER_EXECUTABLE = 'slc'
 
 ## -----------------------------------------------------------------------------
 

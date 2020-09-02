@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SNOWLAKE_VERSION_STRING "0.0.1"
 
 // Default program name.
-#define SNOWLAKE_PROG_NAME "snowlake"
+#define SNOWLAKE_PROG_NAME "snowlakec"
 
 // Default program description.
 #define SNOWLAKE_PROG_DESC "Snowlake compiler."
