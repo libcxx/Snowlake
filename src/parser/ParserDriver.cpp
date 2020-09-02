@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ParserDriver.h"
 
+#include "../Error.h"
 #include "lex.yy.hh"
 #include "parser.tab.hh"
 
@@ -38,7 +39,7 @@ ParserDriver::ParserDriver()
                                 .suppressErrorMessages = false})
   , _inputFile()
   , _module()
-  , _errorMsg()
+  , _errorPrinter(nullptr)
 {
 }
 
@@ -48,7 +49,7 @@ ParserDriver::ParserDriver(Options opts)
   : _opts(opts)
   , _inputFile()
   , _module()
-  , _errorMsg()
+  , _errorPrinter(nullptr)
 {
 }
 
@@ -109,7 +110,7 @@ ParserDriver::setSuppressErrorMessages(bool val)
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parseFromFile(const std::string& filepath, Error* err)
+ParserDriver::parseFromFile(const std::string& filepath)
 {
   _inputFile.assign(filepath);
   std::ifstream infile(filepath.c_str());
@@ -119,13 +120,13 @@ ParserDriver::parseFromFile(const std::string& filepath, Error* err)
   std::string fileContent((std::istreambuf_iterator<char>(infile)),
                           std::istreambuf_iterator<char>());
   infile.close();
-  return parseFromString(fileContent.c_str(), err);
+  return parseFromString(fileContent.c_str());
 }
 
 // -----------------------------------------------------------------------------
 
 int
-ParserDriver::parseFromString(const char* input, Error* err)
+ParserDriver::parseFromString(const char* input)
 {
   YY_BUFFER_STATE buf;
   buf = yy_scan_string(input);
@@ -144,10 +145,6 @@ ParserDriver::parseFromString(const char* input, Error* err)
   {
     yy_delete_buffer(buf);
     yylex_destroy();
-  }
-
-  if (!_errorMsg.empty()) {
-    *err = Error{.code = Error::ErrorCode::Error, .msg = _errorMsg};
   }
 
   return res;
@@ -188,6 +185,25 @@ ParserDriver::setModule(ASTModule&& module)
 // -----------------------------------------------------------------------------
 
 void
+ParserDriver::setErrorPrinter(ErrorPrinter* errorPrinter)
+{
+  _errorPrinter = errorPrinter;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ParserDriver::handleErrorWithMessage(const char* msg)
+{
+  if (_errorPrinter) {
+    _errorPrinter->printError(
+        Error{.code = Error::ErrorCode::Error, .msg = msg});
+  } else {
+    fprintf(stderr, "%s\n", msg);
+  }
+}
+
+void
 ParserDriver::error(const yy::location& l, const std::string& m)
 {
   if (!suppressErrorMessages()) {
@@ -196,7 +212,7 @@ ParserDriver::error(const yy::location& l, const std::string& m)
     char buf[1024] = {0};
     snprintf(buf, sizeof(buf), "Parser error: %s [%s]", m.c_str(),
              ss.str().c_str());
-    _errorMsg.assign(buf);
+    handleErrorWithMessage(buf);
   }
 }
 
@@ -208,7 +224,7 @@ ParserDriver::error(const std::string& m)
   if (!suppressErrorMessages()) {
     char buf[1024] = {0};
     snprintf(buf, sizeof(buf), "Parser error: %s", m.c_str());
-    _errorMsg.assign(buf);
+    handleErrorWithMessage(buf);
   }
 }
 

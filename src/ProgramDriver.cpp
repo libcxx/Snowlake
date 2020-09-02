@@ -72,13 +72,10 @@ ProgramDriver::run(int argc, char** argv)
                                    .traceParser = cmdlOpts.debugMode,
                                    .suppressErrorMessages = false};
 
-  Error parserError;
-  parserError.code = Error::ErrorCode::NoError;
-
   ParserDriver parser(parserOpts);
-  res = parser.parseFromFile(cmdlOpts.inputPath, &parserError);
+  parser.setErrorPrinter(&errorPrinter);
+  res = parser.parseFromFile(cmdlOpts.inputPath);
   if (res != 0) {
-    errorPrinter.printError(parserError);
     return EXIT_FAILURE;
   }
 
