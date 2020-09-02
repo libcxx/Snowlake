@@ -29,14 +29,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdio>
 #include <string>
-#include <unordered_set>
 #include <vector>
 
 struct InferenceDefnContext;
 
 typedef struct InferenceDefnContext* InferenceDefnContextRef;
-
-typedef std::unordered_set<std::string> SymbolSet;
 
 class SemanticAnalyzer : public ASTVisitor
 {
@@ -65,10 +62,10 @@ private:
   virtual bool previsit(const ASTInferenceGroup&) override;
   virtual bool previsit(const ASTInferenceDefn&) override;
 
-
   bool checkRequiredEnvDefns(const SymbolSet&);
 
-  bool recursivePremiseDefnCheck(const ASTPremiseDefn&, InferenceDefnContextRef);
+  bool recursivePremiseDefnCheck(const ASTPremiseDefn&,
+                                 InferenceDefnContextRef);
 
   template <typename T>
   bool recursivePremiseDefnCheck(const T&, InferenceDefnContextRef);
