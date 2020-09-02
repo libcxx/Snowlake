@@ -25,9 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "lex.yy.hh"
 #include "parser.tab.hh"
 
+#include <cstdio>
 #include <fstream>
-#include <iostream>
 #include <iterator>
+#include <sstream>
 
 // -----------------------------------------------------------------------------
 
@@ -113,10 +114,10 @@ ParserDriver::parseFromFile(const std::string& filepath)
   if (!infile.good()) {
     return -1;
   }
-  std::string file_contents((std::istreambuf_iterator<char>(infile)),
-                            std::istreambuf_iterator<char>());
+  std::string fileContent((std::istreambuf_iterator<char>(infile)),
+                          std::istreambuf_iterator<char>());
   infile.close();
-  return parseFromString(file_contents.c_str());
+  return parseFromString(fileContent.c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -184,7 +185,9 @@ void
 ParserDriver::error(const yy::location& l, const std::string& m)
 {
   if (!suppressErrorMessages()) {
-    std::cerr << "Parser error [" << l << "] : " << m << std::endl;
+    std::stringstream ss;
+    ss << l;
+    fprintf(stderr, "Parser error: %s [%s]\n", m.c_str(), ss.str().c_str());
   }
 }
 
@@ -194,7 +197,7 @@ void
 ParserDriver::error(const std::string& m)
 {
   if (!suppressErrorMessages()) {
-    std::cerr << "Parser error: " << m << std::endl;
+    fprintf(stderr, "Parser error: %s\n", m.c_str());
   }
 }
 
