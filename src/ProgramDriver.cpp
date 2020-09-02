@@ -95,15 +95,6 @@ struct ErrorPrinter
 
 // -----------------------------------------------------------------------------
 
-#define PRINT_VERBOSE_MSG(msg)                                                 \
-  do {                                                                         \
-    if (cmdlOpts.verbose && !cmdlOpts.silent) {                                \
-      std::cerr << (msg) << std::endl;                                         \
-    }                                                                          \
-  } while (0)
-
-// -----------------------------------------------------------------------------
-
 ProgramDriver::ProgramDriver()
 {
 }
@@ -140,10 +131,13 @@ ProgramDriver::run(int argc, char** argv)
                                    .traceParser = cmdlOpts.debugMode,
                                    .suppressErrorMessages = false};
 
+  Error parserError;
+  parserError.code = Error::ErrorCode::NoError;
+
   ParserDriver parser(parserOpts);
-  res = parser.parseFromFile(cmdlOpts.inputPath);
+  res = parser.parseFromFile(cmdlOpts.inputPath, &parserError);
   if (res != 0) {
-    PRINT_VERBOSE_MSG("Failed: parsing error");
+    errorPrinter.printError(parserError);
     return EXIT_FAILURE;
   }
 
@@ -176,8 +170,6 @@ ProgramDriver::run(int argc, char** argv)
     }
     return EXIT_FAILURE;
   }
-
-  PRINT_VERBOSE_MSG("- SUCCESS -");
 
   // SUCCESS.
   return EXIT_SUCCESS;

@@ -99,7 +99,10 @@ TEST_F(ParserTests, TestParsingSuccessful)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(VALID_INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(VALID_INPUT, &err);
   ASSERT_EQ(0, res);
 }
 
@@ -133,7 +136,10 @@ TEST_F(ParserTests, TestParsingInvalidInput)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INVALID_INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(INVALID_INPUT, &err);
   ASSERT_EQ(1, res);
 }
 
@@ -167,7 +173,10 @@ TEST_F(ParserTests, TestParsingVariousDeducedTypes)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
 }
 
@@ -201,7 +210,10 @@ TEST_F(ParserTests, TestParsingPremiseDefnWithRangeClause)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
 }
 
@@ -247,7 +259,10 @@ TEST_F(ParserTests, TestParsingCoolDispathWithSelfTypeChecking)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
   ASSERT_EQ(0, res);
 }
 
@@ -290,7 +305,11 @@ TEST_F(ParserTests, TestParsingAndASTConstruction)
   "";
   // clang-format on
 
-  int res = driver.parseFromString(INPUT);
+  Error err;
+  int res;
+
+  res = driver.parseFromString(INPUT, &err);
+
   ASSERT_EQ(0, res);
 
   // Validate the AST.
