@@ -236,7 +236,7 @@ class TestRunner(object):
         formatted_stderr = self.__formatted_errors(testcase_inputpath, testcase_expected_errors)
 
         if formatted_stderr != stderr_str:
-            self.console_logger.error('Expected errors: {formatted_stderr}, but got {stderr_str}'.format(
+            self.console_logger.error('Expected errors: \"{formatted_stderr}\".\nActual errors: \"{stderr_str}\".'.format(
                 formatted_stderr=formatted_stderr,
                 stderr_str=stderr_str
             ))
