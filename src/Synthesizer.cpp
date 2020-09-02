@@ -197,7 +197,7 @@ Synthesizer::Synthesizer(const Options& opts)
 // -----------------------------------------------------------------------------
 
 bool
-Synthesizer::run(const ASTModule& module)
+Synthesizer::run(const ASTModule& module) const
 {
   SynthesizerImpl impl(_opts);
   return impl.run(module);

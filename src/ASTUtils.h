@@ -27,8 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 typedef std::unordered_map<std::string, const ASTDeductionTarget*> TargetTable;
+
+typedef std::unordered_set<std::string> SymbolSet;
 
 class ASTUtils
 {
