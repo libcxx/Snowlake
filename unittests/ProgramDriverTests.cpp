@@ -121,7 +121,7 @@ protected:
 private:
   bool saveInput(const char* input)
   {
-    std::ofstream ofs(m_input_path, std::ofstream::out);
+    std::ofstream ofs(_inputFilepath, std::ofstream::out);
     if (ofs.good()) {
       ofs << input;
     } else {
@@ -132,8 +132,8 @@ private:
   }
 
 protected:
-  const char* m_output_path = "./";
-  const char* m_input_path = "test_input.txt";
+  const char* _outputFilepath = "./";
+  const char* _inputFilepath = "test_input.txt";
 };
 
 // -----------------------------------------------------------------------------
@@ -148,15 +148,11 @@ TEST_F(ProgramDriverTests, TestDefaultInitialization)
 TEST_F(ProgramDriverTests, TestRunWithSuccess)
 {
   if (setupValidRun()) {
+    const std::vector<char*> args{"--errors", "--bail", "--output",
+                                  const_cast<char*>(_outputFilepath),
+                                  const_cast<char*>(_inputFilepath)};
+
     ProgramDriver driver;
-
-    const std::vector<char*> args{"snowlake",
-                                  "--errors",
-                                  "--bail",
-                                  "--output",
-                                  const_cast<char*>(m_output_path),
-                                  const_cast<char*>(m_input_path)};
-
     const int res = driver.run(args.size(), (char**)args.data());
     ASSERT_EQ(EXIT_SUCCESS, res);
   }
@@ -167,15 +163,11 @@ TEST_F(ProgramDriverTests, TestRunWithSuccess)
 TEST_F(ProgramDriverTests, TestRunWithFailure)
 {
   if (setupInvalidRun()) {
+    const std::vector<char*> args{"--errors", "--bail", "--output",
+                                  const_cast<char*>(_outputFilepath),
+                                  const_cast<char*>(_inputFilepath)};
+
     ProgramDriver driver;
-
-    const std::vector<char*> args{"snowlake",
-                                  "--errors",
-                                  "--bail",
-                                  "--output",
-                                  const_cast<char*>(m_output_path),
-                                  const_cast<char*>(m_input_path)};
-
     const int res = driver.run(args.size(), (char**)args.data());
     ASSERT_EQ(EXIT_FAILURE, res);
   }
@@ -186,7 +178,7 @@ TEST_F(ProgramDriverTests, TestRunWithFailure)
 TEST_F(ProgramDriverTests, TestRunWithNoArguments)
 {
   ProgramDriver driver;
-  const std::vector<char*> args{"snowlake"};
+  const std::vector<char*> args{};
 
   const int res = driver.run(args.size(), (char**)args.data());
   ASSERT_EQ(EXIT_FAILURE, res);
