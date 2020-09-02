@@ -165,8 +165,11 @@ ProgramDriver::run(int argc, char** argv)
   res = synthesizer.run(module);
   if (!res) {
     if (!cmdlOpts.silent) {
-      std::cerr << "Error: Failed to synthesize output to: "
-                << cmdlOpts.outputPath;
+      char buf[2048] = {0};
+      snprintf(buf, sizeof(buf), "Error: Failed to synthesize output to: %s",
+               cmdlOpts.outputPath.c_str());
+      errorPrinter.printError(
+          Error{.code = Error::ErrorCode::Error, .msg = buf});
     }
     return EXIT_FAILURE;
   }
