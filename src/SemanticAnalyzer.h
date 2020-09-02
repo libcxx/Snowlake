@@ -58,9 +58,9 @@ public:
   const Options& options() const;
 
 private:
-  virtual bool previsit(const ASTModule&) override;
-  virtual bool previsit(const ASTInferenceGroup&) override;
-  virtual bool previsit(const ASTInferenceDefn&) override;
+  bool previsit(const ASTModule&) override;
+  bool previsit(const ASTInferenceGroup&) override;
+  bool previsit(const ASTInferenceDefn&) override;
 
   bool checkRequiredEnvDefns(const SymbolSet&);
 
