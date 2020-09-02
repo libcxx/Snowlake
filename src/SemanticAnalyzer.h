@@ -26,10 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ASTUtils.h"
 #include "ASTVisitor.h"
 #include "Error.h"
+#include "ErrorPrinter.h"
 
 #include <cstdio>
 #include <string>
-#include <vector>
 
 struct InferenceDefnContext;
 
@@ -38,8 +38,6 @@ typedef struct InferenceDefnContext* InferenceDefnContextRef;
 class SemanticAnalyzer : public ASTVisitor
 {
 public:
-  typedef std::vector<Error> ErrorList;
-
   struct Options
   {
     bool bailOnFirstError;
@@ -53,9 +51,9 @@ public:
 
   bool run(const ASTModule&);
 
-  const ErrorList& errors() const;
-
   const Options& options() const;
+
+  void setErrorPrinter(ErrorPrinter*);
 
 private:
   bool previsit(const ASTModule&) override;
@@ -84,7 +82,9 @@ private:
     } else {
       char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
-      _errors.emplace_back(Error{Error::ErrorCode::Warning, buffer});
+      if (_errorPrinter) {
+        _errorPrinter->printError(Error{Error::ErrorCode::Warning, buffer});
+      }
     }
   }
 
@@ -93,9 +93,11 @@ private:
   {
     char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
-    _errors.emplace_back(Error{Error::ErrorCode::Error, buffer});
+    if (_errorPrinter) {
+      _errorPrinter->printError(Error{Error::ErrorCode::Error, buffer});
+    }
   }
 
-  std::vector<Error> _errors;
   Options _opts;
+  ErrorPrinter* _errorPrinter;
 };

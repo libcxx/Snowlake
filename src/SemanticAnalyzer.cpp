@@ -80,8 +80,8 @@ struct InferenceDefnContext
 
 SemanticAnalyzer::SemanticAnalyzer()
   : ASTVisitor()
-  , _errors()
   , _opts()
+  , _errorPrinter(nullptr)
 {
 }
 
@@ -89,17 +89,9 @@ SemanticAnalyzer::SemanticAnalyzer()
 
 SemanticAnalyzer::SemanticAnalyzer(const Options& opts)
   : ASTVisitor()
-  , _errors()
   , _opts(opts)
+  , _errorPrinter(nullptr)
 {
-}
-
-// -----------------------------------------------------------------------------
-
-const SemanticAnalyzer::ErrorList&
-SemanticAnalyzer::errors() const
-{
-  return _errors;
 }
 
 // -----------------------------------------------------------------------------
@@ -108,6 +100,14 @@ const SemanticAnalyzer::Options&
 SemanticAnalyzer::options() const
 {
   return _opts;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SemanticAnalyzer::setErrorPrinter(ErrorPrinter* errorPrinter)
+{
+  _errorPrinter = errorPrinter;
 }
 
 // -----------------------------------------------------------------------------

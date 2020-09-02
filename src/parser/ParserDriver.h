@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "../Error.h"
+#include "../ErrorPrinter.h"
 #include "ast.h"
 #include "location.hh"
 #include "parser.tab.hh"
@@ -73,13 +73,13 @@ public:
    * Run the parser on input file.
    * Return 0 on success.
    */
-  int parseFromFile(const std::string& filepath, Error* err);
+  int parseFromFile(const std::string& filepath);
 
   /**
    * Run the parser on input string.
    * Return 0 on success.
    */
-  int parseFromString(const char*, Error* err);
+  int parseFromString(const char*);
 
   /**
    * The name of the file being parsed.
@@ -100,9 +100,14 @@ public:
   void error(const yy::location& l, const std::string& m);
   void error(const std::string& m);
 
+  void setErrorPrinter(ErrorPrinter*);
+
+private:
+  void handleErrorWithMessage(const char*);
+
 private:
   Options _opts;
   std::string _inputFile;
   ASTModule _module;
-  std::string _errorMsg;
+  ErrorPrinter* _errorPrinter;
 };
