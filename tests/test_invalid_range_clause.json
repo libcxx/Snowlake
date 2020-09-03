@@ -3,6 +3,11 @@
   "input_path": "./fixtures/invalid_range_clause.sl",
   "expected_exit": 1,
   "expected_errors": [
-    "Invalid target in range clause in inference \"MethodStaticDispatch\". [semantic analysis error - invalid target type (code 21)]"
+    {
+        "msg": "Invalid target in range clause in inference \"MethodStaticDispatch\".",
+        "category_name": "semantic analysis error",
+        "category_message": "invalid target type",
+        "code": 21
+    }
   ]
 }
