@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ASTUtils.h"
 #include "ASTVisitor.h"
 #include "CompilerError.h"
-#include "CompilerErrorPrinter.h"
+#include "CompilerErrorHandlerRegistrar.h"
 #include "SemanticAnalysisErrorCategory.h"
 
 #include <cstdio>
@@ -83,12 +83,9 @@ private:
     } else {
       char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
-      if (_errorPrinter) {
-        _errorPrinter->printError(
-            SemanticAnalysisErrorCategory::
-                CreateCompilerErrorWithTypeAndMessage(
-                    CompilerError::Type::Warning, code, buffer));
-      }
+      CompilerErrorHandlerRegistrar::RegisterCompilerError(
+          SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+              CompilerError::Type::Warning, code, buffer));
     }
   }
 
@@ -97,13 +94,10 @@ private:
   {
     char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
-    if (_errorPrinter) {
-      _errorPrinter->printError(
-          SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-              CompilerError::Type::Error, code, buffer));
-    }
+    CompilerErrorHandlerRegistrar::RegisterCompilerError(
+        SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+            CompilerError::Type::Error, code, buffer));
   }
 
   Options _opts;
-  CompilerErrorPrinter* _errorPrinter;
 };

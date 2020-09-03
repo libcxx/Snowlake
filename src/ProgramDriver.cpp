@@ -91,9 +91,6 @@ ProgramDriver::run(int argc, char** argv)
       .warningsAsErrors = cmdlOpts.warningsAsErrors,
       .verbose = cmdlOpts.debugMode};
   SemanticAnalyzer semaAnalyzer(semaOpts);
-  if (!cmdlOpts.silent) {
-    semaAnalyzer.setCompilerErrorPrinter(&errorPrinter);
-  }
   res = semaAnalyzer.run(module);
   if (!res) {
     return EXIT_FAILURE;
