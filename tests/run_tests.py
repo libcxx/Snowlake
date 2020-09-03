@@ -289,6 +289,10 @@ class TestRunner(object):
         category_message = expected_error['category_message']
         code = expected_error['code']
 
+        ##
+        # Follow the format defined in
+        #   `CompilerError::message()`
+        # in 'src/CompilerError.cpp'
         return '{msg} [{category_name} - {category_message} (code {code})]'.format(
             msg=msg,
             category_name=category_name,
