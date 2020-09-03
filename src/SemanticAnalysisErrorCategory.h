@@ -62,4 +62,5 @@ struct SemanticAnalysisErrorCategory
         assert(0 && "Unrecognized error code");
         return "unrecognized error code";
     }
-  };
+  }
+};
