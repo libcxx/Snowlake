@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "CompilerErrorCategory.h"
 
+#include <cassert>
+
 struct SemanticAnalysisErrorCategory
   : public CompilerErrorCategory<SemanticAnalysisErrorCategory>
 {
@@ -35,7 +37,29 @@ struct SemanticAnalysisErrorCategory
 
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
-    // TODO: Integrate compiler error code
-    return "SemanticAnalysisErrorCategory::message() TBD";
-  }
-};
+    switch (code) {
+      case kSemanticAnalysisDuplicateInferenceGroupIdentifier:
+        return "duplicate infernece group identifier";
+      case kSemanticAnalysisDuplicateInferenceDefnIdentifier:
+        return "duplicate inference definition identifier";
+      case kSemanticAnalysisDuplicateEnvironmentDefnField:
+        return "duplicate environment definition field";
+      case kSemanticAnalysisDuplicateGlobalDefinition:
+        return "duplicate global symbol definition";
+      case kSemanticAnalysisDuplicateArgumentIdentifier:
+        return "duplicate argument identifier";
+      case kSemanticAnalysisInvalidTargetType:
+        return "invalid target type";
+      case kSemanticAnalysisMissingRequiredEnvironmentDefnField:
+        return "missing required environment definition field";
+      case kSemanticAnalysisUnknownSymbol:
+        return "unknown symbol";
+      case kSemanticAnalysisIncompatibleTargetType:
+        return "incompatible target type";
+      case kSemanticAnalysisUnknownPremiseDefn:
+        return "unknown premise definition";
+      default:
+        assert(0 && "Unrecognized error code");
+        return "unrecognized error code";
+    }
+  };
