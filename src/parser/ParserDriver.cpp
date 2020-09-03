@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ParserDriver.h"
 
+#include "../CompilerErrorHandlerRegistrar.h"
 #include "ParserErrorCategory.h"
 #include "ParserErrorCodes.h"
 #include "lex.yy.hh"
@@ -40,7 +41,6 @@ ParserDriver::ParserDriver()
                                 .suppressErrorMessages = false})
   , _inputFile()
   , _module()
-  , _errorPrinter(nullptr)
 {
 }
 
@@ -50,7 +50,6 @@ ParserDriver::ParserDriver(Options opts)
   : _opts(opts)
   , _inputFile()
   , _module()
-  , _errorPrinter(nullptr)
 {
 }
 
@@ -188,24 +187,12 @@ ParserDriver::setModule(ASTModule&& module)
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::setCompilerErrorPrinter(CompilerErrorPrinter* errorPrinter)
-{
-  _errorPrinter = errorPrinter;
-}
-
-// -----------------------------------------------------------------------------
-
-void
 ParserDriver::handleErrorWithMessageAndCode(const char* msg,
                                             CompilerError::Code code)
 {
-  if (_errorPrinter) {
-    _errorPrinter->printError(
-        ParserErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-            CompilerError::Type::Error, code, msg));
-  } else {
-    fprintf(stderr, "%s\n", msg);
-  }
+  CompilerErrorHandlerRegistrar::RegisterCompilerError(
+      ParserErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+          CompilerError::Type::Error, code, msg));
 }
 
 // -----------------------------------------------------------------------------

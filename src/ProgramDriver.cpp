@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ProgramDriver.h"
 
 #include "CmdlDriver.h"
+#include "CompilerErrorHandlerRegistrar.h"
 #include "CompilerErrorPrinter.h"
 #include "SemanticAnalyzer.h"
 #include "SynthesisErrorCategory.h"
@@ -68,13 +69,15 @@ ProgramDriver::run(int argc, char** argv)
 
   CompilerErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
 
+  ScopedCompilerErrorHandlerRegister<CompilerErrorPrinter>
+      scopedCompilerErrorHandlerRegister(&errorPrinter);
+
   // Parsing.
   ParserDriver::Options parserOpts{.traceLexer = cmdlOpts.debugMode,
                                    .traceParser = cmdlOpts.debugMode,
                                    .suppressErrorMessages = false};
 
   ParserDriver parser(parserOpts);
-  parser.setCompilerErrorPrinter(&errorPrinter);
   res = parser.parseFromFile(cmdlOpts.inputPath);
   if (res != 0) {
     return EXIT_FAILURE;
@@ -88,9 +91,6 @@ ProgramDriver::run(int argc, char** argv)
       .warningsAsErrors = cmdlOpts.warningsAsErrors,
       .verbose = cmdlOpts.debugMode};
   SemanticAnalyzer semaAnalyzer(semaOpts);
-  if (!cmdlOpts.silent) {
-    semaAnalyzer.setCompilerErrorPrinter(&errorPrinter);
-  }
   res = semaAnalyzer.run(module);
   if (!res) {
     return EXIT_FAILURE;
@@ -100,7 +100,7 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer::Options synthesisOpts{.useException = false,
                                      .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
-  res = synthesizer.run(module, &errorPrinter);
+  res = synthesizer.run(module);
   if (!res) {
     if (!cmdlOpts.silent) {
       fprintf(stderr, "Error: Failed to synthesize output to: %s\n",

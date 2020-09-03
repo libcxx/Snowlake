@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "../CompilerErrorPrinter.h"
+#include "../CompilerError.h"
 #include "ast.h"
 #include "location.hh"
 #include "parser.tab.hh"
@@ -100,8 +100,6 @@ public:
   void error(const yy::location& l, const std::string& m);
   void error(const std::string& m);
 
-  void setCompilerErrorPrinter(CompilerErrorPrinter*);
-
 private:
   void handleErrorWithMessageAndCode(const char*, CompilerError::Code);
 
@@ -109,5 +107,4 @@ private:
   Options _opts;
   std::string _inputFile;
   ASTModule _module;
-  CompilerErrorPrinter* _errorPrinter;
 };
