@@ -23,27 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "CompilerErrorCategory.h"
-#include "SynthesisErrorCodes.h"
+#include <cstdint>
 
-#include <cassert>
-
-struct SynthesisErrorCategory
-  : public CompilerErrorCategory<SynthesisErrorCategory>
+enum SynthesisErrorCodes : uint32_t
 {
-  static const char* CategoryName()
-  {
-    return "synthesis error";
-  }
-
-  static const char* CategoryMessageByCode(CompilerError::Code code)
-  {
-    switch (code) {
-      case kSynthesisInvalidOutputError:
-        return "invalid output";
-      default:
-        assert(0 && "Unrecognized error code");
-        return "unrecognized error code";
-    }
-  }
+  kSynthesisInvalidOutputError = 0x01
 };
