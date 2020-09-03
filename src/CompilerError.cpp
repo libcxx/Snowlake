@@ -28,8 +28,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 std::string
 CompilerError::message() const
 {
+// TODO: Integrate compiler error code
+#if 0
   char buf[2048] = {0};
   snprintf(buf, sizeof(buf), "%s [%s - %s]", msg.c_str(), categoryName.c_str(),
            categoryMessage.c_str());
   return buf;
+#else
+  return msg;
+#endif
 }
