@@ -103,7 +103,7 @@ public:
   void setCompilerErrorPrinter(CompilerErrorPrinter*);
 
 private:
-  void handleErrorWithMessage(const char*);
+  void handleErrorWithMessageAndCode(const char*, CompilerError::Code);
 
 private:
   Options _opts;

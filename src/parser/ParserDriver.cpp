@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ParserDriver.h"
 
 #include "ParserErrorCategory.h"
+#include "ParserErrorCodes.h"
 #include "lex.yy.hh"
 #include "parser.tab.hh"
 
@@ -115,6 +116,8 @@ ParserDriver::parseFromFile(const std::string& filepath)
   _inputFile.assign(filepath);
   std::ifstream infile(filepath.c_str());
   if (!infile.good()) {
+    handleErrorWithMessageAndCode("Failed to open input file",
+                                  kParserBadInputError);
     return -1;
   }
   std::string fileContent((std::istreambuf_iterator<char>(infile)),
@@ -193,16 +196,19 @@ ParserDriver::setCompilerErrorPrinter(CompilerErrorPrinter* errorPrinter)
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::handleErrorWithMessage(const char* msg)
+ParserDriver::handleErrorWithMessageAndCode(const char* msg,
+                                            CompilerError::Code code)
 {
   if (_errorPrinter) {
     _errorPrinter->printError(
         ParserErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-            CompilerError::Type::Error, 0 /** code **/, msg));
+            CompilerError::Type::Error, code, msg));
   } else {
     fprintf(stderr, "%s\n", msg);
   }
 }
+
+// -----------------------------------------------------------------------------
 
 void
 ParserDriver::error(const yy::location& l, const std::string& m)
@@ -213,7 +219,7 @@ ParserDriver::error(const yy::location& l, const std::string& m)
     char buf[1024] = {0};
     snprintf(buf, sizeof(buf), "Parser error: %s [%s]", m.c_str(),
              ss.str().c_str());
-    handleErrorWithMessage(buf);
+    handleErrorWithMessageAndCode(buf, kParserInvalidSyntaxError);
   }
 }
 
@@ -225,7 +231,7 @@ ParserDriver::error(const std::string& m)
   if (!suppressErrorMessages()) {
     char buf[1024] = {0};
     snprintf(buf, sizeof(buf), "Parser error: %s", m.c_str());
-    handleErrorWithMessage(buf);
+    handleErrorWithMessageAndCode(buf, kParserInvalidSyntaxError);
   }
 }
 
