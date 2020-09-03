@@ -38,9 +38,9 @@ struct CompilerError
 
   std::string message() const;
 
-  Type type;
-  Code code;
-  std::string msg;
-  std::string categoryName;
-  std::string categoryMessage;
+  const Type type;
+  const Code code;
+  const std::string msg;
+  const char* categoryName;
+  const char* categoryMessage;
 };
