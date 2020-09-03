@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "../CompilerErrorCategory.h"
+#include "ParserErrorCodes.h"
+
+#include <cassert>
 
 struct ParserErrorCategory : public CompilerErrorCategory<ParserErrorCategory>
 {
@@ -34,7 +37,14 @@ struct ParserErrorCategory : public CompilerErrorCategory<ParserErrorCategory>
 
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
-    // TODO: Integrate compiler error code
-    return "ParserErrorCategory::message() TBD";
+    switch (code) {
+      case kParserBadInputError:
+        return "bad input";
+      case kParserInvalidSyntaxError:
+        return "invalid syntax";
+      default:
+        assert(0 && "Unrecognized error code");
+        return "unrecognized error code";
+    }
   }
 };

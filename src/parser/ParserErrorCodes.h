@@ -21,15 +21,12 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 
-#include "CompilerError.h"
+#pragma once
 
-#include <cstdlib>
+#include <cstdint>
 
-std::string
-CompilerError::message() const
+enum ParserErrors : uint32_t
 {
-  char buf[2048] = {0};
-  snprintf(buf, sizeof(buf), "%s [%s - %s (code %u)]", msg.c_str(),
-           categoryName, categoryMessage, code);
-  return buf;
-}
+  kParserBadInputError = 4,
+  kParserInvalidSyntaxError
+};

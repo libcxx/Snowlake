@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "CompilerErrorCategory.h"
+#include "SynthesisErrorCodes.h"
+
+#include <cassert>
 
 struct SynthesisErrorCategory
   : public CompilerErrorCategory<SynthesisErrorCategory>
@@ -35,7 +38,12 @@ struct SynthesisErrorCategory
 
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
-    // TODO: Integrate compiler error code
-    return "SynthesisErrorCategory::message() TBD";
+    switch (code) {
+      case kSynthesisInvalidOutputError:
+        return "invalid output";
+      default:
+        assert(0 && "Unrecognized error code");
+        return "unrecognized error code";
+    }
   }
 };

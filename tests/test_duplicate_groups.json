@@ -3,6 +3,6 @@
   "input_path": "./fixtures/duplicate_groups.sl",
   "expected_exit": 1,
   "expected_errors": [
-    "Found multiple inference group with name \"MyGroup\"."
+    "Found multiple inference group with name \"MyGroup\". [semantic analysis error - duplicate infernece group identifier (code 16)]"
   ]
 }

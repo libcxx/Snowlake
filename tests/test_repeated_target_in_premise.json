@@ -3,6 +3,6 @@
   "input_path": "./fixtures/repeated_target_in_premise.sl",
   "expected_exit": 1,
   "expected_errors": [
-    "Found duplicate and incompatible target in inference \"MethodStaticDispatch\"."
+    "Found duplicate and incompatible target in inference \"MethodStaticDispatch\". [semantic analysis error - incompatible target type (code 24)]"
   ]
 }

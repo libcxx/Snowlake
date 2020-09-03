@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "CompilerErrorCategory.h"
+#include "SemanticAnalysisErrorCodes.h"
+
+#include <cassert>
 
 struct SemanticAnalysisErrorCategory
   : public CompilerErrorCategory<SemanticAnalysisErrorCategory>
@@ -35,7 +38,30 @@ struct SemanticAnalysisErrorCategory
 
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
-    // TODO: Integrate compiler error code
-    return "SemanticAnalysisErrorCategory::message() TBD";
+    switch (code) {
+      case kSemanticAnalysisDuplicateInferenceGroupIdentifierError:
+        return "duplicate infernece group identifier";
+      case kSemanticAnalysisDuplicateInferenceDefnIdentifierError:
+        return "duplicate inference definition identifier";
+      case kSemanticAnalysisDuplicateEnvironmentDefnFieldError:
+        return "duplicate environment definition field";
+      case kSemanticAnalysisDuplicateGlobalDefinitionError:
+        return "duplicate global symbol definition";
+      case kSemanticAnalysisDuplicateArgumentIdentifierError:
+        return "duplicate argument identifier";
+      case kSemanticAnalysisInvalidTargetTypeError:
+        return "invalid target type";
+      case kSemanticAnalysisMissingRequiredEnvironmentDefnFieldError:
+        return "missing required environment definition field";
+      case kSemanticAnalysisUnknownSymbolError:
+        return "unknown symbol";
+      case kSemanticAnalysisIncompatibleTargetTypeError:
+        return "incompatible target type";
+      case kSemanticAnalysisUnknownPremiseDefnError:
+        return "unknown premise definition";
+      default:
+        assert(0 && "Unrecognized error code");
+        return "unrecognized error code";
+    }
   }
 };
