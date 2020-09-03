@@ -3,6 +3,11 @@
   "input_path": "./fixtures/incompatible_array_type_target.sl",
   "expected_exit": 1,
   "expected_errors": [
-    "Found duplicate and incompatible target in inference \"MethodStaticDispatch\". [semantic analysis error - incompatible target type (code 24)]"
+    {
+        "msg": "Found duplicate and incompatible target in inference \"MethodStaticDispatch\".",
+        "category_name": "semantic analysis error",
+        "category_message": "incompatible target type",
+        "code": 24
+    }
   ]
 }
