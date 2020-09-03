@@ -39,25 +39,25 @@ struct SemanticAnalysisErrorCategory
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
     switch (code) {
-      case kSemanticAnalysisDuplicateInferenceGroupIdentifier:
+      case kSemanticAnalysisDuplicateInferenceGroupIdentifierError:
         return "duplicate infernece group identifier";
-      case kSemanticAnalysisDuplicateInferenceDefnIdentifier:
+      case kSemanticAnalysisDuplicateInferenceDefnIdentifierError:
         return "duplicate inference definition identifier";
-      case kSemanticAnalysisDuplicateEnvironmentDefnField:
+      case kSemanticAnalysisDuplicateEnvironmentDefnFieldError:
         return "duplicate environment definition field";
-      case kSemanticAnalysisDuplicateGlobalDefinition:
+      case kSemanticAnalysisDuplicateGlobalDefinitionError:
         return "duplicate global symbol definition";
-      case kSemanticAnalysisDuplicateArgumentIdentifier:
+      case kSemanticAnalysisDuplicateArgumentIdentifierError:
         return "duplicate argument identifier";
-      case kSemanticAnalysisInvalidTargetType:
+      case kSemanticAnalysisInvalidTargetTypeError:
         return "invalid target type";
-      case kSemanticAnalysisMissingRequiredEnvironmentDefnField:
+      case kSemanticAnalysisMissingRequiredEnvironmentDefnFieldError:
         return "missing required environment definition field";
-      case kSemanticAnalysisUnknownSymbol:
+      case kSemanticAnalysisUnknownSymbolError:
         return "unknown symbol";
-      case kSemanticAnalysisIncompatibleTargetType:
+      case kSemanticAnalysisIncompatibleTargetTypeError:
         return "incompatible target type";
-      case kSemanticAnalysisUnknownPremiseDefn:
+      case kSemanticAnalysisUnknownPremiseDefnError:
         return "unknown premise definition";
       default:
         assert(0 && "Unrecognized error code");

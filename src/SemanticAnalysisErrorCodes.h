@@ -27,14 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 enum SemanticAnalysisErrorCodes : uint32_t
 {
-  kSemanticAnalysisDuplicateInferenceGroupIdentifier = 16,
-  kSemanticAnalysisDuplicateInferenceDefnIdentifier,
-  kSemanticAnalysisDuplicateEnvironmentDefnField,
-  kSemanticAnalysisDuplicateGlobalDefinition,
-  kSemanticAnalysisDuplicateArgumentIdentifier,
-  kSemanticAnalysisInvalidTargetType,
-  kSemanticAnalysisMissingRequiredEnvironmentDefnField,
-  kSemanticAnalysisUnknownSymbol,
-  kSemanticAnalysisIncompatibleTargetType,
-  kSemanticAnalysisUnknownPremiseDefn,
+  kSemanticAnalysisDuplicateInferenceGroupIdentifierError = 16,
+  kSemanticAnalysisDuplicateInferenceDefnIdentifierError,
+  kSemanticAnalysisDuplicateEnvironmentDefnFieldError,
+  kSemanticAnalysisDuplicateGlobalDefinitionError,
+  kSemanticAnalysisDuplicateArgumentIdentifierError,
+  kSemanticAnalysisInvalidTargetTypeError,
+  kSemanticAnalysisMissingRequiredEnvironmentDefnFieldError,
+  kSemanticAnalysisUnknownSymbolError,
+  kSemanticAnalysisIncompatibleTargetTypeError,
+  kSemanticAnalysisUnknownPremiseDefnError,
 };
