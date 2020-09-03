@@ -34,6 +34,14 @@ import sys
 
 ## -----------------------------------------------------------------------------
 
+EXIT_SUCCESS = 0
+
+## -----------------------------------------------------------------------------
+
+EXIT_FAILURE = 1
+
+## -----------------------------------------------------------------------------
+
 JSON_EXT = '.json'
 PROG_TITLE = 'Snowlake integration test.'
 SNOWLAKE_COMPILER_EXECUTABLE = 'snowlakec'
@@ -162,7 +170,7 @@ class TestRunner(object):
         self.logger.addHandler(console_handler)
 
     def run(self):
-        self.__run()
+        return self.__run()
 
     def __run(self):
         print()
@@ -191,8 +199,10 @@ class TestRunner(object):
 
         if success_count == total_count:
             self.__log_success('- SUCCESS -')
+            return EXIT_SUCCESS
         else:
             self.__log_failure('- FAIL -')
+            return EXIT_FAILURE
 
     def __run_test_case(self, json_filepath):
         try:
@@ -359,7 +369,7 @@ def main():
         print(executable_invoke_name)
 
     runner = TestRunner(input_path, executable_invoke_name, args)
-    runner.run()
+    sys.exit(runner.run())
 
 
 if __name__ == '__main__':
