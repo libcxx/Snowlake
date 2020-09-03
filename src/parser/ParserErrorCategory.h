@@ -44,6 +44,7 @@ struct ParserErrorCategory : public CompilerErrorCategory<ParserErrorCategory>
         return "invalid syntax";
       default:
         assert(0 && "Unrecognized error code");
+        return "unrecognized error code";
     }
   }
 };
