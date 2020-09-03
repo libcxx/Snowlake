@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "CmdlDriver.h"
 #include "CompilerErrorPrinter.h"
 #include "SemanticAnalyzer.h"
+#include "SynthesisErrorCategory.h"
 #include "Synthesizer.h"
 #include "ast_fwd.h"
 #include "parser/ParserDriver.h"
@@ -105,10 +106,9 @@ ProgramDriver::run(int argc, char** argv)
       char buf[2048] = {0};
       snprintf(buf, sizeof(buf), "Error: Failed to synthesize output to: %s",
                cmdlOpts.outputPath.c_str());
-      /*
-     errorPrinter.printError(
-         Error{.code = Error::ErrorCode::Error, .msg = buf});
-     */
+      errorPrinter.printError(
+          SynthesisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+              CompilerError::Type::Error, 0 /** code **/, buf));
     }
     return EXIT_FAILURE;
   }
