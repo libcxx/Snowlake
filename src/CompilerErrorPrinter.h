@@ -26,11 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "CompilerError.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <string>
 
 struct CompilerErrorPrinter
 {
+    static const uint32_t ID = 1;
   CompilerErrorPrinter(const std::string& inputFilepath, std::ostream& stream)
     : _inputFilepath(inputFilepath)
     , _out(stream)
