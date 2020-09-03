@@ -28,24 +28,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 struct SemanticAnalysisErrorCategory
   : public CompilerErrorCategory<SemanticAnalysisErrorCategory>
 {
-  // constexpr SemanticAnalysisErrorCategory() {}
-  const char* name() const
+  static const char* CategoryName()
   {
     return "Semantic analysis error";
   }
 
-  const char* message(CompilerErrorCodeIntType code) const
+  static const char* CategoryMessageByCode(CompilerErrorCodeIntType code)
   {
     // TODO
     return "SemanticAnalysisErrorCategory::message() TBD";
   }
-
-  static const SemanticAnalysisErrorCategory* GetGlobalCategory()
-  {
-    return &gSemanticAnalysisErrorCategoryInstance;
-  }
-
-private:
-  static const SemanticAnalysisErrorCategory
-      gSemanticAnalysisErrorCategoryInstance;
 };

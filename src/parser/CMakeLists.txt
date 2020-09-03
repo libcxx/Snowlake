@@ -84,7 +84,6 @@ if(USE_PRECOMPILED_PARSER)
     set(parser_sources
         ${PARSER_PRECOMPILED_SRC_DIR}/lex.yy.cc
         ${PARSER_PRECOMPILED_SRC_DIR}/parser.tab.cc
-        ParserErrorCategory.cpp
         ParserDriver.cpp
         copy_precompiled_parser
         )
@@ -92,7 +91,6 @@ else()
     set(parser_sources
         lex.yy.cc
         parser.tab.cc
-        ParserErrorCategory.cpp
         ParserDriver.cpp
         copy_freshly_compiled_parser
         )

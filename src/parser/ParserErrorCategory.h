@@ -27,22 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct ParserErrorCategory : public CompilerErrorCategory<ParserErrorCategory>
 {
-  const char* name() const
+  static const char* CategoryName()
   {
     return "Parser error";
   }
 
-  const char* message(CompilerErrorCodeIntType code) const
+  static const char* CategoryMessageByCode(CompilerErrorCodeIntType code)
   {
     // TODO
     return "ParserErrorCategory::message() TBD";
   }
-
-  static const ParserErrorCategory* GetGlobalCategory()
-  {
-    return &gParserErrorCategoryInstance;
-  }
-
-private:
-  static const ParserErrorCategory gParserErrorCategoryInstance;
 };

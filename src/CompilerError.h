@@ -23,8 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-//#include "CompilerErrorCategory.h"
-
 #include <string>
 
 struct CompilerError
@@ -36,12 +34,9 @@ struct CompilerError
     Error = 0x10
   };
 
-  const char* message() const
-  {
-    return msg.c_str();
-  }
+  std::string message() const;
 
   Type type;
   std::string msg;
-  const void* category;
+  std::string category;
 };

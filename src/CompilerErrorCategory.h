@@ -36,24 +36,26 @@ public:
   // constexpr CompilerErrorCategory();
   // CompilerErrorCategory(const CompilerErrorCategory&) = delete;
 
-  const char* name() const
-  {
-    SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
-    return specific.name();
-  }
+  /*
+    const char* name() const
+    {
+      SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
+      return specific.name();
+    }
 
-  const char* message(CompilerErrorCodeIntType code) const
-  {
-    SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
-    return specific.message(code);
-  }
-
+    const char* message(CompilerErrorCodeIntType code) const
+    {
+      SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
+      return specific.message(code);
+    }
+  */
   static CompilerError
   CreateCompilerErrorWithTypeAndMessage(CompilerError::Type type,
                                         const char* msg)
   {
     return CompilerError{.type = type,
                          .msg = msg,
-                         .category = SpecificCategory::GetGlobalCategory()};
+                         .category =
+                             SpecificCategory::CategoryMessageByCode(0)};
   }
 };
