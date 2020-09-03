@@ -3,7 +3,7 @@
   "input_path": "./fixtures/repeating_symbol.sl",
   "expected_exit": 1,
   "expected_errors": [
-    "Found duplicate symbol (argument) with name \"Arg1\".",
-    "Invalid proposition target type in inference \"MyInference\"."
+    "Found duplicate symbol (argument) with name \"Arg1\". [semantic analysis error - duplicate argument identifier (code 20)]",
+    "Invalid proposition target type in inference \"MyInference\". [semantic analysis error - invalid target type (code 21)]"
   ]
 }
