@@ -83,6 +83,7 @@ struct ScopedCompilerErrorHandlerRegister
     CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler<T>(
         handler);
   }
+
   ~ScopedCompilerErrorHandlerRegister()
   {
     CompilerErrorHandlerRegistrar::UnregisterScopedCompilerErrorHandler();
