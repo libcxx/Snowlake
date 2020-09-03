@@ -23,15 +23,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "Error.h"
+#include "CompilerError.h"
 
 #include <algorithm>
 #include <iostream>
 #include <string>
 
-struct ErrorPrinter
+struct CompilerErrorPrinter
 {
-  ErrorPrinter(const std::string& inputFilepath, std::ostream& stream)
+  CompilerErrorPrinter(const std::string& inputFilepath, std::ostream& stream)
     : _inputFilepath(inputFilepath)
     , _out(stream)
     , _errorsCount(0)
@@ -39,7 +39,7 @@ struct ErrorPrinter
   {
   }
 
-  ~ErrorPrinter()
+  ~CompilerErrorPrinter()
   {
     if (_warningsCount || _errorsCount) {
       _out << '\n';
@@ -69,16 +69,16 @@ struct ErrorPrinter
     std::for_each(first, last, [&](const auto& error) { printError(error); });
   }
 
-  void printError(const Error& error)
+  void printError(const CompilerError& error)
   {
-    if (error.code == Error::ErrorCode::Error) {
+    if (error.type == CompilerError::Type::Error) {
       ++_errorsCount;
       _out << _inputFilepath << ": error: ";
-    } else if (error.code == Error::ErrorCode::Warning) {
+    } else if (error.type == CompilerError::Type::Warning) {
       ++_warningsCount;
       _out << _inputFilepath << ": warning: ";
     }
-    _out << error.msg << '\n';
+    _out << error.message() << '\n';
   }
   const std::string& _inputFilepath;
   std::ostream& _out;

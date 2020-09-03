@@ -25,14 +25,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
-struct Error
+struct CompilerError
 {
-  enum class ErrorCode
+  enum class Type
   {
     NoError = 0x00,
     Warning = 0x01,
     Error = 0x10
   };
-  ErrorCode code;
-  std::string msg;
+
+  typedef uint32_t Code;
+
+  std::string message() const;
+
+  const Type type;
+  const Code code;
+  const std::string msg;
+  const char* categoryName;
+  const char* categoryMessage;
 };

@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ParserDriver.h"
 
-#include "../Error.h"
+#include "ParserErrorCategory.h"
 #include "lex.yy.hh"
 #include "parser.tab.hh"
 
@@ -185,7 +185,7 @@ ParserDriver::setModule(ASTModule&& module)
 // -----------------------------------------------------------------------------
 
 void
-ParserDriver::setErrorPrinter(ErrorPrinter* errorPrinter)
+ParserDriver::setCompilerErrorPrinter(CompilerErrorPrinter* errorPrinter)
 {
   _errorPrinter = errorPrinter;
 }
@@ -197,7 +197,8 @@ ParserDriver::handleErrorWithMessage(const char* msg)
 {
   if (_errorPrinter) {
     _errorPrinter->printError(
-        Error{.code = Error::ErrorCode::Error, .msg = msg});
+        ParserErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+            CompilerError::Type::Error, 0 /** code **/, msg));
   } else {
     fprintf(stderr, "%s\n", msg);
   }
