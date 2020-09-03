@@ -29,10 +29,10 @@ struct ParserErrorCategory : public CompilerErrorCategory<ParserErrorCategory>
 {
   static const char* CategoryName()
   {
-    return "Parser error";
+    return "parser error";
   }
 
-  static const char* CategoryMessageByCode(CompilerErrorCodeIntType code)
+  static const char* CategoryMessageByCode(CompilerError::Code code)
   {
     // TODO
     return "ParserErrorCategory::message() TBD";

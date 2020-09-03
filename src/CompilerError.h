@@ -34,9 +34,13 @@ struct CompilerError
     Error = 0x10
   };
 
+  typedef uint32_t Code;
+
   std::string message() const;
 
   Type type;
+  Code code;
   std::string msg;
-  std::string category;
+  std::string categoryName;
+  std::string categoryMessage;
 };

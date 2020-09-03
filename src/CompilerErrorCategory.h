@@ -27,35 +27,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-typedef uint32_t CompilerErrorCodeIntType;
-
 template <typename SpecificCategory>
 struct CompilerErrorCategory
 {
 public:
-  // constexpr CompilerErrorCategory();
-  // CompilerErrorCategory(const CompilerErrorCategory&) = delete;
-
-  /*
-    const char* name() const
-    {
-      SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
-      return specific.name();
-    }
-
-    const char* message(CompilerErrorCodeIntType code) const
-    {
-      SpecificCategory& specific = static_cast<SpecificCategory&>(*this);
-      return specific.message(code);
-    }
-  */
-  static CompilerError
-  CreateCompilerErrorWithTypeAndMessage(CompilerError::Type type,
-                                        const char* msg)
+  static CompilerError CreateCompilerErrorWithTypeAndMessage(
+      CompilerError::Type type, CompilerError::Code code, const char* msg)
   {
     return CompilerError{.type = type,
+                         .code = code,
                          .msg = msg,
-                         .category =
+                         .categoryName = SpecificCategory::CategoryName(),
+                         .categoryMessage =
                              SpecificCategory::CategoryMessageByCode(0)};
   }
 };

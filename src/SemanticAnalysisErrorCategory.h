@@ -30,10 +30,10 @@ struct SemanticAnalysisErrorCategory
 {
   static const char* CategoryName()
   {
-    return "Semantic analysis error";
+    return "semantic analysis error";
   }
 
-  static const char* CategoryMessageByCode(CompilerErrorCodeIntType code)
+  static const char* CategoryMessageByCode(CompilerError::Code code)
   {
     // TODO
     return "SemanticAnalysisErrorCategory::message() TBD";

@@ -198,7 +198,7 @@ ParserDriver::handleErrorWithMessage(const char* msg)
   if (_errorPrinter) {
     _errorPrinter->printError(
         ParserErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-            CompilerError::Type::Error, msg));
+            CompilerError::Type::Error, 0 /** code **/, msg));
   } else {
     fprintf(stderr, "%s\n", msg);
   }

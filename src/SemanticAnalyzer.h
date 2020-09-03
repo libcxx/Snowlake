@@ -87,7 +87,7 @@ private:
         _errorPrinter->printError(
             SemanticAnalysisErrorCategory::
                 CreateCompilerErrorWithTypeAndMessage(
-                    CompilerError::Type::Warning, buffer));
+                    CompilerError::Type::Warning, 0 /** code **/, buffer));
       }
     }
   }
@@ -100,7 +100,7 @@ private:
     if (_errorPrinter) {
       _errorPrinter->printError(
           SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-              CompilerError::Type::Error, buffer));
+              CompilerError::Type::Error, 0 /** code **/, buffer));
     }
   }
 

@@ -29,6 +29,7 @@ std::string
 CompilerError::message() const
 {
   char buf[2048] = {0};
-  snprintf(buf, sizeof(buf), "%s [%s]", msg.c_str(), category.c_str());
+  snprintf(buf, sizeof(buf), "%s [%s - %s]", msg.c_str(), categoryName.c_str(),
+           categoryMessage.c_str());
   return buf;
 }
