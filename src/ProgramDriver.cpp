@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ProgramDriver.h"
 
 #include "CmdlDriver.h"
-#include "ErrorPrinter.h"
+#include "CompilerErrorPrinter.h"
 #include "SemanticAnalyzer.h"
 #include "Synthesizer.h"
 #include "ast_fwd.h"
@@ -65,7 +65,7 @@ ProgramDriver::run(int argc, char** argv)
     std::cout << std::endl;
   }
 
-  ErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
+  CompilerErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
 
   // Parsing.
   ParserDriver::Options parserOpts{.traceLexer = cmdlOpts.debugMode,
@@ -73,7 +73,7 @@ ProgramDriver::run(int argc, char** argv)
                                    .suppressErrorMessages = false};
 
   ParserDriver parser(parserOpts);
-  parser.setErrorPrinter(&errorPrinter);
+  parser.setCompilerErrorPrinter(&errorPrinter);
   res = parser.parseFromFile(cmdlOpts.inputPath);
   if (res != 0) {
     return EXIT_FAILURE;
@@ -88,7 +88,7 @@ ProgramDriver::run(int argc, char** argv)
       .verbose = cmdlOpts.debugMode};
   SemanticAnalyzer semaAnalyzer(semaOpts);
   if (!cmdlOpts.silent) {
-    semaAnalyzer.setErrorPrinter(&errorPrinter);
+    semaAnalyzer.setCompilerErrorPrinter(&errorPrinter);
   }
   res = semaAnalyzer.run(module);
   if (!res) {
@@ -105,8 +105,10 @@ ProgramDriver::run(int argc, char** argv)
       char buf[2048] = {0};
       snprintf(buf, sizeof(buf), "Error: Failed to synthesize output to: %s",
                cmdlOpts.outputPath.c_str());
-      errorPrinter.printError(
-          Error{.code = Error::ErrorCode::Error, .msg = buf});
+      /*
+     errorPrinter.printError(
+         Error{.code = Error::ErrorCode::Error, .msg = buf});
+     */
     }
     return EXIT_FAILURE;
   }

@@ -105,7 +105,7 @@ SemanticAnalyzer::options() const
 // -----------------------------------------------------------------------------
 
 void
-SemanticAnalyzer::setErrorPrinter(ErrorPrinter* errorPrinter)
+SemanticAnalyzer::setCompilerErrorPrinter(CompilerErrorPrinter* errorPrinter)
 {
   _errorPrinter = errorPrinter;
 }

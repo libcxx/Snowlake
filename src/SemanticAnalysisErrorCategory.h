@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2018 William Li
+Copyright (c) 2020 Tomiko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -23,16 +23,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include <string>
+#include "CompilerErrorCategory.h"
 
-struct Error
+struct SemanticAnalysisErrorCategory
+  : public CompilerErrorCategory<SemanticAnalysisErrorCategory>
 {
-  enum class ErrorCode
+  // constexpr SemanticAnalysisErrorCategory() {}
+  const char* name() const
   {
-    NoError = 0x00,
-    Warning = 0x01,
-    Error = 0x10
-  };
-  ErrorCode code;
-  std::string msg;
+    return "Semantic analysis error";
+  }
+
+  const char* message(CompilerErrorCodeIntType code) const
+  {
+    // TODO
+    return "SemanticAnalysisErrorCategory::message() TBD";
+  }
+
+  static const SemanticAnalysisErrorCategory* GetGlobalCategory()
+  {
+    return &gSemanticAnalysisErrorCategoryInstance;
+  }
+
+private:
+  static const SemanticAnalysisErrorCategory
+      gSemanticAnalysisErrorCategoryInstance;
 };

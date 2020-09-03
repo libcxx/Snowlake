@@ -25,8 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ASTUtils.h"
 #include "ASTVisitor.h"
-#include "Error.h"
-#include "ErrorPrinter.h"
+#include "CompilerError.h"
+#include "CompilerErrorPrinter.h"
+#include "SemanticAnalysisErrorCategory.h"
 
 #include <cstdio>
 #include <string>
@@ -53,7 +54,7 @@ public:
 
   const Options& options() const;
 
-  void setErrorPrinter(ErrorPrinter*);
+  void setCompilerErrorPrinter(CompilerErrorPrinter*);
 
 private:
   bool previsit(const ASTModule&) override;
@@ -83,7 +84,10 @@ private:
       char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
       if (_errorPrinter) {
-        _errorPrinter->printError(Error{Error::ErrorCode::Warning, buffer});
+        _errorPrinter->printError(
+            SemanticAnalysisErrorCategory::
+                CreateCompilerErrorWithTypeAndMessage(
+                    CompilerError::Type::Warning, buffer));
       }
     }
   }
@@ -94,10 +98,12 @@ private:
     char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
     if (_errorPrinter) {
-      _errorPrinter->printError(Error{Error::ErrorCode::Error, buffer});
+      _errorPrinter->printError(
+          SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+              CompilerError::Type::Error, buffer));
     }
   }
 
   Options _opts;
-  ErrorPrinter* _errorPrinter;
+  CompilerErrorPrinter* _errorPrinter;
 };
