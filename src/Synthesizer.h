@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 
+struct CompilerErrorPrinter;
+
 class Synthesizer
 {
 public:
@@ -40,7 +42,7 @@ public:
 
   explicit Synthesizer(const Options&);
 
-  bool run(const ASTModule&) const;
+  bool run(const ASTModule&, CompilerErrorPrinter* = nullptr) const;
 
 private:
   Options _opts;

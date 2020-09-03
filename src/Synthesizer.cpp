@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Synthesizer.h"
 
 #include "ASTVisitor.h"
+#include "CompilerErrorPrinter.h"
+#include "SynthesisErrorCategory.h"
 #include "SynthesizerUtil.h"
 #include "ast.h"
 #include "format_defn.h"
@@ -97,7 +99,7 @@ private:
 class SynthesizerImpl : public ASTVisitor
 {
 public:
-  explicit SynthesizerImpl(const Synthesizer::Options&);
+  SynthesizerImpl(const Synthesizer::Options&, CompilerErrorPrinter*);
 
   bool run(const ASTModule&);
 
@@ -173,11 +175,14 @@ private:
 
   bool initializeAndSynthesizeErrorCodeFiles();
 
+  void handleErrorWithMessageAndCode(const char*, CompilerError::Code);
+
   std::string __getNextVarName();
 
 private:
   const Synthesizer::Options& _opts;
   InferenceGroupSynthesisContext _context;
+  CompilerErrorPrinter* _errorPrinter;
 };
 
 // -----------------------------------------------------------------------------
@@ -197,9 +202,10 @@ Synthesizer::Synthesizer(const Options& opts)
 // -----------------------------------------------------------------------------
 
 bool
-Synthesizer::run(const ASTModule& module) const
+Synthesizer::run(const ASTModule& module,
+                 CompilerErrorPrinter* errorPrinter) const
 {
-  SynthesizerImpl impl(_opts);
+  SynthesizerImpl impl(_opts, errorPrinter);
   return impl.run(module);
 }
 
@@ -227,9 +233,11 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
+SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
+                                 CompilerErrorPrinter* errorPrinter)
   : _opts(opts)
   , _context()
+  , _errorPrinter(errorPrinter)
 {
 }
 
@@ -267,6 +275,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
 
   _context.headerFileOfs.open(headerFilepath, std::ofstream::out);
   if (!_context.headerFileOfs.good()) {
+    handleErrorWithMessageAndCode("Failed to create output .h file",
+                                  kSynthesisInvalidOutputError);
     return false;
   }
 
@@ -280,6 +290,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
 
   _context.cppFileOfs.open(cppFilepath, std::ofstream::out);
   if (!_context.cppFileOfs.good()) {
+    handleErrorWithMessageAndCode("Failed to create output .cpp file",
+                                  kSynthesisInvalidOutputError);
     return false;
   }
 
@@ -1053,6 +1065,21 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
   }
 
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::handleErrorWithMessageAndCode(const char* msg,
+                                               CompilerError::Code code)
+{
+  if (_errorPrinter) {
+    _errorPrinter->printError(
+        SynthesisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+            CompilerError::Type::Error, code, msg));
+  } else {
+    fprintf(stderr, "%s\n", msg);
+  }
 }
 
 // -----------------------------------------------------------------------------

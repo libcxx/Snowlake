@@ -100,15 +100,11 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer::Options synthesisOpts{.useException = false,
                                      .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
-  res = synthesizer.run(module);
+  res = synthesizer.run(module, &errorPrinter);
   if (!res) {
     if (!cmdlOpts.silent) {
-      char buf[2048] = {0};
-      snprintf(buf, sizeof(buf), "Error: Failed to synthesize output to: %s",
-               cmdlOpts.outputPath.c_str());
-      errorPrinter.printError(
-          SynthesisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-              CompilerError::Type::Error, 0 /** code **/, buf));
+      fprintf(stderr, "Error: Failed to synthesize output to: %s\n",
+              cmdlOpts.outputPath.c_str());
     }
     return EXIT_FAILURE;
   }
