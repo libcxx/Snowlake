@@ -39,6 +39,6 @@ public:
                          .msg = msg,
                          .categoryName = SpecificCategory::CategoryName(),
                          .categoryMessage =
-                             SpecificCategory::CategoryMessageByCode(0)};
+                             SpecificCategory::CategoryMessageByCode(code)};
   }
 };
