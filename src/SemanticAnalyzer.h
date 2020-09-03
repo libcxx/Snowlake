@@ -76,10 +76,10 @@ private:
   };
 
   template <typename U, typename... Args>
-  void addWarning(const U& msg, Args... args)
+  void addWarning(CompilerError::Code code, const U& msg, Args... args)
   {
     if (_opts.warningsAsErrors) {
-      addError(msg, args...);
+      addError(code, msg, args...);
     } else {
       char buffer[MAX_MSG_LEN] = {0};
       snprintf(buffer, sizeof(buffer), msg, args...);
@@ -87,20 +87,20 @@ private:
         _errorPrinter->printError(
             SemanticAnalysisErrorCategory::
                 CreateCompilerErrorWithTypeAndMessage(
-                    CompilerError::Type::Warning, 0 /** code **/, buffer));
+                    CompilerError::Type::Warning, code, buffer));
       }
     }
   }
 
   template <typename U, typename... Args>
-  void addError(const U& msg, Args... args)
+  void addError(CompilerError::Code code, const U& msg, Args... args)
   {
     char buffer[MAX_MSG_LEN] = {0};
     snprintf(buffer, sizeof(buffer), msg, args...);
     if (_errorPrinter) {
       _errorPrinter->printError(
           SemanticAnalysisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-              CompilerError::Type::Error, 0 /** code **/, buffer));
+              CompilerError::Type::Error, code, buffer));
     }
   }
 

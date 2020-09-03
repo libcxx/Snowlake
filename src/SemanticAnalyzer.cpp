@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SemanticAnalyzer.h"
 
+#include "SemanticAnalysisErrorCodes.h"
 #include "ASTUtils.h"
 #include "ast.h"
 #include "format_defn.h"
@@ -39,9 +40,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-#define ON_WARNING(msg, ...)                                                   \
+#define ON_WARNING(code, msg, ...)                                                   \
   do {                                                                         \
-    addWarning((msg), __VA_ARGS__);                                            \
+    addWarning(code, (msg), __VA_ARGS__);                                            \
     if (_opts.warningsAsErrors) {                                              \
       res = false;                                                             \
       if (_opts.bailOnFirstError) {                                            \
@@ -52,10 +53,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-#define ON_ERROR(msg, ...)                                                     \
+#define ON_ERROR(code, msg, ...)                                                     \
   do {                                                                         \
     res = false;                                                               \
-    addError((msg), __VA_ARGS__);                                              \
+    addError(code, (msg), __VA_ARGS__);                                              \
     if (_opts.bailOnFirstError) {                                              \
       return res;                                                              \
     }                                                                          \
@@ -130,7 +131,7 @@ SemanticAnalyzer::previsit(const ASTModule& module)
   for (const auto& inferenceGroup : module.inferenceGroups()) {
     const auto& name = inferenceGroup.name();
     if (nameSet.count(name)) {
-      ON_ERROR("Found multiple inference group with name \"%s\".",
+      ON_ERROR(kSemanticAnalysisDuplicateInferenceGroupIdentifier, "Found multiple inference group with name \"%s\".",
                name.c_str());
     } else {
       nameSet.insert(name);
@@ -154,7 +155,7 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inferenceGroup)
     for (const auto& environmentDefn : inferenceGroup.environmentDefns()) {
       const auto& field = environmentDefn.field();
       if (nameSet.count(field)) {
-        ON_WARNING("Found repeated environment field \"%s\".", field.c_str());
+        ON_WARNING(kSemanticAnalysisDuplicateEnvironmentDefnField, "Found repeated environment field \"%s\".", field.c_str());
       } else {
         nameSet.insert(field);
       }
@@ -171,7 +172,7 @@ SemanticAnalyzer::previsit(const ASTInferenceGroup& inferenceGroup)
     for (const auto& inferenceDefn : inferenceGroup.inferenceDefns()) {
       const auto& name = inferenceDefn.name();
       if (nameSet.count(name)) {
-        ON_ERROR("Found multiple inference definition with name \"%s\".",
+        ON_ERROR(kSemanticAnalysisDuplicateInferenceDefnIdentifier, "Found multiple inference definition with name \"%s\".",
                  name.c_str());
       } else {
         nameSet.insert(name);
@@ -197,7 +198,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
     for (const auto& decl : inferenceDefn.globalDecls()) {
       const auto& name = decl.name();
       if (context.symbolSet.count(name)) {
-        ON_WARNING(
+        ON_WARNING(kSemanticAnalysisDuplicateGlobalDefinition,
             "Found duplicate symbol (global declaration) with name \"%s\".",
             name.c_str());
       } else {
@@ -211,7 +212,8 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
     for (const auto& argument : inferenceDefn.arguments()) {
       const auto& name = argument.name();
       if (context.symbolSet.count(name)) {
-        ON_ERROR("Found duplicate symbol (argument) with name \"%s\".",
+        ON_ERROR(  kSemanticAnalysisDuplicateArgumentIdentifier,
+"Found duplicate symbol (argument) with name \"%s\".",
                  name.c_str());
       } else {
         context.symbolSet.insert(name);
@@ -233,7 +235,7 @@ SemanticAnalyzer::previsit(const ASTInferenceDefn& inferenceDefn)
     const auto& proposition = inferenceDefn.propositionDefn();
     if (!ASTUtils::HasCompatibleTargetInTable(proposition.target(),
                                               context.targetTbl)) {
-      ON_ERROR("Invalid proposition target type in inference \"%s\".",
+      ON_ERROR(kSemanticAnalysisInvalidTargetType, "Invalid proposition target type in inference \"%s\".",
                context.name.c_str());
     }
   }
@@ -257,7 +259,7 @@ SemanticAnalyzer::checkRequiredEnvDefns(const SymbolSet& envDefns)
 
   for (auto defn : mandatoryEnvDefns) {
     if (envDefns.count(defn) == 0) {
-      ON_ERROR("Missing required environment definition field \"%s\".", defn);
+      ON_ERROR(  kSemanticAnalysisMissingRequiredEnvironmentDefnField, "Missing required environment definition field \"%s\".", defn);
     }
   }
 
@@ -278,7 +280,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
     const auto& source = defn.source();
     const auto& sourceRoot = ASTUtils::GetRootOfASTIdentifiable(source);
     if (context->symbolSet.count(sourceRoot) == 0) {
-      ON_ERROR("Unknown symbol \"%s\" used in inference \"%s\".",
+      ON_ERROR(  kSemanticAnalysisUnknownSymbol,"Unknown symbol \"%s\" used in inference \"%s\".",
                sourceRoot.c_str(), context->name.c_str());
     }
   }
@@ -287,7 +289,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTInferencePremiseDefn& defn,
   {
     const auto& target = defn.deductionTarget();
     if (ASTUtils::HasIncompatibleTargetInTable(target, context->targetTbl)) {
-      ON_ERROR("Found duplicate and incompatible target in inference \"%s\".",
+      ON_ERROR(kSemanticAnalysisIncompatibleTargetType,"Found duplicate and incompatible target in inference \"%s\".",
                context->name.c_str());
     }
     ASTUtils::AddTargetToTable(target, &context->targetTbl);
@@ -319,7 +321,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
   const auto& rhs = defn.rhs();
 
   if (!ASTUtils::AreTargetsCompatible(lhs, rhs)) {
-    ON_ERROR("Incompatible targets in expression in inference \"%s\".",
+    ON_ERROR(kSemanticAnalysisIncompatibleTargetType,"Incompatible targets in expression in inference \"%s\".",
              context->name.c_str());
   }
 
@@ -329,11 +331,11 @@ SemanticAnalyzer::recursivePremiseDefnCheck(
       const auto& rangeClause = defn.rangeClause();
       const auto& target = rangeClause.deductionTarget();
       if (target.isType<ASTDeductionTargetSingular>()) {
-        ON_ERROR("Invalid target in range clause in inference \"%s\".",
+        ON_ERROR(  kSemanticAnalysisInvalidTargetType,"Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
       if (!ASTUtils::HasCompatibleTargetInTable(target, context->targetTbl)) {
-        ON_ERROR("Invalid target in range clause in inference \"%s\".",
+        ON_ERROR(  kSemanticAnalysisInvalidTargetType,"Invalid target in range clause in inference \"%s\".",
                  context->name.c_str());
       }
     }
@@ -359,7 +361,7 @@ SemanticAnalyzer::recursivePremiseDefnCheck(const ASTPremiseDefn& premiseDefn,
     const auto& defnValue = premiseDefn.value<ASTInferenceEqualityDefn>();
     RETURN_ON_FAILURE(recursivePremiseDefnCheck(defnValue, context));
   } else {
-    ON_ERROR("Found unknown type of premise definition in inference \"%s\".",
+    ON_ERROR(  kSemanticAnalysisUnknownPremiseDefn,"Found unknown type of premise definition in inference \"%s\".",
              inferenceDefnName);
   }
 
