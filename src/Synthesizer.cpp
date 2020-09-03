@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Synthesizer.h"
 
 #include "ASTVisitor.h"
-#include "CompilerErrorPrinter.h"
+#include "CompilerErrorHandlerRegistrar.h"
 #include "SynthesisErrorCategory.h"
 #include "SynthesizerUtil.h"
 #include "ast.h"
@@ -99,7 +99,7 @@ private:
 class SynthesizerImpl : public ASTVisitor
 {
 public:
-  SynthesizerImpl(const Synthesizer::Options&, CompilerErrorPrinter*);
+  SynthesizerImpl(const Synthesizer::Options&);
 
   bool run(const ASTModule&);
 
@@ -182,7 +182,6 @@ private:
 private:
   const Synthesizer::Options& _opts;
   InferenceGroupSynthesisContext _context;
-  CompilerErrorPrinter* _errorPrinter;
 };
 
 // -----------------------------------------------------------------------------
@@ -202,10 +201,9 @@ Synthesizer::Synthesizer(const Options& opts)
 // -----------------------------------------------------------------------------
 
 bool
-Synthesizer::run(const ASTModule& module,
-                 CompilerErrorPrinter* errorPrinter) const
+Synthesizer::run(const ASTModule& module) const
 {
-  SynthesizerImpl impl(_opts, errorPrinter);
+  SynthesizerImpl impl(_opts);
   return impl.run(module);
 }
 
@@ -233,11 +231,9 @@ InferenceGroupSynthesisContext::~InferenceGroupSynthesisContext()
 
 // -----------------------------------------------------------------------------
 
-SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts,
-                                 CompilerErrorPrinter* errorPrinter)
+SynthesizerImpl::SynthesizerImpl(const Synthesizer::Options& opts)
   : _opts(opts)
   , _context()
-  , _errorPrinter(errorPrinter)
 {
 }
 
@@ -1073,13 +1069,9 @@ void
 SynthesizerImpl::handleErrorWithMessageAndCode(const char* msg,
                                                CompilerError::Code code)
 {
-  if (_errorPrinter) {
-    _errorPrinter->printError(
-        SynthesisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
-            CompilerError::Type::Error, code, msg));
-  } else {
-    fprintf(stderr, "%s\n", msg);
-  }
+  CompilerErrorHandlerRegistrar::RegisterCompilerError(
+      SynthesisErrorCategory::CreateCompilerErrorWithTypeAndMessage(
+          CompilerError::Type::Error, code, msg));
 }
 
 // -----------------------------------------------------------------------------

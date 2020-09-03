@@ -100,7 +100,7 @@ ProgramDriver::run(int argc, char** argv)
   Synthesizer::Options synthesisOpts{.useException = false,
                                      .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
-  res = synthesizer.run(module, &errorPrinter);
+  res = synthesizer.run(module);
   if (!res) {
     if (!cmdlOpts.silent) {
       fprintf(stderr, "Error: Failed to synthesize output to: %s\n",
