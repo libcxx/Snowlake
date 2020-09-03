@@ -27,5 +27,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 enum SynthesisErrorCodes : uint32_t
 {
-  kSynthesisInvalidOutputError = 0x01
+  kSynthesisInvalidOutputError = 8
 };

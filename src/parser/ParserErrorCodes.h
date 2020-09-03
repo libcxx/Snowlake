@@ -27,6 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 enum ParserErrors : uint32_t
 {
-  kParserBadInputError,
+  kParserBadInputError = 4,
   kParserInvalidSyntaxError
 };

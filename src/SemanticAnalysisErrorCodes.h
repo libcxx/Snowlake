@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 enum SemanticAnalysisErrorCodes : uint32_t
 {
-  kSemanticAnalysisDuplicateInferenceGroupIdentifier = 0x01,
+  kSemanticAnalysisDuplicateInferenceGroupIdentifier = 16,
   kSemanticAnalysisDuplicateInferenceDefnIdentifier,
   kSemanticAnalysisDuplicateEnvironmentDefnField,
   kSemanticAnalysisDuplicateGlobalDefinition,
