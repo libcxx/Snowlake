@@ -69,8 +69,8 @@ ProgramDriver::run(int argc, char** argv)
 
   CompilerErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
 
-  CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler<
-      CompilerErrorPrinter>(&errorPrinter);
+  ScopedCompilerErrorHandlerRegister<CompilerErrorPrinter>
+      scopedCompilerErrorHandlerRegister(&errorPrinter);
 
   // Parsing.
   ParserDriver::Options parserOpts{.traceLexer = cmdlOpts.debugMode,

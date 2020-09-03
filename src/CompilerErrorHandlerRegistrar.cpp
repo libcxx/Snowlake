@@ -23,5 +23,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "CompilerErrorHandlerRegistrar.h"
 
+// -----------------------------------------------------------------------------
+
 uint32_t CompilerErrorHandlerRegistrar::_registeredID = 0;
+
 CompilerErrorPrinter* CompilerErrorHandlerRegistrar::_errorPrinter = nullptr;
+
+// -----------------------------------------------------------------------------

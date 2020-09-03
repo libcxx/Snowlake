@@ -74,3 +74,17 @@ public:
 private:
   static CompilerErrorPrinter* _errorPrinter;
 };
+
+template <typename T>
+struct ScopedCompilerErrorHandlerRegister
+{
+  explicit ScopedCompilerErrorHandlerRegister(T* handler)
+  {
+    CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler<T>(
+        handler);
+  }
+  ~ScopedCompilerErrorHandlerRegister()
+  {
+    CompilerErrorHandlerRegistrar::UnregisterScopedCompilerErrorHandler();
+  }
+};
