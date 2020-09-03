@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct CompilerErrorPrinter
 {
-    static const uint32_t ID = 1;
+  static const uint32_t ID = 1;
   CompilerErrorPrinter(const std::string& inputFilepath, std::ostream& stream)
     : _inputFilepath(inputFilepath)
     , _out(stream)

@@ -36,6 +36,7 @@ set(sources
     ASTVisitor.cpp
     ASTUtils.cpp
     CompilerError.cpp
+    CompilerErrorHandlerRegistrar.cpp
     SemanticAnalyzer.cpp
     Synthesizer.cpp
     ArgumentParser.cpp

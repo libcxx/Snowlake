@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ProgramDriver.h"
 
 #include "CmdlDriver.h"
-#include "CompilerErrorPrinter.h"
 #include "CompilerErrorHandlerRegistrar.h"
+#include "CompilerErrorPrinter.h"
 #include "SemanticAnalyzer.h"
 #include "SynthesisErrorCategory.h"
 #include "Synthesizer.h"
@@ -70,7 +70,7 @@ ProgramDriver::run(int argc, char** argv)
   CompilerErrorPrinter errorPrinter(cmdlOpts.inputPath, std::cout);
 
   CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler<
-    CompilerErrorPrinter>(&errorPrinter);
+      CompilerErrorPrinter>(&errorPrinter);
 
   // Parsing.
   ParserDriver::Options parserOpts{.traceLexer = cmdlOpts.debugMode,
@@ -78,7 +78,6 @@ ProgramDriver::run(int argc, char** argv)
                                    .suppressErrorMessages = false};
 
   ParserDriver parser(parserOpts);
-  parser.setCompilerErrorPrinter(&errorPrinter);
   res = parser.parseFromFile(cmdlOpts.inputPath);
   if (res != 0) {
     return EXIT_FAILURE;
