@@ -277,9 +277,24 @@ class TestRunner(object):
             pedantic=pedantic)
 
         return '\n'.join([
-            '{input_path}: error: {error_msg}'.format(input_path=input_path, error_msg=error_msg)
-            for error_msg in expected_errors
+            '{input_path}: error: {error_msg}'.format(
+                input_path=input_path,
+                error_msg=self.__format_test_case_error_message(expected_error))
+            for expected_error in expected_errors
         ]) + '\n\n' + tail
+
+    def __format_test_case_error_message(self, expected_error):
+        msg = expected_error['msg']
+        category_name = expected_error['category_name']
+        category_message = expected_error['category_message']
+        code = expected_error['code']
+
+        return '{msg} [{category_name} - {category_message} (code {code})]'.format(
+            msg=msg,
+            category_name=category_name,
+            category_message=category_message,
+            code=code
+        )
 
     def __log_msg(self, msg, color=None):
         if color:
