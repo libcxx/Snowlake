@@ -35,7 +35,7 @@ struct SemanticAnalysisErrorCategory
 
   static const char* CategoryMessageByCode(CompilerError::Code code)
   {
-    // TODO
+    // TODO: Integrate compiler error code
     return "SemanticAnalysisErrorCategory::message() TBD";
   }
 };
