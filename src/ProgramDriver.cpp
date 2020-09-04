@@ -102,6 +102,7 @@ ProgramDriver::run(int argc, char** argv)
 
   // Synthesis.
   Synthesizer::Options synthesisOpts{.useException = false,
+                                     .inputFilepath = cmdlOpts.inputPath,
                                      .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
   res = synthesizer.run(module);

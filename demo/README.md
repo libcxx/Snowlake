@@ -1,33 +1,9 @@
-![Snowlake Logo](/resources/SnowlakeIcon_256.png)
+# Demo
 
+This directory holds the demoware for a brief demonstration of how the
+*Snowlake* language and compiler can be used.
 
-# Snowlake
-
-[![Build Status](https://travis-ci.org/tetrachrome/Snowlake.svg?branch=master)](https://travis-ci.org/tetrachrome/Snowlake)
-[![C/C++ CI](https://github.com/tetrachrome/Snowlake/workflows/C/C++%20CI/badge.svg)](https://github.com/tetrachrome/Snowlake/actions)
-[![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-
-## Overview
-
-*Snowlake* is both a declarative language of regular rules of inference
-and propositional logic for defining static type inference rules of
-programming languages, as well as a *compiler-compiler* that can
-synthesize such inference rule definitions into code used for static type
-checking, typically used for semantic analysis in language compilers.
-
-The goals of *Snowlake* are to:
-
-  1. Provide a flexible declarative language that is able to define the static
-     type inference rules of most programming languages.
-  2. Facilitate language developers in defining, documenting and sharing
-     the set of type inference rules of any particular language.
-  3. Alleviate the burden on language developers from implementing type
-     checking logic that are usually extremely complex, tedious and error-prone.
-
-
-## Quick Demo
+## Quick demo
 
 Imagine we are going on the adventure of designing and building the next great
 statically typed system programming language, and name it *MyAwesomeLang*.
@@ -46,9 +22,10 @@ other people reading the code for the first time to quickly understand the
 semantics captured behind it.
 
 We can define the semantic rules of such static method dispatch declaratively
-with the *Snowlake* language, in a file called **MyAwesomeLangTypeRules.sl**.
+with the *Snowlake* language, in a file called
+[MyAwesomeLangTypeRules.sl](./MyAwesomeLangTypeRules.sl):
 
-**MyAwesomeLangTypeRules.sl**
+[MyAwesomeLangTypeRules.sl](./MyAwesomeLangTypeRules.sl)
 
 ```
 group MyAwesomeLang {
@@ -96,7 +73,8 @@ group MyAwesomeLang {
 ```
 
 With the rules defined above, we can invoke the *Snowlake* compiler to
-synthesize it into actual C++ interface and implementation code:
+synthesize it into actual C++ interface and implementation code, while
+at this directory:
 
 ```
 $ snowlakec --errors -o ./output MyAwesomeLangTypeRules.sl
@@ -122,7 +100,7 @@ drwxrwxr-x 12 x x 4096 Sep  4 17:18 ..
 
 In this example it would generate the following .h and .cpp files:
 
-**MyAwesomeLangTypeRules.h**
+[MyAwesomeLangTypeRules.h](./output/MyAwesomeLangTypeRules.h)
 
 ```
 /**
@@ -150,7 +128,7 @@ public:
 };
 ```
 
-**MyAwesomeLangTypeRules.cpp**
+[MyAwesomeLangTypeRules.cpp](./output/MyAwesomeLangTypeRules.cpp)
 
 ```
 /**
@@ -207,26 +185,3 @@ MyAwesomeLangTypeRules::StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt
 
 The synthesized source code files are intended to be integrated with the
 rest of the code for the compiler of our language.
-
-All the source for this demo can be found at [./demo/](./demo/).
-
-
-## Build and Test
-
-To build all targets (i.e. static libraries and executables), plus the unit test suite and run it,
-do the following:
-
-```
-mkdir build && cd build && cmake .. && make
-```
-
-
-## Documentation
-
-Please refer to the [Snowlake Documentation](https://snowlake.readthedocs.io/en/latest/)
-to learn more.
-
-
-## License
-
-*Snowlake* is licensed under [The MIT License](http://opensource.org/licenses/MIT).

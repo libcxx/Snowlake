@@ -167,6 +167,13 @@ private:
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
+  void renderInputSourceAnnotationComment(std::ostream&);
+
+  void renderClassAnnotationComment(std::ostream&);
+
+  void renderInferenceDefinitionAnnotationComment(
+      const std::string& inferenceDefnName, std::ostream&);
+
   void renderErrorHandling();
 
   void indentCppFile();
@@ -301,10 +308,13 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     headerFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
+    renderInputSourceAnnotationComment(headerFileOfsRef);
+    headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_PRAGMA_ONCE << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
     renderSystemHeaderIncludes(_context.headerFileOfs);
     headerFileOfsRef << CPP_NEWLINE;
+    renderClassAnnotationComment(headerFileOfsRef);
     headerFileOfsRef << CPP_CLASS_KEYWORD << ' ';
     headerFileOfsRef << _context.clsName;
     headerFileOfsRef << CPP_NEWLINE;
@@ -318,6 +328,9 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
   {
     auto& cppFileOfsRef = _context.cppFileOfs;
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
+    cppFileOfsRef << CPP_NEWLINE;
+    cppFileOfsRef << CPP_NEWLINE;
+    renderInputSourceAnnotationComment(cppFileOfsRef);
     cppFileOfsRef << CPP_NEWLINE;
     renderCustomInclude(_context.clsName.c_str(), _context.cppFileOfs);
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
@@ -366,6 +379,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     renderIndentationInHeaderFile();
 
     auto& headerFileOfs = _context.headerFileOfs;
+    // renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
+    // headerFileOfs);
     headerFileOfs << _context.typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
     headerFileOfs << CPP_OPEN_PAREN;
@@ -383,6 +398,8 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
   {
     auto& cppFileOfs = _context.cppFileOfs;
     cppFileOfs << CPP_NEWLINE;
+    renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
+                                               cppFileOfs);
     cppFileOfs << _context.typeCls << CPP_NEWLINE;
     cppFileOfs << _context.clsName;
     cppFileOfs << CPP_COLON << CPP_COLON;
@@ -1061,6 +1078,57 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
   }
 
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
+{
+  ofs << COMMENT_BLOCK_BEGIN;
+
+  char buf[1024] = {0};
+  snprintf(buf, sizeof(buf), "This file was synthesized from %s",
+           _opts.inputFilepath.c_str());
+
+  ofs << buf << '\n';
+
+  ofs << COMMENT_BLOCK_END;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
+{
+  ofs << COMMENT_BLOCK_BEGIN;
+
+  char buf[1024] = {0};
+  snprintf(buf, sizeof(buf),
+           "This class was synthesized from the \"%s\" rules group.",
+           _context.clsName.c_str());
+
+  ofs << buf << '\n';
+
+  ofs << COMMENT_BLOCK_END;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::renderInferenceDefinitionAnnotationComment(
+    const std::string& inferenceDefnName, std::ostream& ofs)
+{
+  ofs << COMMENT_BLOCK_BEGIN;
+
+  char buf[1024] = {0};
+  snprintf(buf, sizeof(buf),
+           "This method was synthesized from the \"%s\" inference definition.",
+           inferenceDefnName.c_str());
+
+  ofs << buf << '\n';
+
+  ofs << COMMENT_BLOCK_END;
 }
 
 // -----------------------------------------------------------------------------

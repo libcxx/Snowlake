@@ -33,6 +33,7 @@ public:
   struct Options
   {
     bool useException;
+    std::string inputFilepath;
     std::string outputPath;
   };
 
