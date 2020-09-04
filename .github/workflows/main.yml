@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, macos-10.15]
 
     runs-on: ${{ matrix.platform }}
 
