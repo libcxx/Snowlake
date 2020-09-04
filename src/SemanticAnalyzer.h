@@ -54,8 +54,6 @@ public:
 
   const Options& options() const;
 
-  void setCompilerErrorPrinter(CompilerErrorPrinter*);
-
 private:
   bool previsit(const ASTModule&) override;
   bool previsit(const ASTInferenceGroup&) override;

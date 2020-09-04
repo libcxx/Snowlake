@@ -20,12 +20,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "CompilerErrorHandlerRegistrar.h"
 #include "SemanticAnalyzer.h"
 #include "parser/ParserDriver.h"
 
 #include <cstdio>
 #include <gtest/gtest.h>
 #include <tuple>
+#include <vector>
 
 // -----------------------------------------------------------------------------
 
@@ -34,32 +36,50 @@ class SemanticAnalyzerTests : public ::testing::Test
 protected:
   void assertFirstError(const char* input, const char* msg)
   {
+
+    std::vector<CompilerError> errors;
+    auto errorHandlerHook = [&](CompilerError error) -> void {
+      errors.push_back(error);
+    };
+
+    ScopedCompilerErrorHandlerRegister scopedCompilerErrorHandlerRegister(
+        errorHandlerHook);
+
     ASTModule module;
     bool res;
     std::tie(module, res) = parseFromString(input);
     ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
     res = analyzer.run(module);
+
     ASSERT_FALSE(res);
-    // ASSERT_FALSE(analyzer.errors().empty());
-    // const auto& error = analyzer.errors()[0];
-    // ASSERT_STREQ(error.msg.c_str(), msg);
+
+    ASSERT_FALSE(errors.empty());
+    const auto& error = errors.front();
+    ASSERT_STREQ(error.msg.c_str(), msg);
   }
 
   void assertNoError(const char* input)
   {
+    std::vector<CompilerError> errors;
+    auto errorHandlerHook = [&](CompilerError error) -> void {
+      errors.push_back(error);
+    };
+
+    ScopedCompilerErrorHandlerRegister scopedCompilerErrorHandlerRegister(
+        errorHandlerHook);
+
     ASTModule module;
     bool res;
     std::tie(module, res) = parseFromString(input);
     ASSERT_EQ(0, res);
     SemanticAnalyzer analyzer;
     res = analyzer.run(module);
-    /*
-    if (!analyzer.errors().empty()) {
-      const auto& error = analyzer.errors()[0];
+
+    if (!errors.empty()) {
+      const auto& error = errors.front();
       printf("Unexpected Error: %s.\n", error.msg.c_str());
     }
-    */
     ASSERT_TRUE(res);
   }
 
