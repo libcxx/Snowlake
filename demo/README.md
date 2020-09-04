@@ -1,5 +1,10 @@
 # Demo
 
+This directory holds the demoware for a brief demonstration of how the
+*Snowlake* language and compiler can be used.
+
+## Quick demo
+
 Imagine we are going on the adventure of designing and building the next great
 statically typed system programming language, and name it *MyAwesomeLang*.
 
@@ -17,9 +22,10 @@ other people reading the code for the first time to quickly understand the
 semantics captured behind it.
 
 We can define the semantic rules of such static method dispatch declaratively
-with the *Snowlake* language, in a file called **MyAwesomeLangTypeRules.sl**.
+with the *Snowlake* language, in a file called
+[MyAwesomeLangTypeRules.sl](./MyAwesomeLangTypeRules.sl):
 
-**MyAwesomeLangTypeRules.sl**
+[MyAwesomeLangTypeRules.sl](./MyAwesomeLangTypeRules.sl)
 
 ```
 group MyAwesomeLang {
@@ -94,7 +100,7 @@ drwxrwxr-x 12 x x 4096 Sep  4 17:18 ..
 
 In this example it would generate the following .h and .cpp files:
 
-**MyAwesomeLangTypeRules.h**
+[MyAwesomeLangTypeRules.h](./output/MyAwesomeLangTypeRules.h)
 
 ```
 /**
@@ -122,7 +128,7 @@ public:
 };
 ```
 
-**MyAwesomeLangTypeRules.cpp**
+[MyAwesomeLangTypeRules.cpp](./output/MyAwesomeLangTypeRules.cpp)
 
 ```
 /**
