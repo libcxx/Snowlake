@@ -167,9 +167,9 @@ private:
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
-  void renderInputSourceCommentAnnotation(std::ostream&);
+  void renderInputSourceAnnotationComment(std::ostream&);
 
-  void renderClassCommentAnnotation(std::ostream&);
+  void renderClassAnnotationComment(std::ostream&);
 
   void renderErrorHandling();
 
@@ -305,13 +305,13 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     headerFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
-    renderInputSourceCommentAnnotation(headerFileOfsRef);
+    renderInputSourceAnnotationComment(headerFileOfsRef);
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_PRAGMA_ONCE << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
     renderSystemHeaderIncludes(_context.headerFileOfs);
     headerFileOfsRef << CPP_NEWLINE;
-    renderClassCommentAnnotation(headerFileOfsRef);
+    renderClassAnnotationComment(headerFileOfsRef);
     headerFileOfsRef << CPP_CLASS_KEYWORD << ' ';
     headerFileOfsRef << _context.clsName;
     headerFileOfsRef << CPP_NEWLINE;
@@ -327,7 +327,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     cppFileOfsRef << CPP_NEWLINE;
     cppFileOfsRef << CPP_NEWLINE;
-    renderInputSourceCommentAnnotation(cppFileOfsRef);
+    renderInputSourceAnnotationComment(cppFileOfsRef);
     cppFileOfsRef << CPP_NEWLINE;
     renderCustomInclude(_context.clsName.c_str(), _context.cppFileOfs);
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
@@ -1076,7 +1076,7 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderInputSourceCommentAnnotation(std::ostream& ofs)
+SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
@@ -1092,7 +1092,7 @@ SynthesizerImpl::renderInputSourceCommentAnnotation(std::ostream& ofs)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderClassCommentAnnotation(std::ostream& ofs)
+SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
