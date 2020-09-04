@@ -88,7 +88,7 @@ group MyAwesomeLang {
 }
 ```
 
-With the rules above are defined, we can invoke the *Snowlake* compiler to
+With the rules defined above, we can invoke the *Snowlake* compiler to
 synthesize it into actual C++ interface and implementation code:
 
 ```
@@ -96,7 +96,7 @@ $ snowlakec --errors -o ./output_dir MyAwesomeLangTypeRules.sl
 ```
 
 The *Snowlake* compiler takes the **MyAwesomeLangTypeRules.sl** file as input
-and synthesizes the corresponding code (in this case, C++ .h and .cpp files)
+and synthesizes the corresponding output (in this case, C++ .h and .cpp files)
 that contain the interface and implementation of executing the static type
 checking according to the semantic rules defined above.
 
