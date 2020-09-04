@@ -25,8 +25,48 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-uint32_t CompilerErrorHandlerRegistrar::_registeredID = 0;
+CompilerErrorHandler CompilerErrorHandlerRegistrar::_registeredHandler =
+    nullptr;
 
-CompilerErrorPrinter* CompilerErrorHandlerRegistrar::_errorPrinter = nullptr;
+// -----------------------------------------------------------------------------
+
+void
+CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler(
+    CompilerErrorHandler handler)
+{
+  _registeredHandler = handler;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+CompilerErrorHandlerRegistrar::RegisterCompilerError(CompilerError&& error)
+{
+  if (_registeredHandler)
+    _registeredHandler(error);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+CompilerErrorHandlerRegistrar::UnregisterScopedCompilerErrorHandler()
+{
+  _registeredHandler = nullptr;
+}
+
+// -----------------------------------------------------------------------------
+
+ScopedCompilerErrorHandlerRegister::ScopedCompilerErrorHandlerRegister(
+    CompilerErrorHandler handler)
+{
+  CompilerErrorHandlerRegistrar::RegisterScopedCompilerErrorHandler(handler);
+}
+
+// -----------------------------------------------------------------------------
+
+ScopedCompilerErrorHandlerRegister::~ScopedCompilerErrorHandlerRegister()
+{
+  CompilerErrorHandlerRegistrar::UnregisterScopedCompilerErrorHandler();
+}
 
 // -----------------------------------------------------------------------------
