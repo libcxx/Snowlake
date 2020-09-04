@@ -326,6 +326,9 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     auto& cppFileOfsRef = _context.cppFileOfs;
     cppFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     cppFileOfsRef << CPP_NEWLINE;
+    cppFileOfsRef << CPP_NEWLINE;
+    renderInputSourceCommentAnnotation(cppFileOfsRef);
+    cppFileOfsRef << CPP_NEWLINE;
     renderCustomInclude(_context.clsName.c_str(), _context.cppFileOfs);
     renderCustomInclude(SYNTHESIZED_ERROR_CODE_HEADER_FILENAME_BASE,
                         _context.cppFileOfs);
