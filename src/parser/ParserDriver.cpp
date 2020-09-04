@@ -35,6 +35,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+struct ParserBuffer
+{
+  explicit ParserBuffer(const char* input)
+    : _buf(yy_scan_string(input))
+  {
+  }
+
+  ~ParserBuffer()
+  {
+    yy_delete_buffer(_buf);
+    yylex_destroy();
+  }
+
+private:
+  YY_BUFFER_STATE _buf;
+};
+
+// -----------------------------------------------------------------------------
+
 ParserDriver::ParserDriver()
   : _opts(ParserDriver::Options{.traceLexer = false,
                                 .traceParser = false,
@@ -130,8 +149,7 @@ ParserDriver::parseFromFile(const std::string& filepath)
 int
 ParserDriver::parseFromString(const char* input)
 {
-  YY_BUFFER_STATE buf;
-  buf = yy_scan_string(input);
+  ParserBuffer buf(input);
 
   // Trace lexer.
   yyset_debug(traceLexer());
@@ -142,12 +160,6 @@ ParserDriver::parseFromString(const char* input)
   parser.set_debug_level(traceParser());
 
   const int res = parser.parse();
-
-  // Teardown.
-  {
-    yy_delete_buffer(buf);
-    yylex_destroy();
-  }
 
   return res;
 }
