@@ -167,6 +167,8 @@ private:
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
+  void renderInputSourceCommentAnnotation(std::ostream&);
+
   void renderClassCommentAnnotation(std::ostream&);
 
   void renderErrorHandling();
@@ -302,6 +304,8 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     auto& headerFileOfsRef = _context.headerFileOfs;
     headerFileOfsRef << SYNTHESIZED_AUTHORING_COMMENT_BLOCK;
     headerFileOfsRef << CPP_NEWLINE;
+    headerFileOfsRef << CPP_NEWLINE;
+    renderInputSourceCommentAnnotation(headerFileOfsRef);
     headerFileOfsRef << CPP_NEWLINE;
     headerFileOfsRef << CPP_PRAGMA_ONCE << CPP_NEWLINE;
     headerFileOfsRef << CPP_NEWLINE;
@@ -1069,15 +1073,34 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
 // -----------------------------------------------------------------------------
 
 void
+SynthesizerImpl::renderInputSourceCommentAnnotation(std::ostream& ofs)
+{
+  ofs << COMMENT_BLOCK_BEGIN;
+
+  char buf[1024] = {0};
+  snprintf(buf, sizeof(buf), "This file was synthesized from %s",
+           _opts.inputFilepath.c_str());
+
+  ofs << buf << '\n';
+
+  ofs << COMMENT_BLOCK_END;
+}
+
+// -----------------------------------------------------------------------------
+
+void
 SynthesizerImpl::renderClassCommentAnnotation(std::ostream& ofs)
 {
-  ofs << "/**\n * ";
+  ofs << COMMENT_BLOCK_BEGIN;
+
   char buf[1024] = {0};
   snprintf(buf, sizeof(buf),
            "This class was synthesized from the \"%s\" rules group.",
            _context.clsName.c_str());
+
   ofs << buf << '\n';
-  ofs << " */\n";
+
+  ofs << COMMENT_BLOCK_END;
 }
 
 // -----------------------------------------------------------------------------
