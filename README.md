@@ -26,7 +26,8 @@ The goals of *Snowlake* are to:
   3. Alleviate the burden on language developers from implementing type
      checking logic that are usually extremely complex, tedious and error-prone.
 
-### Quick Demo
+
+## Quick Demo
 
 Imagine we are going on the adventure of designing and building the next great
 statically typed system programming language, and name it *MyAwesomeLang*.
@@ -87,16 +88,17 @@ group MyAwesomeLang {
 }
 ```
 
-Once that rules above are defined, we can invoke the *Snowlake* compiler to
+With the rules above are defined, we can invoke the *Snowlake* compiler to
 synthesize it into actual C++ interface and implementation code:
 
 ```
 $ snowlakec --errors -o ./output_dir MyAwesomeLangTypeRules.sl
 ```
 
-The *Snowlake* compiler would take that as input and synthesize the corresponding
-code (in this case, C++ .h and .cpp files) that contain the interface and implementation
-of executing the static type checking according to the semantic rules defined above.
+The *Snowlake* compiler takes the **MyAwesomeLangTypeRules.sl** file as input
+and synthesizes the corresponding code (in this case, C++ .h and .cpp files)
+that contain the interface and implementation of executing the static type
+checking according to the semantic rules defined above.
 
 Once that's done we can take a look at the synthesized output files:
 
