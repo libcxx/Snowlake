@@ -167,6 +167,8 @@ private:
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
+  void renderClassCommentAnnotation(std::ostream&);
+
   void renderErrorHandling();
 
   void indentCppFile();
@@ -305,6 +307,7 @@ SynthesizerImpl::previsit(const ASTInferenceGroup& inferenceGroup)
     headerFileOfsRef << CPP_NEWLINE;
     renderSystemHeaderIncludes(_context.headerFileOfs);
     headerFileOfsRef << CPP_NEWLINE;
+    renderClassCommentAnnotation(headerFileOfsRef);
     headerFileOfsRef << CPP_CLASS_KEYWORD << ' ';
     headerFileOfsRef << _context.clsName;
     headerFileOfsRef << CPP_NEWLINE;
@@ -1061,6 +1064,20 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
   }
 
   return true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::renderClassCommentAnnotation(std::ostream& ofs)
+{
+  ofs << "/**\n * ";
+  char buf[1024] = {0};
+  snprintf(buf, sizeof(buf),
+           "This class was synthesized from the \"%s\" rules group.",
+           _context.clsName.c_str());
+  ofs << buf << '\n';
+  ofs << " */\n";
 }
 
 // -----------------------------------------------------------------------------
