@@ -171,7 +171,7 @@ private:
 
   void renderClassAnnotationComment(std::ostream&);
 
-  void renderInferenceDefinitionAnnotationComment(
+  void renderInferenceDefinitionMethodAnnotationComment(
       const std::string& inferenceDefnName, std::ostream&);
 
   void renderErrorHandling();
@@ -379,7 +379,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     renderIndentationInHeaderFile();
 
     auto& headerFileOfs = _context.headerFileOfs;
-    // renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
+    // renderInferenceDefinitionMethodAnnotationComment(inferenceDefn.name(),
     // headerFileOfs);
     headerFileOfs << _context.typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
@@ -398,7 +398,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
   {
     auto& cppFileOfs = _context.cppFileOfs;
     cppFileOfs << CPP_NEWLINE;
-    renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
+    renderInferenceDefinitionMethodAnnotationComment(inferenceDefn.name(),
                                                cppFileOfs);
     cppFileOfs << _context.typeCls << CPP_NEWLINE;
     cppFileOfs << _context.clsName;
@@ -1116,7 +1116,7 @@ SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderInferenceDefinitionAnnotationComment(
+SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
     const std::string& inferenceDefnName, std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
