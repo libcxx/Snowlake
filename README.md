@@ -48,50 +48,51 @@ semantics captured behind it.
 We can define the semantic rules of such static method dispatch declaratively
 with the *Snowlake* language, in a file called **MyAwesomeLangTypeRules.sl**.
 
-**MyAwesomeLangTypeRules.sl**
+[MyAwesomeLangTypeRules.sl](./demo/MyAwesomeLangTypeRules.sl)
 
 ```
 group MyAwesomeLang {
-  ClassName                      : MyAwesomeLangTypeRules;
-  TypeClass                      : TypeCls;
-  ProofMethod                    : proveType;
-  TypeCmpMethod                  : cmpType;
-  TypeAnnotationSetupMethod      : typeAnnotationSetup;
-  TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
 
-  inference StaticMethodDispatch {
+    ClassName                      : MyAwesomeLangTypeRules;
+    TypeClass                      : TypeCls;
+    ProofMethod                    : proveType;
+    TypeCmpMethod                  : cmpType;
+    TypeAnnotationSetupMethod      : typeAnnotationSetup;
+    TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
 
-    globals: [
-      SELF_TYPE,
-      CLS_TYPE
-    ]
+    inference StaticMethodDispatch {
 
-    arguments: [
-      StaticMethodCallStmt : ASTExpr
-    ]
+        globals: [
+            SELF_TYPE,
+            CLS_TYPE
+        ]
 
-    premises: [
-      StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
+        arguments: [
+            StaticMethodCallStmt : ASTExpr
+        ]
 
-      StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
+        premises: [
+            StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
 
-      ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+            StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
 
-      ArgumentsTypes[0] != SELF_TYPE;
+            ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
 
-      StaticMethodCallStmt.caller_type : CLS_TYPE while {
-        ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+            ArgumentsTypes[0] != SELF_TYPE;
 
-        StaticMethodCallStmt.return_caller_type      : getBaseType();
-      };
+            StaticMethodCallStmt.caller_type : CLS_TYPE while {
+                ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
 
-      StaticMethodCallStmt.caller_type               : getBaseType();
+                StaticMethodCallStmt.return_caller_type      : getBaseType();
+            };
 
-      StaticMethodCallStmt.return_type               : returnType;
-    ]
+            StaticMethodCallStmt.caller_type               : getBaseType();
 
-    proposition : baseType(returnType);
-  }
+            StaticMethodCallStmt.return_type               : returnType;
+        ]
+
+        proposition : baseType(returnType);
+    }
 }
 ```
 
@@ -122,7 +123,7 @@ drwxrwxr-x 12 x x 4096 Sep  4 17:18 ..
 
 In this example it would generate the following .h and .cpp files:
 
-**MyAwesomeLangTypeRules.h**
+[MyAwesomeLangTypeRules.h](./demo/output/MyAwesomeLangTypeRules.h)
 
 ```
 /**
@@ -130,7 +131,7 @@ In this example it would generate the following .h and .cpp files:
  */
 
 /**
- * This file was synthesized from MyAwesomeLangTypeRules.sl
+ * This file was synthesized from ./demo/MyAwesomeLangTypeRules.sl
  */
 
 #pragma once
@@ -146,11 +147,15 @@ In this example it would generate the following .h and .cpp files:
 class MyAwesomeLangTypeRules
 {
 public:
+    /**
+     * This method was synthesized from the "StaticMethodDispatch" inference definition.
+     */
     TypeCls StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code*);
+
 };
 ```
 
-**MyAwesomeLangTypeRules.cpp**
+[MyAwesomeLangTypeRules.cpp](./demo/output/MyAwesomeLangTypeRules.cpp)
 
 ```
 /**
@@ -158,7 +163,7 @@ public:
  */
 
 /**
- * This file was synthesized from MyAwesomeLangTypeRules.sl
+ * This file was synthesized from ./demo/MyAwesomeLangTypeRules.sl
  */
 
 #include "MyAwesomeLangTypeRules.h"
@@ -170,8 +175,12 @@ public:
 TypeCls
 MyAwesomeLangTypeRules::StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code* err)
 {
+    // This corresponds to the 1st premise rule in the inference definition.
     std::vector<TypeCls> ArgumentsTypes = proveType(StaticMethodCallStmt.argument_types);
+
+    // This corresponds to the 2nd premise rule in the inference definition.
     std::vector<TypeCls> ParameterTypes = proveType(StaticMethodCallStmt.callee.parameter_types);
+
     for (size_t i = 0, size_t j = 1; i < ParameterTypes.size(); ++i, ++j) {
         if (!cmpType(ArgumentsTypes[i], ParameterTypes[j], std::less_equal<TypeCls>())) {
             *err = std::error_code(0, inference_error_category);
@@ -183,6 +192,7 @@ MyAwesomeLangTypeRules::StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt
         *err = std::error_code(0, inference_error_category);
         return TypeCls();
     }
+    // This corresponds to the 3rd premise rule in the inference definition.
 
     // Type annotation setup.
     typeAnnotationSetup(StaticMethodCallStmt.caller_type, CLS_TYPE);
@@ -194,6 +204,7 @@ MyAwesomeLangTypeRules::StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt
         }
     }
 
+    // This corresponds to the 3rd premise rule in the inference definition.
     TypeCls var0 = getBaseType();
     TypeCls var1 = proveType(StaticMethodCallStmt.return_caller_type);
     if (!cmpType(var0, var1, std::equal_to<>())) {
@@ -203,6 +214,20 @@ MyAwesomeLangTypeRules::StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt
 
     // Type annotation teardown.
     typeAnnotationTeardown(StaticMethodCallStmt.caller_type, CLS_TYPE);
+
+    // This corresponds to the 5th premise rule in the inference definition.
+    TypeCls var2 = getBaseType();
+    TypeCls var3 = proveType(StaticMethodCallStmt.caller_type);
+    if (!cmpType(var2, var3, std::equal_to<>())) {
+        *err = std::error_code(0, inference_error_category);
+        return TypeCls();
+    }
+
+    // This corresponds to the 6th premise rule in the inference definition.
+    TypeCls returnType = proveType(StaticMethodCallStmt.return_type);
+
+    return baseType(returnType);
+}
 ```
 
 The synthesized source code files are intended to be integrated with the

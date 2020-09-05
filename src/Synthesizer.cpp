@@ -57,6 +57,17 @@ typedef std::unordered_map<std::string, std::string> EnvDefnMap;
 
 // -----------------------------------------------------------------------------
 
+struct InferenceDefinitionSynthesisContext
+{
+  uint32_t numPremisesProcessed;
+
+  InferenceDefinitionSynthesisContext();
+
+  void reset();
+};
+
+// -----------------------------------------------------------------------------
+
 struct InferenceGroupSynthesisContext
 {
   std::string clsName;
@@ -67,6 +78,7 @@ struct InferenceGroupSynthesisContext
   size_t headerFileIndentLvl;
   size_t cppFileIndentLvl;
   uint32_t nameId;
+  InferenceDefinitionSynthesisContext currentInferenceDefnContext;
 
   InferenceGroupSynthesisContext();
   ~InferenceGroupSynthesisContext();
@@ -111,6 +123,7 @@ private:
   virtual bool postvisit(const ASTInferenceDefn&);
 
   virtual bool previsit(const ASTInferencePremiseDefn&);
+  virtual bool postvisit(const ASTInferencePremiseDefn&);
 
   virtual bool previsit(const ASTInferenceEqualityDefn&);
 
@@ -171,8 +184,11 @@ private:
 
   void renderClassAnnotationComment(std::ostream&);
 
-  void renderInferenceDefinitionAnnotationComment(
-      const std::string& inferenceDefnName, std::ostream&);
+  void renderInferenceDefinitionMethodAnnotationComment(
+      const std::string& inferenceDefnName, std::ostream&,
+      bool isHeaderFile = false);
+
+  void renderInferencePremiseAnnotationComment();
 
   void renderErrorHandling();
 
@@ -216,6 +232,21 @@ Synthesizer::run(const ASTModule& module) const
 
 // -----------------------------------------------------------------------------
 
+InferenceDefinitionSynthesisContext::InferenceDefinitionSynthesisContext()
+  : numPremisesProcessed(0)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+void
+InferenceDefinitionSynthesisContext::reset()
+{
+  numPremisesProcessed = 0;
+}
+
+// -----------------------------------------------------------------------------
+
 InferenceGroupSynthesisContext::InferenceGroupSynthesisContext()
   : clsName()
   , typeCls()
@@ -225,6 +256,7 @@ InferenceGroupSynthesisContext::InferenceGroupSynthesisContext()
   , headerFileIndentLvl(0)
   , cppFileIndentLvl(0)
   , nameId(0)
+  , currentInferenceDefnContext()
 {
 }
 
@@ -376,11 +408,11 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
   // Synthesize member function declaration.
   {
     ScopedIndentationGuard scopedIndentation(_context.headerFileIndentLvl);
-    renderIndentationInHeaderFile();
 
     auto& headerFileOfs = _context.headerFileOfs;
-    // renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
-    // headerFileOfs);
+    renderInferenceDefinitionMethodAnnotationComment(
+        inferenceDefn.name(), headerFileOfs, true /** isHeaderFile */);
+    renderIndentationInHeaderFile();
     headerFileOfs << _context.typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
     headerFileOfs << CPP_OPEN_PAREN;
@@ -392,14 +424,15 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     headerFileOfs << CPP_CLOSE_PAREN;
     headerFileOfs << CPP_SEMICOLON;
     headerFileOfs << CPP_NEWLINE;
+    headerFileOfs << CPP_NEWLINE;
   }
 
   // Synthesize member function definition.
   {
     auto& cppFileOfs = _context.cppFileOfs;
     cppFileOfs << CPP_NEWLINE;
-    renderInferenceDefinitionAnnotationComment(inferenceDefn.name(),
-                                               cppFileOfs);
+    renderInferenceDefinitionMethodAnnotationComment(inferenceDefn.name(),
+                                                     cppFileOfs);
     cppFileOfs << _context.typeCls << CPP_NEWLINE;
     cppFileOfs << _context.clsName;
     cppFileOfs << CPP_COLON << CPP_COLON;
@@ -435,6 +468,8 @@ SynthesizerImpl::postvisit(const ASTInferenceDefn&)
   cppFileOfs << CPP_CLOSE_BRACE;
   cppFileOfs << CPP_NEWLINE;
 
+  _context.currentInferenceDefnContext.reset();
+
   return true;
 }
 
@@ -446,12 +481,24 @@ SynthesizerImpl::previsit(const ASTInferencePremiseDefn& premiseDefn)
 {
   const bool hasWhileClause = premiseDefn.hasWhileClause();
 
+  renderInferencePremiseAnnotationComment();
+
   if (hasWhileClause) {
     synthesizeInferencePremiseDefnWithWhileClause(premiseDefn);
   } else {
     synthesizeInferencePremiseDefnWithoutWhileClause(premiseDefn);
   }
 
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+bool
+SynthesizerImpl::postvisit(const ASTInferencePremiseDefn& premiseDefn)
+{
+  ++_context.currentInferenceDefnContext.numPremisesProcessed;
   return true;
 }
 
@@ -717,6 +764,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithoutWhileClause(
     cppFileOfs << proofMethodName << CPP_OPEN_PAREN;
     synthesizeIdentifiable(premiseDefn.source(), _context.cppFileOfs);
     cppFileOfs << CPP_CLOSE_PAREN << CPP_SEMICOLON;
+    cppFileOfs << CPP_NEWLINE;
   }
 
   cppFileOfs << CPP_NEWLINE;
@@ -1087,6 +1135,8 @@ SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
+  ofs << " * ";
+
   char buf[1024] = {0};
   snprintf(buf, sizeof(buf), "This file was synthesized from %s",
            _opts.inputFilepath.c_str());
@@ -1103,6 +1153,8 @@ SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
+  ofs << " * ";
+
   char buf[1024] = {0};
   snprintf(buf, sizeof(buf),
            "This class was synthesized from the \"%s\" rules group.",
@@ -1116,9 +1168,12 @@ SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderInferenceDefinitionAnnotationComment(
-    const std::string& inferenceDefnName, std::ostream& ofs)
+SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
+    const std::string& inferenceDefnName, std::ostream& ofs, bool isHeaderFile)
 {
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
+
   ofs << COMMENT_BLOCK_BEGIN;
 
   char buf[1024] = {0};
@@ -1126,9 +1181,44 @@ SynthesizerImpl::renderInferenceDefinitionAnnotationComment(
            "This method was synthesized from the \"%s\" inference definition.",
            inferenceDefnName.c_str());
 
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
+
+  ofs << " * ";
   ofs << buf << '\n';
 
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
+
   ofs << COMMENT_BLOCK_END;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+SynthesizerImpl::renderInferencePremiseAnnotationComment()
+{
+  auto& ofs = _context.cppFileOfs;
+
+  renderIndentationInCppFile();
+  ofs << "// ";
+
+  const auto nth =
+      _context.currentInferenceDefnContext.numPremisesProcessed + 1;
+
+  const static char* th[4] = {"st", "nd", "rd", "th"};
+
+#define MIN(a, b) ((a) <= (b) ? (a) : (b))
+
+  char buf[1024] = {0};
+  snprintf(
+      buf, sizeof(buf),
+      "This corresponds to the %u%s premise rule in the inference definition.",
+      nth, th[MIN(nth, 4) - 1]);
+
+  ofs << buf;
+
+  ofs << CPP_NEWLINE;
 }
 
 // -----------------------------------------------------------------------------
