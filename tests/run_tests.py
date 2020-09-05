@@ -231,8 +231,16 @@ class TestRunner(object):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
 
-        cmd = '{executable} --errors --output ./ {input_path}'.format(
+        output_dir_name = 'output'
+
+        output_dir_path = os.path.join(os.getcwd(), output_dir_name)
+
+        if not os.path.exists(output_dir_path):
+           os.mkdir(output_dir_path)
+
+        cmd = '{executable} --errors --output {output_dir_path} {input_path}'.format(
             executable=self.executable_invoke_name,
+            output_dir_path=output_dir_path,
             input_path=testcase_inputpath)
 
         completed_process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
