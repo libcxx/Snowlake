@@ -1,5 +1,6 @@
 {
   "name": "Test computed target type",
   "input_path": "./fixtures/computed_target_type.sl",
-  "expected_exit": 0
+  "expected_exit": 0,
+  "output_file_name_without_ext": "ComputedTargetType"
 }
