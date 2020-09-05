@@ -3,7 +3,7 @@
  */
 
 /**
- * This file was synthesized from MyAwesomeLangTypeRules.sl
+ * This file was synthesized from ./demo/MyAwesomeLangTypeRules.sl
  */
 
 #pragma once
@@ -19,5 +19,9 @@
 class MyAwesomeLangTypeRules
 {
 public:
+    /**
+     * This method was synthesized from the "StaticMethodDispatch" inference definition.
+     */
     TypeCls StaticMethodDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code*);
+
 };
