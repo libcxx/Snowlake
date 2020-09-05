@@ -7,6 +7,10 @@
 [![C/C++ CI](https://github.com/tetrachrome/Snowlake/workflows/C/C++%20CI/badge.svg)](https://github.com/tetrachrome/Snowlake/actions)
 [![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![platform-linux](https://img.shields.io/badge/platform-linux-orange)](#)
+[![platform-osx](https://img.shields.io/badge/platform-OSX-blue)](#)
+[![build-gcc](https://img.shields.io/badge/build-gcc-green)](#)
+[![build-clang](https://img.shields.io/badge/build-clang-9cf)](#)
 
 
 ## Overview
