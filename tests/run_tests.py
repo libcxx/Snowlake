@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import argparse
 import datetime
+import difflib
 import json
 import logging
 import os
@@ -168,6 +169,7 @@ class TestRunner(object):
         console_handler.setFormatter(formatter)
 
         self.logger.addHandler(console_handler)
+        #self.logger.addHandler(logging.StreamHandler())
 
     def run(self):
         return self.__run()
@@ -227,7 +229,6 @@ class TestRunner(object):
 
         testcase_inputpath = os.path.join(self.input_path, testcase_inputpath)
 
-        print('Invoking test case \"{}\"'.format(testcase_name))
         self.logger.info('Invoking test case \"{}\"'.format(testcase_name))
 
         if not os.path.exists(testcase_inputpath) or not os.path.isfile(testcase_inputpath):
@@ -312,7 +313,30 @@ class TestRunner(object):
             self.__log_error('Cannot find {}'.format(output_cpp_file_path))
             return self.StatusCode.ERROR
 
-        return self.StatusCode.SUCCESS
+        err = self.__diff_two_files(snapshot_header_file_path, output_header_file_path)
+
+        if err != self.StatusCode.SUCCESS:
+            return err
+
+        err = self.__diff_two_files(snapshot_cpp_file_path, output_cpp_file_path)
+
+        return err
+
+    def __diff_two_files(self, file1, file2):
+        text1 = open(file1).readlines()
+        text2 = open(file2).readlines()
+
+        has_diff = False
+        shown_log = False
+
+        for line in difflib.unified_diff(text1, text2):
+            if not shown_log:
+                self.__log_info('Diffing between \"{}\" and \"{}\"'.format(file1, file2))
+                shown_log = True
+            self.__log_info(line)
+            has_diff = True
+
+        return self.StatusCode.SUCCESS if has_diff is False else self.StatusCode.FAILURE
 
     def __formatted_errors(self, input_path, expected_errors):
         if not expected_errors:
@@ -351,6 +375,13 @@ class TestRunner(object):
     def __log_msg(self, msg, color=None):
         if color:
             self.console_logger.info('{}{}{}'.format(color, msg, Colors.ENDC))
+        else:
+            self.console_logger.info(msg)
+        self.logger.info(msg)
+
+    def __log_info(self, msg):
+        if self.opts.colors:
+            self.console_logger.info(msg)
         else:
             self.console_logger.info(msg)
         self.logger.info(msg)
