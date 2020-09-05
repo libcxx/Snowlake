@@ -163,7 +163,7 @@ private:
 
   void renderInferenceErrorCategory(std::ostream&);
 
-  void renderTypeAnnotationSetupTeardownFixture(
+  void renderTypeAnnotationSetupTeardownFixtrue(
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
@@ -172,7 +172,8 @@ private:
   void renderClassAnnotationComment(std::ostream&);
 
   void renderInferenceDefinitionMethodAnnotationComment(
-      const std::string& inferenceDefnName, std::ostream&);
+      const std::string& inferenceDefnName, std::ostream&,
+      bool isHeaderFile = false);
 
   void renderErrorHandling();
 
@@ -376,11 +377,11 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
   // Synthesize member function declaration.
   {
     ScopedIndentationGuard scopedIndentation(_context.headerFileIndentLvl);
-    renderIndentationInHeaderFile();
 
     auto& headerFileOfs = _context.headerFileOfs;
-    // renderInferenceDefinitionMethodAnnotationComment(inferenceDefn.name(),
-    // headerFileOfs);
+    renderInferenceDefinitionMethodAnnotationComment(
+        inferenceDefn.name(), headerFileOfs, true /** isHeaderFile */);
+    renderIndentationInHeaderFile();
     headerFileOfs << _context.typeCls << CPP_SPACE;
     headerFileOfs << inferenceDefn.name();
     headerFileOfs << CPP_OPEN_PAREN;
@@ -392,6 +393,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     headerFileOfs << CPP_CLOSE_PAREN;
     headerFileOfs << CPP_SEMICOLON;
     headerFileOfs << CPP_NEWLINE;
+    headerFileOfs << CPP_NEWLINE;
   }
 
   // Synthesize member function definition.
@@ -399,7 +401,7 @@ SynthesizerImpl::previsit(const ASTInferenceDefn& inferenceDefn)
     auto& cppFileOfs = _context.cppFileOfs;
     cppFileOfs << CPP_NEWLINE;
     renderInferenceDefinitionMethodAnnotationComment(inferenceDefn.name(),
-                                               cppFileOfs);
+                                                     cppFileOfs);
     cppFileOfs << _context.typeCls << CPP_NEWLINE;
     cppFileOfs << _context.clsName;
     cppFileOfs << CPP_COLON << CPP_COLON;
@@ -600,7 +602,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
   auto& cppFileOfs = _context.cppFileOfs;
 
-  // Type annotation setup fixture.
+  // Type annotation setup fixtrue.
   {
     cppFileOfs << CPP_NEWLINE;
 
@@ -612,7 +614,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     cppFileOfs << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT << CPP_NEWLINE;
 
     // Synthesize type annotation setup code.
-    renderTypeAnnotationSetupTeardownFixture(
+    renderTypeAnnotationSetupTeardownFixtrue(
         premiseDefn, typeAnnotationSetupMethod, _context.cppFileOfs);
 
     cppFileOfs << CPP_NEWLINE;
@@ -630,7 +632,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     }
   }
 
-  // Type annotation teardown fixture.
+  // Type annotation teardown fixtrue.
   {
     const auto& typeAnnotationTeardownMethod = _context.envDefnMap.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
@@ -640,7 +642,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     cppFileOfs << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT << CPP_NEWLINE;
 
     // Synthesize type annotation teardown code.
-    renderTypeAnnotationSetupTeardownFixture(
+    renderTypeAnnotationSetupTeardownFixtrue(
         premiseDefn, typeAnnotationTeardownMethod, _context.cppFileOfs);
   }
 
@@ -982,7 +984,7 @@ SynthesizerImpl::renderInferenceErrorCategory(std::ostream& ofsRef)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
+SynthesizerImpl::renderTypeAnnotationSetupTeardownFixtrue(
     const ASTInferencePremiseDefn& premiseDefn, const std::string& methodName,
     std::ostream& ofsRef)
 {
@@ -1087,6 +1089,8 @@ SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
+  ofs << " * ";
+
   char buf[1024] = {0};
   snprintf(buf, sizeof(buf), "This file was synthesized from %s",
            _opts.inputFilepath.c_str());
@@ -1103,6 +1107,8 @@ SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 {
   ofs << COMMENT_BLOCK_BEGIN;
 
+  ofs << " * ";
+
   char buf[1024] = {0};
   snprintf(buf, sizeof(buf),
            "This class was synthesized from the \"%s\" rules group.",
@@ -1117,8 +1123,11 @@ SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 
 void
 SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
-    const std::string& inferenceDefnName, std::ostream& ofs)
+    const std::string& inferenceDefnName, std::ostream& ofs, bool isHeaderFile)
 {
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
+
   ofs << COMMENT_BLOCK_BEGIN;
 
   char buf[1024] = {0};
@@ -1126,7 +1135,14 @@ SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
            "This method was synthesized from the \"%s\" inference definition.",
            inferenceDefnName.c_str());
 
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
+
+  ofs << " * ";
   ofs << buf << '\n';
+
+  if (isHeaderFile)
+    renderIndentation(_context.headerFileIndentLvl, ofs);
 
   ofs << COMMENT_BLOCK_END;
 }

@@ -178,8 +178,16 @@ TEST_F(SynthesizerTests, TestSynthesisWithSuccess)
       "class MyInference\n"
       "{\n"
       "public:\n"
+      "    /**\n"
+      "     * This method was synthesized from the \"MethodStaticDispatch\" inference definition.\n"
+      "     */\n"
       "    TypeCls MethodStaticDispatch(const ASTExpr& StaticMethodCallStmt, std::error_code*);\n"
+      "\n"
+      "    /**\n"
+      "     * This method was synthesized from the \"BinaryExpressionInference\" inference definition.\n"
+      "     */\n"
       "    TypeCls BinaryExpressionInference(const Expr& expr, std::error_code*);\n"
+      "\n"
       "};\n"
       "";
     // clang-format on
