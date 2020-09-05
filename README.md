@@ -48,50 +48,50 @@ semantics captured behind it.
 We can define the semantic rules of such static method dispatch declaratively
 with the *Snowlake* language, in a file called **MyAwesomeLangTypeRules.sl**.
 
-**MyAwesomeLangTypeRules.sl**
+[MyAwesomeLangTypeRules.sl](./demo/MyAwesomeLangTypeRules.sl)
 
 ```
 group MyAwesomeLang {
-  ClassName                      : MyAwesomeLangTypeRules;
-  TypeClass                      : TypeCls;
-  ProofMethod                    : proveType;
-  TypeCmpMethod                  : cmpType;
-  TypeAnnotationSetupMethod      : typeAnnotationSetup;
-  TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
+    ClassName                      : MyAwesomeLangTypeRules;
+    TypeClass                      : TypeCls;
+    ProofMethod                    : proveType;
+    TypeCmpMethod                  : cmpType;
+    TypeAnnotationSetupMethod      : typeAnnotationSetup;
+    TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
 
-  inference StaticMethodDispatch {
+    inference StaticMethodDispatch {
 
-    globals: [
-      SELF_TYPE,
-      CLS_TYPE
-    ]
+        globals: [
+            SELF_TYPE,
+            CLS_TYPE
+        ]
 
-    arguments: [
-      StaticMethodCallStmt : ASTExpr
-    ]
+        arguments: [
+            StaticMethodCallStmt : ASTExpr
+        ]
 
-    premises: [
-      StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
+        premises: [
+            StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
 
-      StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
+            StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
 
-      ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+            ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
 
-      ArgumentsTypes[0] != SELF_TYPE;
+            ArgumentsTypes[0] != SELF_TYPE;
 
-      StaticMethodCallStmt.caller_type : CLS_TYPE while {
-        ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+            StaticMethodCallStmt.caller_type : CLS_TYPE while {
+                ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
 
-        StaticMethodCallStmt.return_caller_type      : getBaseType();
-      };
+                StaticMethodCallStmt.return_caller_type      : getBaseType();
+            };
 
-      StaticMethodCallStmt.caller_type               : getBaseType();
+            StaticMethodCallStmt.caller_type               : getBaseType();
 
-      StaticMethodCallStmt.return_type               : returnType;
-    ]
+            StaticMethodCallStmt.return_type               : returnType;
+        ]
 
-    proposition : baseType(returnType);
-  }
+        proposition : baseType(returnType);
+    }
 }
 ```
 
@@ -122,7 +122,7 @@ drwxrwxr-x 12 x x 4096 Sep  4 17:18 ..
 
 In this example it would generate the following .h and .cpp files:
 
-**MyAwesomeLangTypeRules.h**
+[MyAwesomeLangTypeRules.h](./demo/output/MyAwesomeLangTypeRules.h)
 
 ```
 /**
@@ -150,7 +150,7 @@ public:
 };
 ```
 
-**MyAwesomeLangTypeRules.cpp**
+[MyAwesomeLangTypeRules.cpp](./demo/output/MyAwesomeLangTypeRules.cpp)
 
 ```
 /**
