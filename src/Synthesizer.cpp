@@ -176,7 +176,7 @@ private:
 
   void renderInferenceErrorCategory(std::ostream&);
 
-  void renderTypeAnnotationSetupTeardownFixtrue(
+  void renderTypeAnnotationSetupTeardownFixture(
       const ASTInferencePremiseDefn& premiseDefn,
       const std::string& method_name, std::ostream&);
 
@@ -647,7 +647,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
 
   auto& cppFileOfs = _context.cppFileOfs;
 
-  // Type annotation setup fixtrue.
+  // Type annotation setup fixture.
   {
     cppFileOfs << CPP_NEWLINE;
 
@@ -659,7 +659,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     cppFileOfs << SYNTHESIZED_TYPE_ANNOTATION_SETUP_COMMENT << CPP_NEWLINE;
 
     // Synthesize type annotation setup code.
-    renderTypeAnnotationSetupTeardownFixtrue(
+    renderTypeAnnotationSetupTeardownFixture(
         premiseDefn, typeAnnotationSetupMethod, _context.cppFileOfs);
 
     cppFileOfs << CPP_NEWLINE;
@@ -677,7 +677,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     }
   }
 
-  // Type annotation teardown fixtrue.
+  // Type annotation teardown fixture.
   {
     const auto& typeAnnotationTeardownMethod = _context.envDefnMap.at(
         SNOWLAKE_ENVN_DEFN_KEY_NAME_FOR_TYPE_ANNOTATION_TEARDOWN_METHOD);
@@ -687,7 +687,7 @@ SynthesizerImpl::synthesizeInferencePremiseDefnWithWhileClause(
     cppFileOfs << SYNTHESIZED_TYPE_ANNOTATION_TEARDOWN_COMMENT << CPP_NEWLINE;
 
     // Synthesize type annotation teardown code.
-    renderTypeAnnotationSetupTeardownFixtrue(
+    renderTypeAnnotationSetupTeardownFixture(
         premiseDefn, typeAnnotationTeardownMethod, _context.cppFileOfs);
   }
 
@@ -1030,7 +1030,7 @@ SynthesizerImpl::renderInferenceErrorCategory(std::ostream& ofsRef)
 // -----------------------------------------------------------------------------
 
 void
-SynthesizerImpl::renderTypeAnnotationSetupTeardownFixtrue(
+SynthesizerImpl::renderTypeAnnotationSetupTeardownFixture(
     const ASTInferencePremiseDefn& premiseDefn, const std::string& methodName,
     std::ostream& ofsRef)
 {
