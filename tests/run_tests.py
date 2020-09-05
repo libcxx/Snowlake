@@ -227,6 +227,9 @@ class TestRunner(object):
 
         testcase_inputpath = os.path.join(self.input_path, testcase_inputpath)
 
+        print('Invoking test case \"{}\"'.format(testcase_name))
+        self.logger.info('Invoking test case \"{}\"'.format(testcase_name))
+
         if not os.path.exists(testcase_inputpath) or not os.path.isfile(testcase_inputpath):
             self.__log_error('Test case \"{}\" does not have valid input'.format(testcase_name))
             return self.StatusCode.ERROR
@@ -260,6 +263,10 @@ class TestRunner(object):
             ))
             err = self.StatusCode.ERROR
 
+
+        if err == self.StatusCode.SUCCESS and return_code == 0:
+            err = self.__run_snapshot_test_for_testcase(testcase, output_dir_path)
+
         if err == self.StatusCode.SUCCESS:
             self.__log_success('[{}] - {}'.format(testcase_name, self.StatusCode.tostring(err)))
         else:
@@ -273,6 +280,39 @@ class TestRunner(object):
                     testcase_inputpath=testcase_inputpath))
 
         return err
+
+    def __run_snapshot_test_for_testcase(self, testcase, output_dir_path):
+        testcase_snapshot_filename_without_ext = testcase['output_file_name_without_ext']
+
+        integration_test_dir = os.path.dirname(os.path.realpath(__file__))
+
+        snapshot_file_dir = os.path.join(integration_test_dir, 'snapshots')
+
+        snapshot_header_file_path = os.path.join(snapshot_file_dir, testcase_snapshot_filename_without_ext + '.h')
+
+        if not os.path.exists(snapshot_header_file_path):
+            self.__log_error('Cannot find {}'.format(snapshot_header_file_path))
+            return self.StatusCode.ERROR
+
+        snapshot_cpp_file_path = os.path.join(snapshot_file_dir, testcase_snapshot_filename_without_ext + '.cpp')
+
+        if not os.path.exists(snapshot_cpp_file_path):
+            self.__log_error('Cannot find {}'.format(snapshot_cpp_file_path))
+            return self.StatusCode.ERROR
+
+        output_header_file_path = os.path.join(output_dir_path, testcase_snapshot_filename_without_ext + '.h')
+
+        if not os.path.exists(output_header_file_path):
+            self.__log_error('Cannot find {}'.format(output_header_file_path))
+            return self.StatusCode.ERROR
+        
+        output_cpp_file_path = os.path.join(output_dir_path, testcase_snapshot_filename_without_ext + '.cpp')
+
+        if not os.path.exists(output_cpp_file_path):
+            self.__log_error('Cannot find {}'.format(output_cpp_file_path))
+            return self.StatusCode.ERROR
+
+        return self.StatusCode.SUCCESS
 
     def __formatted_errors(self, input_path, expected_errors):
         if not expected_errors:

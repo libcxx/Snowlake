@@ -2,5 +2,5 @@
   "name": "Test full feature set",
   "input_path": "./fixtures/full_feature.sl",
   "expected_exit": 0,
-  "output_file_name_without_ext": "AllFeatures"
+  "output_file_name_without_ext": "FullFeature"
 }
