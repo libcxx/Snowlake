@@ -52,6 +52,7 @@ with the *Snowlake* language, in a file called **MyAwesomeLangTypeRules.sl**.
 
 ```
 group MyAwesomeLang {
+
     ClassName                      : MyAwesomeLangTypeRules;
     TypeClass                      : TypeCls;
     ProofMethod                    : proveType;

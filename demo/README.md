@@ -29,46 +29,48 @@ with the *Snowlake* language, in a file called
 
 ```
 group MyAwesomeLang {
-  ClassName                      : MyAwesomeLangTypeRules;
-  TypeClass                      : TypeCls;
-  ProofMethod                    : proveType;
-  TypeCmpMethod                  : cmpType;
-  TypeAnnotationSetupMethod      : typeAnnotationSetup;
-  TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
 
-  inference StaticMethodDispatch {
+    ClassName                      : MyAwesomeLangTypeRules;
+    TypeClass                      : TypeCls;
+    ProofMethod                    : proveType;
+    TypeCmpMethod                  : cmpType;
+    TypeAnnotationSetupMethod      : typeAnnotationSetup;
+    TypeAnnotationTeardownMethod   : typeAnnotationTeardown;
 
-    globals: [
-      SELF_TYPE,
-      CLS_TYPE
-    ]
+    inference StaticMethodDispatch {
 
-    arguments: [
-      StaticMethodCallStmt : ASTExpr
-    ]
+        globals: [
+            SELF_TYPE,
+            CLS_TYPE
+        ]
 
-    premises: [
-      StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
+        arguments: [
+            StaticMethodCallStmt : ASTExpr
+        ]
 
-      StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
+        premises: [
 
-      ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
+            StaticMethodCallStmt.argument_types            : ArgumentsTypes[];
 
-      ArgumentsTypes[0] != SELF_TYPE;
+            StaticMethodCallStmt.callee.parameter_types    : ParameterTypes[];
 
-      StaticMethodCallStmt.caller_type : CLS_TYPE while {
-        ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
+            ArgumentsTypes[] <= ParameterTypes[] inrange 0..1..ParameterTypes[];
 
-        StaticMethodCallStmt.return_caller_type      : getBaseType();
-      };
+            ArgumentsTypes[0] != SELF_TYPE;
 
-      StaticMethodCallStmt.caller_type               : getBaseType();
+            StaticMethodCallStmt.caller_type : CLS_TYPE while {
+                ArgumentsTypes[] <= ParameterTypes[] inrange 1..1..ParameterTypes[];
 
-      StaticMethodCallStmt.return_type               : returnType;
-    ]
+                StaticMethodCallStmt.return_caller_type      : getBaseType();
+            };
 
-    proposition : baseType(returnType);
-  }
+            StaticMethodCallStmt.caller_type               : getBaseType();
+
+            StaticMethodCallStmt.return_type               : returnType;
+        ]
+
+        proposition : baseType(returnType);
+    }
 }
 ```
 

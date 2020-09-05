@@ -1,4 +1,5 @@
 group MyAwesomeLang {
+
     ClassName                      : MyAwesomeLangTypeRules;
     TypeClass                      : TypeCls;
     ProofMethod                    : proveType;
