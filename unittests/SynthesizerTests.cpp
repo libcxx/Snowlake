@@ -50,8 +50,8 @@ protected:
 
     Synthesizer::Options opts{
         .useException = false,
-        .inputFilepath = "./SampleInput.sl", // give it a dummy filepath
         .suppressAnnotationComments = false,
+        .inputFilepath = "./SampleInput.sl", // give it a dummy filepath
         .outputPath = outputPath,
     };
     Synthesizer synthesizer(opts);
