@@ -3,6 +3,7 @@
 
 # Snowlake
 
+[![verson](https://img.shields.io/badge/version-0.1.2-ff69b4)](https://github.com/tetrachrome/Snowlake/releases/tag/v0.1.2)
 [![Build Status](https://travis-ci.org/tetrachrome/Snowlake.svg?branch=master)](https://travis-ci.org/tetrachrome/Snowlake)
 [![C/C++ CI](https://github.com/tetrachrome/Snowlake/workflows/C/C++%20CI/badge.svg)](https://github.com/tetrachrome/Snowlake/actions)
 [![Documentation](https://readthedocs.org/projects/snowlake/badge/?version=latest)](https://snowlake.readthedocs.io/en/latest/)
