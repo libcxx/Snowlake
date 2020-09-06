@@ -242,7 +242,7 @@ class TestRunner(object):
         if not os.path.exists(output_dir_path):
            os.mkdir(output_dir_path)
 
-        cmd = '{executable} --errors --output {output_dir_path} {input_path}'.format(
+        cmd = '{executable} --errors --no-annotation-comments --output {output_dir_path} {input_path}'.format(
             executable=self.executable_invoke_name,
             output_dir_path=output_dir_path,
             input_path=testcase_inputpath)
