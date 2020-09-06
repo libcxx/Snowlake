@@ -1,12 +1,13 @@
 # Releases
 
-## %NEXT VERSION%
+## Version 0.1.2
 
+* Date: Sept 05, 2020
 * Changelog
   * Changelog #73 - Emit comment annotations in output files - Part 2
   * Changelog #75 - Implement snapshot testing in integration tests
 
-## Version v0.1.1
+## Version 0.1.1
 
 * Date: Sept 04, 2020
 * Tag: `v0.1.1`
@@ -31,7 +32,7 @@
   * Changeset #59 - Refine unittests/ProgramDriverTests.cpp
   * Changeset #61, #65, #66 - Refactor compiler errors and warnings handling
 
-## Version v0.0.1
+## Version 0.0.1
 
 * Date: Jul 10, 2018
 * Tag: `v0.0.1`
