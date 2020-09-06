@@ -3,6 +3,9 @@
 ## Version 0.1.2
 
 * Date: Sept 05, 2020
+* Tag: `v0.1.2`
+* Commit: `4cf147b`
+* Archive: https://github.com/tetrachrome/Snowlake/releases/tag/v0.1.2
 * Changelog
   * Changelog #73 - Emit comment annotations in output files - Part 2
   * Changelog #75 - Implement snapshot testing in integration tests
