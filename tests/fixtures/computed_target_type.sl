@@ -1,5 +1,6 @@
-group MyGroup {
-  ClassName          : MyGroup;
+group ComputedTargetType {
+
+  ClassName          : ComputedTargetType;
   TypeClass          : TypeCls;
   ProofMethod        : proveType;
   TypeCmpMethod      : cmpType;

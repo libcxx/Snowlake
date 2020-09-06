@@ -1,5 +1,6 @@
-group MyGroup {
-  ClassName          : MyGroup;
+group ValidProposition {
+
+  ClassName          : ValidProposition;
   TypeClass          : TypeCls;
   ProofMethod        : proveType;
   TypeCmpMethod      : cmpType;

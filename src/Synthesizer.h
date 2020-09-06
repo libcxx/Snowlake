@@ -33,6 +33,7 @@ public:
   struct Options
   {
     bool useException;
+    bool suppressAnnotationComments;
     std::string inputFilepath;
     std::string outputPath;
   };

@@ -36,6 +36,7 @@ public:
     bool debugMode;
     bool verbose;
     bool silent;
+    bool suppressAnnotationComments;
     std::string inputPath;
     std::string outputPath;
   };

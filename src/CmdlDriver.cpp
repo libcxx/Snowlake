@@ -63,6 +63,9 @@ CmdlDriver::run(int argc, char** argv)
                                 &_opts.verbose, false);
   argparser.addBooleanParameter("silent", 's', "Silent mode", false,
                                 &_opts.silent, false);
+  argparser.addBooleanParameter("no-annotation-comments", 'n',
+                                "Suppress annotation comments", false,
+                                &_opts.suppressAnnotationComments, false);
   argparser.setMinimumPositionalArgsRequired(1);
 
   const bool res = argparser.parseArgs(argc, argv);

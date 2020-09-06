@@ -1,5 +1,11 @@
 # Releases
 
+## %NEXT VERSION%
+
+* Changelog
+  * Changelog #73 - Emit comment annotations in output files - Part 2
+  * Changelog #75 - Implement snapshot testing in integration tests
+
 ## Version v0.1.1
 
 * Date: Sept 04, 2020

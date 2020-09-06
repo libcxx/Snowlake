@@ -1,5 +1,6 @@
-group MyGroup {
-  ClassName          : MyGroup;
+group ValidSemantics {
+
+  ClassName          : ValidSemantics;
   TypeClass          : TypeCls;
   ProofMethod        : proveType;
   TypeCmpMethod      : cmpType;

@@ -1,5 +1,6 @@
-group MyGroup {
-  ClassName                      : MyInference;
+group FullFeature {
+
+  ClassName                      : FullFeature;
   TypeClass                      : TypeCls;
   ProofMethod                    : proveType;
   TypeCmpMethod                  : cmpType;

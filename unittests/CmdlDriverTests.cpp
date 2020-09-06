@@ -42,6 +42,7 @@ TEST_F(CmdlDriverTests, TestDefaultInitialization)
   ASSERT_FALSE(driver.options().debugMode);
   ASSERT_FALSE(driver.options().verbose);
   ASSERT_FALSE(driver.options().silent);
+  ASSERT_FALSE(driver.options().suppressAnnotationComments);
   ASSERT_STREQ("", driver.options().outputPath.c_str());
 }
 
@@ -49,9 +50,16 @@ TEST_F(CmdlDriverTests, TestDefaultInitialization)
 
 TEST_F(CmdlDriverTests, TestRun)
 {
-  const std::vector<char*> args{"MyProgram", "--errors",  "--bail",
-                                "--debug",   "--verbose", "--silent",
-                                "--output",  "/tmp/out",  "/tmp/in"};
+  const std::vector<char*> args{"MyProgram",
+                                "--errors",
+                                "--bail",
+                                "--debug",
+                                "--verbose",
+                                "--silent",
+                                "--no-annotation-comments",
+                                "--output",
+                                "/tmp/out",
+                                "/tmp/in"};
 
   CmdlDriver driver;
   const bool res = driver.run(args.size(), (char**)args.data());
@@ -62,6 +70,7 @@ TEST_F(CmdlDriverTests, TestRun)
   ASSERT_TRUE(driver.options().debugMode);
   ASSERT_TRUE(driver.options().verbose);
   ASSERT_TRUE(driver.options().silent);
+  ASSERT_TRUE(driver.options().suppressAnnotationComments);
   ASSERT_STREQ("/tmp/out", driver.options().outputPath.c_str());
   ASSERT_STREQ("/tmp/in", driver.options().inputPath.c_str());
 }
