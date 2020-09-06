@@ -1133,6 +1133,9 @@ SynthesizerImpl::initializeAndSynthesizeErrorCodeFiles()
 void
 SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
 {
+  if (_opts.suppressAnnotationComments)
+    return;
+
   ofs << COMMENT_BLOCK_BEGIN;
 
   ofs << " * ";
@@ -1151,6 +1154,9 @@ SynthesizerImpl::renderInputSourceAnnotationComment(std::ostream& ofs)
 void
 SynthesizerImpl::renderClassAnnotationComment(std::ostream& ofs)
 {
+  if (_opts.suppressAnnotationComments)
+    return;
+
   ofs << COMMENT_BLOCK_BEGIN;
 
   ofs << " * ";
@@ -1171,6 +1177,9 @@ void
 SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
     const std::string& inferenceDefnName, std::ostream& ofs, bool isHeaderFile)
 {
+  if (_opts.suppressAnnotationComments)
+    return;
+
   if (isHeaderFile)
     renderIndentation(_context.headerFileIndentLvl, ofs);
 
@@ -1198,6 +1207,9 @@ SynthesizerImpl::renderInferenceDefinitionMethodAnnotationComment(
 void
 SynthesizerImpl::renderInferencePremiseAnnotationComment()
 {
+  if (_opts.suppressAnnotationComments)
+    return;
+
   auto& ofs = _context.cppFileOfs;
 
   renderIndentationInCppFile();

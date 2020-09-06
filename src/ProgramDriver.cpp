@@ -102,6 +102,8 @@ ProgramDriver::run(int argc, char** argv)
 
   // Synthesis.
   Synthesizer::Options synthesisOpts{.useException = false,
+                                     .suppressAnnotationComments =
+                                         cmdlOpts.suppressAnnotationComments,
                                      .inputFilepath = cmdlOpts.inputPath,
                                      .outputPath = cmdlOpts.outputPath};
   Synthesizer synthesizer(synthesisOpts);
